@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-user-edit me-2"></i>Modifier mon profil</h3>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+                    
+                    <div class="accordion" id="editAccordion">
+                        <!-- Infos de base -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#basicInfo">
+                                    Informations de base
+                                </button>
+                            </h2>
+                            <div id="basicInfo" class="accordion-collapse collapse show" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Infos personnelles -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalInfo">
+                                    Informations personnelles
+                                </button>
+                            </h2>
+                            <div id="personalInfo" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">{{ form_row(form.genre) }}</div>
+                                        <div class="col-md-4">{{ form_row(form.situationFamiliale) }}</div>
+                                        <div class="col-md-4">{{ form_row(form.dateNaissance) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.telephone) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.villeActuelle) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.paysResidence) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.nationalite) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formation -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#education">
+                                    Formation & Compétences
+                                </button>
+                            </h2>
+                            <div id="education" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">{{ form_row(form.niveauEtudes) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.domaineExpertise) }}</div>
+                                        <div class="col-12">{{ form_row(form.ceQueVousSavezFaire) }}</div>
+                                        <div class="col-12">{{ form_row(form.languesParlees) }}</div>
+                                        <div class="col-12">{{ form_row(form.certifications) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Situation pro -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professional">
+                                    Situation professionnelle
+                                </button>
+                            </h2>
+                            <div id="professional" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">{{ form_row(form.statutEmploi) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.posteActuel) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.anneesExperience) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.secteurActivite) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Aspirations -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aspirations">
+                                    Objectifs & Aspirations
+                                </button>
+                            </h2>
+                            <div id="aspirations" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">{{ form_row(form.objectifsProfessionnels) }}</div>
+                                        <div class="col-12">{{ form_row(form.ceQueVousAimezFaire) }}</div>
+                                        <div class="col-12">{{ form_row(form.talentCache) }}</div>
+                                        <div class="col-md-6"><div class="form-check">{{ form_widget(form.pretASeFormer) }} {{ form_label(form.pretASeFormer) }}</div></div>
+                                        <div class="col-md-6"><div class="form-check">{{ form_widget(form.pretAVousExporter) }} {{ form_label(form.pretAVousExporter) }}</div></div>
+                                        <div class="col-md-6"><div class="form-check">{{ form_widget(form.disponiblePourMissions) }} {{ form_label(form.disponiblePourMissions) }}</div></div>
+                                        <div class="col-md-6"><div class="form-check">{{ form_widget(form.rechercheEmploi) }} {{ form_label(form.rechercheEmploi) }}</div></div>
+                                        <div class="col-md-6"><div class="form-check">{{ form_widget(form.sansEmploi) }} {{ form_label(form.sansEmploi) }}</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Réseau -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#network">
+                                    Réseau & Liens
+                                </button>
+                            </h2>
+                            <div id="network" class="accordion-collapse collapse" data-bs-parent="#editAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">{{ form_row(form.linkedinUrl) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.siteWebUrl) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.portfolioUrl) }}</div>
+                                        <div class="col-12">{{ form_row(form.bio) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                        </button>
+                        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times me-2"></i>Annuler
+                        </a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
