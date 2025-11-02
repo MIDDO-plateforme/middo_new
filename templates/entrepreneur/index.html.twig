@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - Entrepreneurs</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .navbar .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        .navbar .nav-link:hover {
+            color: white !important;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .entrepreneur-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .entrepreneur-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.3);
+        }
+        
+        .entrepreneur-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            display: inline-block;
+        }
+        
+        .badge-rating {
+            background-color: #f39c12;
+        }
+        
+        .badge-projects {
+            background-color: #3498db;
+        }
+        
+        .badge-rate {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">MIDDO</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clinic"><i class="fas fa-hospital"></i> Cliniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/entrepreneur"><i class="fas fa-rocket"></i> Entrepreneurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/investor"><i class="fas fa-money-bill-wave"></i> Investisseurs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-rocket me-3"></i>Entrepreneurs & Développeurs</h1>
+            <p class="lead">Trouvez les meilleurs talents tech et entrepreneurs africains pour vos projets innovants</p>
+        </div>
+    </div>
+
+    <!-- Entrepreneur List -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Entrepreneur 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/667eea/ffffff?text=TD" class="entrepreneur-avatar me-3" alt="Thomas Dubois">
+                            <div>
+                                <h5 class="card-title mb-1">Thomas Dubois</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Lyon, France</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.8/5</span>
+                                    <span class="badge badge-projects ms-1">52 projets</span>
+                                    <span class="badge badge-rate ms-1">45€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Développeur Full Stack & Expert WordPress. 7 ans d'expérience en e-commerce.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">WordPress</span>
+                            <span class="skill-badge">PHP</span>
+                            <span class="skill-badge">React</span>
+                            <span class="skill-badge">Laravel</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrepreneur 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/e74c3c/ffffff?text=AM" class="entrepreneur-avatar me-3" alt="Amina Mbaye">
+                            <div>
+                                <h5 class="card-title mb-1">Amina Mbaye</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Dakar, Sénégal</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.9/5</span>
+                                    <span class="badge badge-projects ms-1">38 projets</span>
+                                    <span class="badge badge-rate ms-1">35€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Designer UX/UI spécialisée en applications mobiles et interfaces innovantes.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">Figma</span>
+                            <span class="skill-badge">UI/UX</span>
+                            <span class="skill-badge">Mobile Design</span>
+                            <span class="skill-badge">Prototyping</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrepreneur 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/2ecc71/ffffff?text=JK" class="entrepreneur-avatar me-3" alt="Jean Kabongo">
+                            <div>
+                                <h5 class="card-title mb-1">Jean Kabongo</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Kinshasa, RD Congo</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.7/5</span>
+                                    <span class="badge badge-projects ms-1">45 projets</span>
+                                    <span class="badge badge-rate ms-1">40€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Expert IA & Machine Learning. Spécialisé en diagnostic médical automatisé.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">TensorFlow</span>
+                            <span class="skill-badge">ML</span>
+                            <span class="skill-badge">Data Science</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrepreneur 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/3498db/ffffff?text=ST" class="entrepreneur-avatar me-3" alt="Sophie Traore">
+                            <div>
+                                <h5 class="card-title mb-1">Sophie Traoré</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Abidjan, Côte d'Ivoire</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.6/5</span>
+                                    <span class="badge badge-projects ms-1">29 projets</span>
+                                    <span class="badge badge-rate ms-1">38€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Développeuse Mobile spécialisée React Native et Flutter pour iOS/Android.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">React Native</span>
+                            <span class="skill-badge">Flutter</span>
+                            <span class="skill-badge">iOS</span>
+                            <span class="skill-badge">Android</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrepreneur 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/9b59b6/ffffff?text=KO" class="entrepreneur-avatar me-3" alt="Kwame Osei">
+                            <div>
+                                <h5 class="card-title mb-1">Kwame Osei</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Accra, Ghana</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.9/5</span>
+                                    <span class="badge badge-projects ms-1">61 projets</span>
+                                    <span class="badge badge-rate ms-1">50€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Architecte Cloud & DevOps. Expert en infrastructures scalables et sécurisées.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">AWS</span>
+                            <span class="skill-badge">Docker</span>
+                            <span class="skill-badge">Kubernetes</span>
+                            <span class="skill-badge">CI/CD</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entrepreneur 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card entrepreneur-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/f39c12/ffffff?text=LN" class="entrepreneur-avatar me-3" alt="Latifa Ndiaye">
+                            <div>
+                                <h5 class="card-title mb-1">Latifa Ndiaye</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Casablanca, Maroc</p>
+                                <div>
+                                    <span class="badge badge-rating"><i class="fas fa-star"></i> 4.8/5</span>
+                                    <span class="badge badge-projects ms-1">33 projets</span>
+                                    <span class="badge badge-rate ms-1">42€/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Spécialiste Blockchain & Smart Contracts. Experte en solutions DeFi.</p>
+                        <div class="mb-3">
+                            <span class="skill-badge">Solidity</span>
+                            <span class="skill-badge">Ethereum</span>
+                            <span class="skill-badge">Web3</span>
+                            <span class="skill-badge">Smart Contracts</span>
+                        </div>
+                        <a href="/freelancer/profile/1" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MIDDO - Plateforme Universelle{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-0">
+    <!-- Hero Section -->
+    <div class="bg-primary text-white text-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container py-5">
+            <h1 class="display-3 fw-bold mb-4">Bienvenue sur MIDDO</h1>
+            <p class="lead fs-4">Plateforme Universelle - Connectons le monde entier 🌍</p>
+            <p class="fs-5 mb-4">Entrepreneurs • Investisseurs • Entreprises • Particuliers • Associations • Institutions</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{{ path('app_register') }}" class="btn btn-light btn-lg px-5 py-3 shadow">
+                    <i class="fas fa-user-plus me-2"></i>Créer un compte
+                </a>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                    <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container my-5 py-5">
+        <h2 class="text-center mb-5 fw-bold">Pourquoi choisir MIDDO ?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-rocket fa-2x"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Pour les Entrepreneurs</h3>
+                        <p class="text-muted">Présentez vos projets, trouvez des investisseurs et développez votre réseau professionnel à l'échelle mondiale.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Pour les Investisseurs</h3>
+                        <p class="text-muted">Découvrez des opportunités d'investissement vérifiées et connectez-vous avec des porteurs de projets prometteurs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Pour les Entreprises</h3>
+                        <p class="text-muted">Trouvez des talents, des partenaires stratégiques et accélérez votre croissance internationale.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-light py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Prêt à rejoindre la communauté mondiale MIDDO ?</h2>
+            <p class="lead text-muted mb-4">Créez votre compte gratuitement en moins de 2 minutes</p>
+            <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg px-5 py-3 shadow">
+                <i class="fas fa-rocket me-2"></i>Commencer maintenant
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
