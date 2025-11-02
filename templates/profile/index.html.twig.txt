@@ -1,0 +1,110 @@
+ {% extends 'base.html.twig' %}
+
+{% block title %}Profil - {{ app.user.firstName }} {{ app.user.lastName }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="alert alert-success text-center mb-4">
+        <h2>✅ NOUVEAU TEMPLATE CHARGÉ AVEC SUCCÈS !</h2>
+    </div>
+
+    <div class="card shadow-lg">
+        <div class="card-header text-white py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2 class="mb-0">{{ app.user.firstName }} {{ app.user.lastName }}</h2>
+                    <span class="badge bg-light text-primary fs-5">{{ app.user.userType }}</span>
+                </div>
+                <div class="col-auto">
+                    <a href="{{ path('app_logout') }}" class="btn btn-light btn-lg">Déconnexion</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <h4 class="text-primary mb-3"><i class="fas fa-envelope"></i> Contact</h4>
+            <p class="fs-5">{{ app.user.email }}</p>
+
+            {% if app.user.bio %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-info-circle"></i> Bio</h4>
+            <p class="fs-5">{{ app.user.bio }}</p>
+            {% endif %}
+
+            {% if app.user.villeActuelle or app.user.paysResidence %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-map-marker-alt"></i> Localisation</h4>
+            <p class="fs-5">
+                {% if app.user.villeActuelle %}{{ app.user.villeActuelle }}{% endif %}
+                {% if app.user.villeActuelle and app.user.paysResidence %}, {% endif %}
+                {% if app.user.paysResidence %}{{ app.user.paysResidence }}{% endif %}
+            </p>
+            {% endif %}
+
+            {% if app.user.genre or app.user.situationFamiliale or app.user.nationalite %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-user"></i> Informations personnelles</h4>
+            <ul class="list-unstyled fs-5">
+                {% if app.user.genre %}<li><strong>Genre :</strong> {{ app.user.genre }}</li>{% endif %}
+                {% if app.user.situationFamiliale %}<li><strong>Situation familiale :</strong> {{ app.user.situationFamiliale }}</li>{% endif %}
+                {% if app.user.nationalite %}<li><strong>Nationalité :</strong> {{ app.user.nationalite }}</li>{% endif %}
+            </ul>
+            {% endif %}
+
+            {% if app.user.rechercheEmploi or app.user.disponiblePourMissions or app.user.pretASeFormer %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-bullseye"></i> Statut</h4>
+            <div class="mb-3">
+                {% if app.user.rechercheEmploi %}
+                    <span class="badge bg-warning text-dark fs-6 me-2">⚠️ En recherche d'emploi</span>
+                {% endif %}
+                {% if app.user.disponiblePourMissions %}
+                    <span class="badge bg-success fs-6 me-2">✅ Disponible pour missions</span>
+                {% endif %}
+                {% if app.user.pretASeFormer %}
+                    <span class="badge bg-secondary fs-6 me-2">🎓 Prêt à se former</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if app.user.talentCache %}
+            <hr>
+            <div class="alert alert-info">
+                <h5><i class="fas fa-star"></i> Talent caché</h5>
+                <p class="mb-0 fs-5">{{ app.user.talentCache }}</p>
+            </div>
+            {% endif %}
+
+            {% if app.user.ceQueVousAimezFaire %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-heart"></i> Ce que j'aime faire</h4>
+            <p class="fs-5">{{ app.user.ceQueVousAimezFaire }}</p>
+            {% endif %}
+
+            {% if app.user.objectifsProfessionnels %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-compass"></i> Objectifs professionnels</h4>
+            <p class="fs-5">{{ app.user.objectifsProfessionnels }}</p>
+            {% endif %}
+
+            {% if app.user.linkedinUrl %}
+            <hr>
+            <h4 class="text-primary mb-3"><i class="fas fa-link"></i> Liens</h4>
+            <a href="{{ app.user.linkedinUrl }}" target="_blank" class="btn btn-primary btn-lg">
+                <i class="fab fa-linkedin"></i> Voir mon profil LinkedIn
+            </a>
+            {% endif %}
+
+            <hr class="my-4">
+            
+            <div class="d-grid gap-3">
+                <a href="{{ path('app_projects') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search"></i> Explorer les projets
+                </a>
+                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-home"></i> Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

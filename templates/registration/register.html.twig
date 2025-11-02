@@ -3,94 +3,278 @@
 {% block title %}Inscription - MIDDO{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8">
             <div class="card shadow">
-                <div class="card-header bg-success text-white text-center">
-                    <h3><i class="fas fa-user-plus"></i> Créer un compte</h3>
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-user-plus me-2"></i>Créer votre compte MIDDO</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {{ form_start(registrationForm) }}
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-user"></i> Prénom
-                            </label>
-                            {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control', 'placeholder': 'Votre prénom'}}) }}
-                            {{ form_errors(registrationForm.firstName) }}
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-user"></i> Nom
-                            </label>
-                            {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control', 'placeholder': 'Votre nom'}}) }}
-                            {{ form_errors(registrationForm.lastName) }}
-                        </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-envelope"></i> Email
-                        </label>
-                        {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'votreemail@exemple.com'}}) }}
-                        {{ form_errors(registrationForm.email) }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-id-badge"></i> Type de compte
-                        </label>
-                        {{ form_widget(registrationForm.userType, {'attr': {'class': 'form-select'}}) }}
-                        {{ form_errors(registrationForm.userType) }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-lock"></i> Mot de passe
-                        </label>
-                        <div class="input-group">
-                            <div style="position: relative; flex: 1;">
-                                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control', 'placeholder': 'Minimum 6 caractères', 'id': 'passwordInput'}}) }}
+                    {# SECTION 1 : INFORMATIONS OBLIGATOIRES #}
+                    <div class="mb-4 pb-4 border-bottom">
+                        <h5 class="text-primary mb-3"><i class="fas fa-user-circle me-2"></i>Informations de base</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.firstName) }}
                             </div>
-                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                <i class="fas fa-eye" id="toggleIcon"></i>
-                            </button>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.lastName) }}
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(registrationForm.email) }}
+                            </div>
+                            <div class="col-12">
+                                <div class="position-relative">
+                                    {{ form_row(registrationForm.plainPassword) }}
+                                    <button type="button" class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-3" 
+                                            id="togglePassword" style="z-index: 10; margin-top: 12px;">
+                                        <i class="fas fa-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(registrationForm.userType) }}
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {{ form_widget(registrationForm.agreeTerms) }}
+                                    {{ form_label(registrationForm.agreeTerms) }}
+                                </div>
+                            </div>
                         </div>
-                        {{ form_errors(registrationForm.plainPassword) }}
                     </div>
 
-                    <div class="mb-3 form-check">
-                        {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                        <label class="form-check-label">
-                            J'accepte les <a href="#" class="text-primary">conditions d'utilisation</a>
-                        </label>
-                        {{ form_errors(registrationForm.agreeTerms) }}
+                    {# ACCORDÉONS POUR SECTIONS OPTIONNELLES #}
+                    <div class="accordion" id="profileAccordion">
+                        
+                        {# SECTION 2 : INFORMATIONS PERSONNELLES #}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#personalInfo">
+                                    <i class="fas fa-id-card me-2"></i>Informations personnelles (optionnel)
+                                </button>
+                            </h2>
+                            <div id="personalInfo" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.genre) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.situationFamiliale) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.dateNaissance) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.telephone) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.paysResidence) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.nationalite) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.villeActuelle) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# SECTION 3 : FORMATION & COMPÉTENCES #}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#education">
+                                    <i class="fas fa-graduation-cap me-2"></i>Formation & Compétences (optionnel)
+                                </button>
+                            </h2>
+                            <div id="education" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.niveauEtudes) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.domaineExpertise) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.ceQueVousSavezFaire) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.languesParlees) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.certifications) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# SECTION 4 : SITUATION PROFESSIONNELLE #}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#professional">
+                                    <i class="fas fa-briefcase me-2"></i>Situation professionnelle (optionnel)
+                                </button>
+                            </h2>
+                            <div id="professional" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.statutEmploi) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.posteActuel) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.anneesExperience) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.secteurActivite) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# SECTION 5 : ASPIRATIONS & RECHERCHES #}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#aspirations">
+                                    <i class="fas fa-bullseye me-2"></i>Aspirations & Recherches (optionnel)
+                                </button>
+                            </h2>
+                            <div id="aspirations" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.objectifsProfessionnels) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.ceQueVousAimezFaire) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.talentCache) }}
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title mb-3">Vos recherches et disponibilités</h6>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.pretASeFormer) }}
+                                                                {{ form_label(registrationForm.pretASeFormer) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.pretAVousExporter) }}
+                                                                {{ form_label(registrationForm.pretAVousExporter) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.disponiblePourMissions) }}
+                                                                {{ form_label(registrationForm.disponiblePourMissions) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.rechercheEmploi) }}
+                                                                {{ form_label(registrationForm.rechercheEmploi) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.sansEmploi) }}
+                                                                {{ form_label(registrationForm.sansEmploi) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.rechercheInvestisseurs) }}
+                                                                {{ form_label(registrationForm.rechercheInvestisseurs) }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check">
+                                                                {{ form_widget(registrationForm.recherchePartenaires) }}
+                                                                {{ form_label(registrationForm.recherchePartenaires) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.domainesFormationSouhaites) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.paysExportationPreference) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# SECTION 6 : RÉSEAU & LIENS #}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#network">
+                                    <i class="fas fa-link me-2"></i>Réseau & Liens (optionnel)
+                                </button>
+                            </h2>
+                            <div id="network" class="accordion-collapse collapse" data-bs-parent="#profileAccordion">
+                                <div class="accordion-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.linkedinUrl) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.siteWebUrl) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.portfolioUrl) }}
+                                        </div>
+                                        <div class="col-12">
+                                            {{ form_row(registrationForm.bio) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.disponibilite) }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ form_row(registrationForm.mobiliteGeographique) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">
-                            <i class="fas fa-user-plus"></i> Créer mon compte
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check-circle me-2"></i>Créer mon compte
                         </button>
                     </div>
 
                     {{ form_end(registrationForm) }}
 
-                    <hr class="my-4">
-
-                    <div class="text-center">
-                        <p class="mb-0">Vous avez déjà un compte ?</p>
-                        <a href="{{ path('app_login') }}" class="btn btn-outline-primary mt-2">
-                            <i class="fas fa-sign-in-alt"></i> Se connecter
-                        </a>
-                    </div>
-
                     <div class="text-center mt-3">
-                        <a href="{{ path('app_home') }}" class="text-muted">
-                            <i class="fas fa-arrow-left"></i> Retour à l'accueil
-                        </a>
+                        <p class="text-muted">Vous avez déjà un compte ? 
+                            <a href="{{ path('app_login') }}" class="text-decoration-none">Connectez-vous</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -99,23 +283,19 @@
 </div>
 
 <script>
+    // Bouton voir/masquer mot de passe
     document.addEventListener('DOMContentLoaded', function() {
         const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('passwordInput');
-        const toggleIcon = document.getElementById('toggleIcon');
+        const passwordInput = document.querySelector('input[name="registration_form[plainPassword]"]');
+        const eyeIcon = document.getElementById('eyeIcon');
 
-        if (togglePassword && passwordInput && toggleIcon) {
+        if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
                 
-                if (type === 'text') {
-                    toggleIcon.classList.remove('fa-eye');
-                    toggleIcon.classList.add('fa-eye-slash');
-                } else {
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
+                eyeIcon.classList.toggle('fa-eye');
+                eyeIcon.classList.toggle('fa-eye-slash');
             });
         }
     });
