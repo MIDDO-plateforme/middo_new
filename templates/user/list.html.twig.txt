@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Explorer les profils - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4"><i class="fas fa-users me-3"></i>Explorer les profils</h1>
+            <p class="lead text-muted">Découvrez les professionnels de la communauté MIDDO mondiale</p>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Filtrer par type</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ path('app_users') }}" class="btn {% if not currentFilter %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    Tous
+                </a>
+                <a href="{{ path('app_users', {type: 'Entrepreneur'}) }}" class="btn {% if currentFilter == 'Entrepreneur' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    <i class="fas fa-rocket me-1"></i>Entrepreneurs
+                </a>
+                <a href="{{ path('app_users', {type: 'Investisseur'}) }}" class="btn {% if currentFilter == 'Investisseur' %}btn-success{% else %}btn-outline-success{% endif %}">
+                    <i class="fas fa-chart-line me-1"></i>Investisseurs
+                </a>
+                <a href="{{ path('app_users', {type: 'Entreprise'}) }}" class="btn {% if currentFilter == 'Entreprise' %}btn-info{% else %}btn-outline-info{% endif %}">
+                    <i class="fas fa-building me-1"></i>Entreprises
+                </a>
+                <a href="{{ path('app_users', {type: 'Particulier'}) }}" class="btn {% if currentFilter == 'Particulier' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="fas fa-user me-1"></i>Particuliers
+                </a>
+                <a href="{{ path('app_users', {type: 'Association'}) }}" class="btn {% if currentFilter == 'Association' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                    <i class="fas fa-users me-1"></i>Associations
+                </a>
+                <a href="{{ path('app_users', {type: 'Institution'}) }}" class="btn {% if currentFilter == 'Institution' %}btn-dark{% else %}btn-outline-dark{% endif %}">
+                    <i class="fas fa-landmark me-1"></i>Institutions
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des utilisateurs -->
+    <div class="row g-4">
+        {% for user in users %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" 
+                             style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                            {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ user.firstName }} {{ user.lastName }}</h5>
+                            <span class="badge bg-secondary">{{ user.userType }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if user.bio %}
+                    <p class="card-text text-muted small">{{ user.bio|length > 80 ? user.bio|slice(0, 80) ~ '...' : user.bio }}</p>
+                    {% endif %}
+                    
+                    <div class="mb-2">
+                        {% if user.villeActuelle or user.paysResidence %}
+                        <p class="small text-muted mb-1">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            {% if user.villeActuelle %}{{ user.villeActuelle }}{% endif %}
+                            {% if user.villeActuelle and user.paysResidence %}, {% endif %}
+                            {% if user.paysResidence %}{{ user.paysResidence }}{% endif %}
+                        </p>
+                        {% endif %}
+                        
+                        {% if user.domaineExpertise %}
+                        <p class="small text-muted mb-1">
+                            <i class="fas fa-briefcase me-1"></i>{{ user.domaineExpertise }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {% if user.rechercheEmploi %}<span class="badge bg-warning text-dark me-1 mb-1">Recherche emploi</span>{% endif %}
+                        {% if user.disponiblePourMissions %}<span class="badge bg-success me-1 mb-1">Disponible</span>{% endif %}
+                        {% if user.rechercheInvestisseurs %}<span class="badge bg-info me-1 mb-1">Cherche investisseurs</span>{% endif %}
+                    </div>
+                    
+                    <a href="{{ path('app_user_show', {id: user.id}) }}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="fas fa-eye me-1"></i>Voir le profil
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>Aucun utilisateur trouvé avec ce filtre.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

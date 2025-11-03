@@ -28,13 +28,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(name: 'first_name', length: 100)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(name: 'last_name', length: 100)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(name: 'user_type', length: 50)]
     private ?string $userType = null;
 
     // ========== INFORMATIONS PERSONNELLES ==========
@@ -42,19 +42,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $genre = null;
 
-    #[ORM\Column(length: 30, nullable: true)]
+    #[ORM\Column(name: 'situation_familiale', length: 30, nullable: true)]
     private ?string $situationFamiliale = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'date_naissance', type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateNaissance = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'pays_residence', length: 100, nullable: true)]
     private ?string $paysResidence = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $nationalite = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'ville_actuelle', length: 100, nullable: true)]
     private ?string $villeActuelle = null;
 
     #[ORM\Column(length: 20, nullable: true)]
@@ -62,112 +62,112 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     // ========== FORMATION & COMPÉTENCES ==========
     
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'niveau_etudes', length: 50, nullable: true)]
     private ?string $niveauEtudes = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'diplomes_obtenus', type: Types::TEXT, nullable: true)]
     private ?string $diplomesObtenus = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'domaine_expertise', length: 100, nullable: true)]
     private ?string $domaineExpertise = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'competences_techniques', type: Types::TEXT, nullable: true)]
     private ?string $competencesTechniques = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $certifications = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'langues_parlees', type: Types::TEXT, nullable: true)]
     private ?string $languesParlees = null;
 
     // ========== SITUATION PROFESSIONNELLE ==========
     
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'statut_emploi', length: 50, nullable: true)]
     private ?string $statutEmploi = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'poste_actuel', length: 100, nullable: true)]
     private ?string $posteActuel = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(name: 'annees_experience', nullable: true)]
     private ?int $anneesExperience = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'secteur_activite', length: 100, nullable: true)]
     private ?string $secteurActivite = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(name: 'revenu_mensuel_souhaite', nullable: true)]
     private ?int $revenuMensuelSouhaite = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(name: 'entreprise_actuelle', length: 100, nullable: true)]
     private ?string $entrepriseActuelle = null;
 
     // ========== ASPIRATIONS & TALENTS ==========
     
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'objectifs_professionnels', type: Types::TEXT, nullable: true)]
     private ?string $objectifsProfessionnels = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'ce_que_vous_savez_faire', type: Types::TEXT, nullable: true)]
     private ?string $ceQueVousSavezFaire = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'ce_que_vous_aimez_faire', type: Types::TEXT, nullable: true)]
     private ?string $ceQueVousAimezFaire = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(name: 'talent_cache', length: 255, nullable: true)]
     private ?string $talentCache = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'pret_ase_former', type: Types::BOOLEAN, nullable: true)]
     private ?bool $pretASeFormer = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'domaines_formation_souhaites', type: Types::TEXT, nullable: true)]
     private ?string $domainesFormationSouhaites = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'pret_avous_exporter', type: Types::BOOLEAN, nullable: true)]
     private ?bool $pretAVousExporter = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'pays_exportation_preference', type: Types::TEXT, nullable: true)]
     private ?string $paysExportationPreference = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'disponible_pour_missions', type: Types::BOOLEAN, nullable: true)]
     private ?bool $disponiblePourMissions = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'recherche_emploi', type: Types::BOOLEAN, nullable: true)]
     private ?bool $rechercheEmploi = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'recherche_investisseurs', type: Types::BOOLEAN, nullable: true)]
     private ?bool $rechercheInvestisseurs = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'recherche_partenaires', type: Types::BOOLEAN, nullable: true)]
     private ?bool $recherchePartenaires = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[ORM\Column(name: 'sans_emploi', type: Types::BOOLEAN, nullable: true)]
     private ?bool $sansEmploi = null;
 
     // ========== RÉSEAU & PRÉFÉRENCES ==========
     
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(name: 'linkedin_url', length: 255, nullable: true)]
     private ?string $linkedinUrl = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(name: 'site_web_url', length: 255, nullable: true)]
     private ?string $siteWebUrl = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(name: 'portfolio_url', length: 255, nullable: true)]
     private ?string $portfolioUrl = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(name: 'centres_interet', type: Types::TEXT, nullable: true)]
     private ?string $centresInteret = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $disponibilite = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(name: 'mobilite_geographique', length: 50, nullable: true)]
     private ?string $mobiliteGeographique = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
+    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
     public function __construct()
@@ -721,3 +721,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
+

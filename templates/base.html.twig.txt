@@ -79,7 +79,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-5">
         <div class="container text-center">
-            <p class="mb-0">&copy; {{ 'now'|date('Y') }} MIDDO - Plateforme universelle - Developpe avec passion pour le monde entier</p>
+            <p class="mb-0">&copy; {{ 'now'|date('Y') }} MIDDO - Plateforme universelle</p>
         </div>
     </footer>
 

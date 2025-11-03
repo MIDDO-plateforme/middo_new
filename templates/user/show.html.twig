@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.firstName }} {{ user.lastName }} - Profil MIDDO{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+            <div class="mb-3">
+                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 48px; font-weight: bold;">
+                    {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                </div>
+            </div>
+            <h1 class="mb-2">{{ user.firstName }} {{ user.lastName }}</h1>
+            <p class="text-muted mb-3">
+                <span class="badge bg-primary fs-6">{{ user.userType|capitalize }}</span>
+            </p>
+            {% if user.bio %}
+                <p class="lead text-muted fst-italic">{{ user.bio }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informations personnelles</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><strong>Email :</strong> {{ user.email }}</li>
+                        {% if user.genre %}
+                            <li class="mb-2"><strong>Genre :</strong> {{ user.genre|capitalize }}</li>
+                        {% endif %}
+                        {% if user.villeActuelle %}
+                            <li class="mb-2"><strong>Ville :</strong> {{ user.villeActuelle }}</li>
+                        {% endif %}
+                        {% if user.paysResidence %}
+                            <li class="mb-2"><strong>Pays :</strong> {{ user.paysResidence }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Compétences</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% if user.domaineExpertise %}
+                            <li class="mb-2"><strong>Expertise :</strong> {{ user.domaineExpertise }}</li>
+                        {% endif %}
+                        {% if user.languesParlees %}
+                            <li class="mb-2"><strong>Langues :</strong> {{ user.languesParlees }}</li>
+                        {% endif %}
+                        {% if user.talentCache %}
+                            <li class="mb-2"><strong>Talent caché :</strong> {{ user.talentCache }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Ce que je recherche</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if user.rechercheEmploi %}
+                            <span class="badge bg-warning text-dark fs-6">Recherche emploi</span>
+                        {% endif %}
+                        {% if user.disponiblePourMissions %}
+                            <span class="badge bg-success fs-6">Disponible</span>
+                        {% endif %}
+                        {% if user.pretASeFormer %}
+                            <span class="badge bg-secondary fs-6">Prêt à se former</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_users') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
+    </div>
+</div>
+{% endblock %}
