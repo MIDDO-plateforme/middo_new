@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -10,173 +12,137 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-#[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cet email')]
+#[ORM\Table(name: 'user')]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $password = null;
 
-    #[ORM\Column(name: 'first_name', length: 100)]
+    #[ORM\Column(type: Types::STRING, length: 100, name: 'first_name')]
     private ?string $firstName = null;
 
-    #[ORM\Column(name: 'last_name', length: 100)]
+    #[ORM\Column(type: Types::STRING, length: 100, name: 'last_name')]
     private ?string $lastName = null;
 
-    #[ORM\Column(name: 'user_type', length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50, name: 'user_type')]
     private ?string $userType = null;
 
-    // ========== INFORMATIONS PERSONNELLES ==========
-    
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 20, nullable: true)]
     private ?string $genre = null;
 
-    #[ORM\Column(name: 'situation_familiale', length: 30, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 50, nullable: true, name: 'situation_familiale')]
     private ?string $situationFamiliale = null;
 
-    #[ORM\Column(name: 'date_naissance', type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true, name: 'date_naissance')]
     private ?\DateTimeInterface $dateNaissance = null;
 
-    #[ORM\Column(name: 'pays_residence', length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true, name: 'pays_residence')]
     private ?string $paysResidence = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     private ?string $nationalite = null;
 
-    #[ORM\Column(name: 'ville_actuelle', length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true, name: 'ville_actuelle')]
     private ?string $villeActuelle = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 20, nullable: true)]
     private ?string $telephone = null;
 
-    // ========== FORMATION & COMPÉTENCES ==========
-    
-    #[ORM\Column(name: 'niveau_etudes', length: 50, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true, name: 'niveau_etudes')]
     private ?string $niveauEtudes = null;
 
-    #[ORM\Column(name: 'diplomes_obtenus', type: Types::TEXT, nullable: true)]
-    private ?string $diplomesObtenus = null;
-
-    #[ORM\Column(name: 'domaine_expertise', length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'domaine_expertise')]
     private ?string $domaineExpertise = null;
 
-    #[ORM\Column(name: 'competences_techniques', type: Types::TEXT, nullable: true)]
-    private ?string $competencesTechniques = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'langues_parlees')]
+    private ?string $languesParlees = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $certifications = null;
 
-    #[ORM\Column(name: 'langues_parlees', type: Types::TEXT, nullable: true)]
-    private ?string $languesParlees = null;
-
-    // ========== SITUATION PROFESSIONNELLE ==========
-    
-    #[ORM\Column(name: 'statut_emploi', length: 50, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 100, nullable: true, name: 'statut_emploi')]
     private ?string $statutEmploi = null;
 
-    #[ORM\Column(name: 'poste_actuel', length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'poste_actuel')]
     private ?string $posteActuel = null;
 
-    #[ORM\Column(name: 'annees_experience', nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true, name: 'annees_experience')]
     private ?int $anneesExperience = null;
 
-    #[ORM\Column(name: 'secteur_activite', length: 100, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'secteur_activite')]
     private ?string $secteurActivite = null;
 
-    #[ORM\Column(name: 'revenu_mensuel_souhaite', nullable: true)]
-    private ?int $revenuMensuelSouhaite = null;
-
-    #[ORM\Column(name: 'entreprise_actuelle', length: 100, nullable: true)]
-    private ?string $entrepriseActuelle = null;
-
-    // ========== ASPIRATIONS & TALENTS ==========
-    
-    #[ORM\Column(name: 'objectifs_professionnels', type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true, name: 'objectifs_professionnels')]
     private ?string $objectifsProfessionnels = null;
 
-    #[ORM\Column(name: 'ce_que_vous_savez_faire', type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true, name: 'ce_que_vous_savez_faire')]
     private ?string $ceQueVousSavezFaire = null;
 
-    #[ORM\Column(name: 'ce_que_vous_aimez_faire', type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true, name: 'ce_que_vous_aimez_faire')]
     private ?string $ceQueVousAimezFaire = null;
 
-    #[ORM\Column(name: 'talent_cache', length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'talent_cache')]
     private ?string $talentCache = null;
 
-    #[ORM\Column(name: 'pret_ase_former', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $pretASeFormer = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'pret_a_se_former')]
+    private ?bool $pretASeFormer = false;
 
-    #[ORM\Column(name: 'domaines_formation_souhaites', type: Types::TEXT, nullable: true)]
-    private ?string $domainesFormationSouhaites = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'disponible_pour_missions')]
+    private ?bool $disponiblePourMissions = false;
 
-    #[ORM\Column(name: 'pret_avous_exporter', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $pretAVousExporter = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'recherche_emploi')]
+    private ?bool $rechercheEmploi = false;
 
-    #[ORM\Column(name: 'pays_exportation_preference', type: Types::TEXT, nullable: true)]
-    private ?string $paysExportationPreference = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'recherche_investisseurs')]
+    private ?bool $rechercheInvestisseurs = false;
 
-    #[ORM\Column(name: 'disponible_pour_missions', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $disponiblePourMissions = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'recherche_partenaires')]
+    private ?bool $recherchePartenaires = false;
 
-    #[ORM\Column(name: 'recherche_emploi', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $rechercheEmploi = null;
+    #[ORM\Column(type: Types::BOOLEAN, name: 'sans_emploi')]
+    private ?bool $sansEmploi = false;
 
-    #[ORM\Column(name: 'recherche_investisseurs', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $rechercheInvestisseurs = null;
-
-    #[ORM\Column(name: 'recherche_partenaires', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $recherchePartenaires = null;
-
-    #[ORM\Column(name: 'sans_emploi', type: Types::BOOLEAN, nullable: true)]
-    private ?bool $sansEmploi = null;
-
-    // ========== RÉSEAU & PRÉFÉRENCES ==========
-    
-    #[ORM\Column(name: 'linkedin_url', length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'linkedin_url')]
     private ?string $linkedinUrl = null;
 
-    #[ORM\Column(name: 'site_web_url', length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'site_web_url')]
     private ?string $siteWebUrl = null;
 
-    #[ORM\Column(name: 'portfolio_url', length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, name: 'portfolio_url')]
     private ?string $portfolioUrl = null;
-
-    #[ORM\Column(name: 'centres_interet', type: Types::TEXT, nullable: true)]
-    private ?string $centresInteret = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $disponibilite = null;
-
-    #[ORM\Column(name: 'mobilite_geographique', length: 50, nullable: true)]
-    private ?string $mobiliteGeographique = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
-    #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $sentMessages;
 
-    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[ORM\OneToMany(mappedBy: 'recipient', targetEntity: Message::class)]
+    private Collection $receivedMessages;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
-        $this->roles = ['ROLE_USER'];
+        $this->pretASeFormer = false;
+        $this->disponiblePourMissions = false;
+        $this->rechercheEmploi = false;
+        $this->rechercheInvestisseurs = false;
+        $this->recherchePartenaires = false;
+        $this->sansEmploi = false;
+        $this->sentMessages = new ArrayCollection();
+        $this->receivedMessages = new ArrayCollection();
     }
-
-    // ========== GETTERS & SETTERS ==========
 
     public function getId(): ?int
     {
@@ -188,7 +154,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
@@ -206,7 +172,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
         return $this;
@@ -217,7 +183,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
         return $this;
@@ -232,7 +198,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): static
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
         return $this;
@@ -243,7 +209,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
         return $this;
@@ -254,20 +220,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userType;
     }
 
-    public function setUserType(string $userType): static
+    public function setUserType(string $userType): self
     {
         $this->userType = $userType;
         return $this;
     }
 
-    // Informations personnelles
-    
     public function getGenre(): ?string
     {
         return $this->genre;
     }
 
-    public function setGenre(?string $genre): static
+    public function setGenre(?string $genre): self
     {
         $this->genre = $genre;
         return $this;
@@ -278,7 +242,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->situationFamiliale;
     }
 
-    public function setSituationFamiliale(?string $situationFamiliale): static
+    public function setSituationFamiliale(?string $situationFamiliale): self
     {
         $this->situationFamiliale = $situationFamiliale;
         return $this;
@@ -289,7 +253,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->dateNaissance;
     }
 
-    public function setDateNaissance(?\DateTimeInterface $dateNaissance): static
+    public function setDateNaissance(?\DateTimeInterface $dateNaissance): self
     {
         $this->dateNaissance = $dateNaissance;
         return $this;
@@ -300,7 +264,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->paysResidence;
     }
 
-    public function setPaysResidence(?string $paysResidence): static
+    public function setPaysResidence(?string $paysResidence): self
     {
         $this->paysResidence = $paysResidence;
         return $this;
@@ -311,7 +275,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->nationalite;
     }
 
-    public function setNationalite(?string $nationalite): static
+    public function setNationalite(?string $nationalite): self
     {
         $this->nationalite = $nationalite;
         return $this;
@@ -322,7 +286,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->villeActuelle;
     }
 
-    public function setVilleActuelle(?string $villeActuelle): static
+    public function setVilleActuelle(?string $villeActuelle): self
     {
         $this->villeActuelle = $villeActuelle;
         return $this;
@@ -333,33 +297,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->telephone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephone(?string $telephone): self
     {
         $this->telephone = $telephone;
         return $this;
     }
-
-    // Formation & Compétences
 
     public function getNiveauEtudes(): ?string
     {
         return $this->niveauEtudes;
     }
 
-    public function setNiveauEtudes(?string $niveauEtudes): static
+    public function setNiveauEtudes(?string $niveauEtudes): self
     {
         $this->niveauEtudes = $niveauEtudes;
-        return $this;
-    }
-
-    public function getDiplomesObtenus(): ?string
-    {
-        return $this->diplomesObtenus;
-    }
-
-    public function setDiplomesObtenus(?string $diplomesObtenus): static
-    {
-        $this->diplomesObtenus = $diplomesObtenus;
         return $this;
     }
 
@@ -368,31 +319,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->domaineExpertise;
     }
 
-    public function setDomaineExpertise(?string $domaineExpertise): static
+    public function setDomaineExpertise(?string $domaineExpertise): self
     {
         $this->domaineExpertise = $domaineExpertise;
-        return $this;
-    }
-
-    public function getCompetencesTechniques(): ?string
-    {
-        return $this->competencesTechniques;
-    }
-
-    public function setCompetencesTechniques(?string $competencesTechniques): static
-    {
-        $this->competencesTechniques = $competencesTechniques;
-        return $this;
-    }
-
-    public function getCertifications(): ?string
-    {
-        return $this->certifications;
-    }
-
-    public function setCertifications(?string $certifications): static
-    {
-        $this->certifications = $certifications;
         return $this;
     }
 
@@ -401,20 +330,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->languesParlees;
     }
 
-    public function setLanguesParlees(?string $languesParlees): static
+    public function setLanguesParlees(?string $languesParlees): self
     {
         $this->languesParlees = $languesParlees;
         return $this;
     }
 
-    // Situation professionnelle
+    public function getCertifications(): ?string
+    {
+        return $this->certifications;
+    }
+
+    public function setCertifications(?string $certifications): self
+    {
+        $this->certifications = $certifications;
+        return $this;
+    }
 
     public function getStatutEmploi(): ?string
     {
         return $this->statutEmploi;
     }
 
-    public function setStatutEmploi(?string $statutEmploi): static
+    public function setStatutEmploi(?string $statutEmploi): self
     {
         $this->statutEmploi = $statutEmploi;
         return $this;
@@ -425,7 +363,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->posteActuel;
     }
 
-    public function setPosteActuel(?string $posteActuel): static
+    public function setPosteActuel(?string $posteActuel): self
     {
         $this->posteActuel = $posteActuel;
         return $this;
@@ -436,7 +374,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->anneesExperience;
     }
 
-    public function setAnneesExperience(?int $anneesExperience): static
+    public function setAnneesExperience(?int $anneesExperience): self
     {
         $this->anneesExperience = $anneesExperience;
         return $this;
@@ -447,42 +385,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->secteurActivite;
     }
 
-    public function setSecteurActivite(?string $secteurActivite): static
+    public function setSecteurActivite(?string $secteurActivite): self
     {
         $this->secteurActivite = $secteurActivite;
         return $this;
     }
-
-    public function getRevenuMensuelSouhaite(): ?int
-    {
-        return $this->revenuMensuelSouhaite;
-    }
-
-    public function setRevenuMensuelSouhaite(?int $revenuMensuelSouhaite): static
-    {
-        $this->revenuMensuelSouhaite = $revenuMensuelSouhaite;
-        return $this;
-    }
-
-    public function getEntrepriseActuelle(): ?string
-    {
-        return $this->entrepriseActuelle;
-    }
-
-    public function setEntrepriseActuelle(?string $entrepriseActuelle): static
-    {
-        $this->entrepriseActuelle = $entrepriseActuelle;
-        return $this;
-    }
-
-    // Aspirations & Talents
 
     public function getObjectifsProfessionnels(): ?string
     {
         return $this->objectifsProfessionnels;
     }
 
-    public function setObjectifsProfessionnels(?string $objectifsProfessionnels): static
+    public function setObjectifsProfessionnels(?string $objectifsProfessionnels): self
     {
         $this->objectifsProfessionnels = $objectifsProfessionnels;
         return $this;
@@ -493,7 +407,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->ceQueVousSavezFaire;
     }
 
-    public function setCeQueVousSavezFaire(?string $ceQueVousSavezFaire): static
+    public function setCeQueVousSavezFaire(?string $ceQueVousSavezFaire): self
     {
         $this->ceQueVousSavezFaire = $ceQueVousSavezFaire;
         return $this;
@@ -504,7 +418,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->ceQueVousAimezFaire;
     }
 
-    public function setCeQueVousAimezFaire(?string $ceQueVousAimezFaire): static
+    public function setCeQueVousAimezFaire(?string $ceQueVousAimezFaire): self
     {
         $this->ceQueVousAimezFaire = $ceQueVousAimezFaire;
         return $this;
@@ -515,7 +429,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->talentCache;
     }
 
-    public function setTalentCache(?string $talentCache): static
+    public function setTalentCache(?string $talentCache): self
     {
         $this->talentCache = $talentCache;
         return $this;
@@ -526,42 +440,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pretASeFormer;
     }
 
-    public function setPretASeFormer(?bool $pretASeFormer): static
+    public function setPretASeFormer(bool $pretASeFormer): self
     {
         $this->pretASeFormer = $pretASeFormer;
-        return $this;
-    }
-
-    public function getDomainesFormationSouhaites(): ?string
-    {
-        return $this->domainesFormationSouhaites;
-    }
-
-    public function setDomainesFormationSouhaites(?string $domainesFormationSouhaites): static
-    {
-        $this->domainesFormationSouhaites = $domainesFormationSouhaites;
-        return $this;
-    }
-
-    public function isPretAVousExporter(): ?bool
-    {
-        return $this->pretAVousExporter;
-    }
-
-    public function setPretAVousExporter(?bool $pretAVousExporter): static
-    {
-        $this->pretAVousExporter = $pretAVousExporter;
-        return $this;
-    }
-
-    public function getPaysExportationPreference(): ?string
-    {
-        return $this->paysExportationPreference;
-    }
-
-    public function setPaysExportationPreference(?string $paysExportationPreference): static
-    {
-        $this->paysExportationPreference = $paysExportationPreference;
         return $this;
     }
 
@@ -570,7 +451,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->disponiblePourMissions;
     }
 
-    public function setDisponiblePourMissions(?bool $disponiblePourMissions): static
+    public function setDisponiblePourMissions(bool $disponiblePourMissions): self
     {
         $this->disponiblePourMissions = $disponiblePourMissions;
         return $this;
@@ -581,7 +462,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->rechercheEmploi;
     }
 
-    public function setRechercheEmploi(?bool $rechercheEmploi): static
+    public function setRechercheEmploi(bool $rechercheEmploi): self
     {
         $this->rechercheEmploi = $rechercheEmploi;
         return $this;
@@ -592,7 +473,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->rechercheInvestisseurs;
     }
 
-    public function setRechercheInvestisseurs(?bool $rechercheInvestisseurs): static
+    public function setRechercheInvestisseurs(bool $rechercheInvestisseurs): self
     {
         $this->rechercheInvestisseurs = $rechercheInvestisseurs;
         return $this;
@@ -603,7 +484,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->recherchePartenaires;
     }
 
-    public function setRecherchePartenaires(?bool $recherchePartenaires): static
+    public function setRecherchePartenaires(bool $recherchePartenaires): self
     {
         $this->recherchePartenaires = $recherchePartenaires;
         return $this;
@@ -614,20 +495,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->sansEmploi;
     }
 
-    public function setSansEmploi(?bool $sansEmploi): static
+    public function setSansEmploi(bool $sansEmploi): self
     {
         $this->sansEmploi = $sansEmploi;
         return $this;
     }
-
-    // Réseau & Préférences
 
     public function getLinkedinUrl(): ?string
     {
         return $this->linkedinUrl;
     }
 
-    public function setLinkedinUrl(?string $linkedinUrl): static
+    public function setLinkedinUrl(?string $linkedinUrl): self
     {
         $this->linkedinUrl = $linkedinUrl;
         return $this;
@@ -638,7 +517,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->siteWebUrl;
     }
 
-    public function setSiteWebUrl(?string $siteWebUrl): static
+    public function setSiteWebUrl(?string $siteWebUrl): self
     {
         $this->siteWebUrl = $siteWebUrl;
         return $this;
@@ -649,42 +528,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->portfolioUrl;
     }
 
-    public function setPortfolioUrl(?string $portfolioUrl): static
+    public function setPortfolioUrl(?string $portfolioUrl): self
     {
         $this->portfolioUrl = $portfolioUrl;
-        return $this;
-    }
-
-    public function getCentresInteret(): ?string
-    {
-        return $this->centresInteret;
-    }
-
-    public function setCentresInteret(?string $centresInteret): static
-    {
-        $this->centresInteret = $centresInteret;
-        return $this;
-    }
-
-    public function getDisponibilite(): ?string
-    {
-        return $this->disponibilite;
-    }
-
-    public function setDisponibilite(?string $disponibilite): static
-    {
-        $this->disponibilite = $disponibilite;
-        return $this;
-    }
-
-    public function getMobiliteGeographique(): ?string
-    {
-        return $this->mobiliteGeographique;
-    }
-
-    public function setMobiliteGeographique(?string $mobiliteGeographique): static
-    {
-        $this->mobiliteGeographique = $mobiliteGeographique;
         return $this;
     }
 
@@ -693,32 +539,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->bio;
     }
 
-    public function setBio(?string $bio): static
+    public function setBio(?string $bio): self
     {
         $this->bio = $bio;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getSentMessages(): Collection
     {
-        return $this->createdAt;
+        return $this->sentMessages;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getReceivedMessages(): Collection
     {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
+        return $this->receivedMessages;
     }
 }
-

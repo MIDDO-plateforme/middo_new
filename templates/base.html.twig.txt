@@ -33,6 +33,11 @@
                     {% if app.user %}
                         <!-- Menu pour utilisateurs connectes -->
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_messages') }}">
+                                <i class="fas fa-envelope me-1"></i>Messages
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_projects') }}">Projets</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -79,7 +84,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-5">
         <div class="container text-center">
-            <p class="mb-0">&copy; {{ 'now'|date('Y') }} MIDDO - Plateforme universelle</p>
+            <p class="mb-0">&copy; {{ 'now'|date('Y') }} MIDDO - Plateforme universelle - Developpe avec passion pour le monde entier</p>
         </div>
     </footer>
 

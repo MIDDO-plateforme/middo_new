@@ -1,10 +1,9 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}{{ user.firstName }} {{ user.lastName }} - Profil MIDDO{% endblock %}
 
 {% block body %}
 <div class="container my-5">
-    {# En-tête du profil #}
     <div class="card shadow-sm mb-4">
         <div class="card-body text-center">
             <div class="mb-3">
@@ -19,15 +18,20 @@
             {% if user.bio %}
                 <p class="lead text-muted fst-italic">{{ user.bio }}</p>
             {% endif %}
+            
+            {% if app.user and app.user.id != user.id %}
+                <a href="{{ path('app_message_chat', {id: user.id}) }}" class="btn btn-primary btn-lg mt-3">
+                    <i class="fas fa-envelope me-2"></i>Envoyer un message
+                </a>
+            {% endif %}
         </div>
     </div>
 
     <div class="row">
-        {# Colonne gauche : Informations personnelles #}
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informations personnelles</h5>
+                    <h5 class="mb-0">Informations personnelles</h5>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
@@ -39,103 +43,38 @@
                             <li class="mb-2"><strong>Ville :</strong> {{ user.villeActuelle }}</li>
                         {% endif %}
                         {% if user.paysResidence %}
-                            <li class="mb-2"><strong>Pays de résidence :</strong> {{ user.paysResidence }}</li>
-                        {% endif %}
-                        {% if user.nationalite %}
-                            <li class="mb-2"><strong>Nationalité :</strong> {{ user.nationalite }}</li>
-                        {% endif %}
-                        {% if user.telephone %}
-                            <li class="mb-2"><strong>Téléphone :</strong> {{ user.telephone }}</li>
+                            <li class="mb-2"><strong>Pays :</strong> {{ user.paysResidence }}</li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
 
-        {# Colonne droite : Compétences et formation #}
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Compétences et formation</h5>
+                    <h5 class="mb-0">Compétences</h5>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
-                        {% if user.niveauEtudes %}
-                            <li class="mb-2"><strong>Niveau d'études :</strong> {{ user.niveauEtudes }}</li>
-                        {% endif %}
                         {% if user.domaineExpertise %}
-                            <li class="mb-2"><strong>Domaine d'expertise :</strong> {{ user.domaineExpertise }}</li>
-                        {% endif %}
-                        {% if user.ceQueVousSavezFaire %}
-                            <li class="mb-2"><strong>Compétences :</strong> {{ user.ceQueVousSavezFaire }}</li>
+                            <li class="mb-2"><strong>Expertise :</strong> {{ user.domaineExpertise }}</li>
                         {% endif %}
                         {% if user.languesParlees %}
-                            <li class="mb-2"><strong>Langues parlées :</strong> {{ user.languesParlees }}</li>
-                        {% endif %}
-                        {% if user.certifications %}
-                            <li class="mb-2"><strong>Certifications :</strong> {{ user.certifications }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        {# Expérience professionnelle #}
-        {% if user.statutEmploi or user.posteActuel or user.anneesExperience or user.secteurActivite %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Expérience professionnelle</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        {% if user.statutEmploi %}
-                            <li class="mb-2"><strong>Statut :</strong> {{ user.statutEmploi|capitalize }}</li>
-                        {% endif %}
-                        {% if user.posteActuel %}
-                            <li class="mb-2"><strong>Poste actuel :</strong> {{ user.posteActuel }}</li>
-                        {% endif %}
-                        {% if user.anneesExperience %}
-                            <li class="mb-2"><strong>Expérience :</strong> {{ user.anneesExperience }} ans</li>
-                        {% endif %}
-                        {% if user.secteurActivite %}
-                            <li class="mb-2"><strong>Secteur :</strong> {{ user.secteurActivite }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-        {# Aspirations et talents #}
-        {% if user.ceQueVousAimezFaire or user.talentCache or user.objectifsProfessionnels %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-star me-2"></i>Aspirations et talents</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        {% if user.ceQueVousAimezFaire %}
-                            <li class="mb-2"><strong>Ce que j'aime faire :</strong> {{ user.ceQueVousAimezFaire }}</li>
+                            <li class="mb-2"><strong>Langues :</strong> {{ user.languesParlees }}</li>
                         {% endif %}
                         {% if user.talentCache %}
                             <li class="mb-2"><strong>Talent caché :</strong> {{ user.talentCache }}</li>
                         {% endif %}
-                        {% if user.objectifsProfessionnels %}
-                            <li class="mb-2"><strong>Objectifs :</strong> {{ user.objectifsProfessionnels }}</li>
-                        {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
-        {% endif %}
 
-        {# Ce que je recherche #}
         <div class="col-12 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-search me-2"></i>Ce que je recherche</h5>
+                    <h5 class="mb-0">Ce que je recherche</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
@@ -143,68 +82,19 @@
                             <span class="badge bg-warning text-dark fs-6">Recherche emploi</span>
                         {% endif %}
                         {% if user.disponiblePourMissions %}
-                            <span class="badge bg-success fs-6">Disponible pour missions</span>
+                            <span class="badge bg-success fs-6">Disponible</span>
                         {% endif %}
                         {% if user.pretASeFormer %}
                             <span class="badge bg-secondary fs-6">Prêt à se former</span>
                         {% endif %}
-                        {% if user.rechercheInvestisseurs %}
-                            <span class="badge bg-primary fs-6">Cherche investisseurs</span>
-                        {% endif %}
-                        {% if user.recherchePartenaires %}
-                            <span class="badge bg-info fs-6">Cherche partenaires</span>
-                        {% endif %}
-                        {% if user.pretAVousExporter %}
-                            <span class="badge bg-danger fs-6">Prêt à s'exporter</span>
-                        {% endif %}
-                        {% if user.sansEmploi %}
-                            <span class="badge bg-dark fs-6">Sans emploi</span>
-                        {% endif %}
-                    </div>
-                    
-                    {% if not user.rechercheEmploi and not user.disponiblePourMissions and not user.pretASeFormer and not user.rechercheInvestisseurs and not user.recherchePartenaires and not user.pretAVousExporter and not user.sansEmploi %}
-                        <p class="text-muted mb-0">Aucune information renseignée</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        {# Liens et contact #}
-        {% if user.linkedinUrl or user.siteWebUrl or user.portfolioUrl %}
-        <div class="col-12 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="fas fa-link me-2"></i>Liens et contact</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex flex-wrap gap-3">
-                        {% if user.linkedinUrl %}
-                            <a href="{{ user.linkedinUrl }}" target="_blank" class="btn btn-outline-primary">
-                                <i class="fab fa-linkedin me-2"></i>LinkedIn
-                            </a>
-                        {% endif %}
-                        {% if user.siteWebUrl %}
-                            <a href="{{ user.siteWebUrl }}" target="_blank" class="btn btn-outline-info">
-                                <i class="fas fa-globe me-2"></i>Site web
-                            </a>
-                        {% endif %}
-                        {% if user.portfolioUrl %}
-                            <a href="{{ user.portfolioUrl }}" target="_blank" class="btn btn-outline-warning">
-                                <i class="fas fa-folder me-2"></i>Portfolio
-                            </a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-        {% endif %}
     </div>
 
-    {# Bouton retour #}
     <div class="text-center mt-4">
-        <a href="{{ path('app_users') }}" class="btn btn-secondary btn-lg">
-            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
-        </a>
+        <a href="{{ path('app_users') }}" class="btn btn-secondary btn-lg">Retour à la liste</a>
     </div>
 </div>
 {% endblock %}
