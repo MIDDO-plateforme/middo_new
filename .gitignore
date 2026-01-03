@@ -1,5 +1,4 @@
-﻿# Secrets
-.env
+# Secrets
 .env.*
 !.env.example
 test_new_key.php
