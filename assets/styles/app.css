@@ -1,0 +1,155 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Classes personnalisées MIDDO */
+@layer components {
+    .btn-middo {
+        @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 inline-flex items-center justify-center;
+        @apply text-gray-800 bg-white border border-gray-300;
+    }
+
+    .btn-middo:hover {
+        @apply bg-gray-50;
+    }
+
+    .card-middo {
+        @apply bg-white rounded-lg shadow-md p-6;
+    }
+}
+
+/* CORRECTION GLOBALE : Forcer la visibilité de tous les éléments */
+@layer base {
+    /* Reset de base pour éviter les textes blancs invisibles */
+    * {
+        color: inherit;
+    }
+
+    body {
+        @apply text-gray-900 bg-white;
+    }
+
+    /* Buttons, links, divs - Force dark text by default */
+    button,
+    a,
+    div,
+    span,
+    p {
+        color: inherit;
+    }
+
+    /* Inputs standards - AVEC FOND BLANC FORCÉ */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="date"],
+    input[type="number"],
+    textarea,
+    select {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-lg;
+        @apply focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+        @apply transition-all duration-200;
+        @apply text-gray-900 bg-white;
+        background-color: white !important;
+        color: #111827 !important;
+    }
+
+    /* Labels - FORCE DARK TEXT */
+    label {
+        @apply block text-sm font-medium mb-2;
+        color: #374151 !important;
+    }
+
+    /* Messages d'erreur */
+    .form-error,
+    .invalid-feedback {
+        @apply text-red-600 text-sm mt-1;
+    }
+
+    /* Checkboxes et radios */
+    input[type="checkbox"],
+    input[type="radio"] {
+        @apply w-4 h-4 text-purple-600 border-gray-300 rounded;
+        @apply focus:ring-purple-500 focus:ring-2;
+    }
+
+    /* Placeholders - VISIBLE GRAY */
+    ::placeholder {
+        color: #9ca3af !important;
+        opacity: 1 !important;
+    }
+
+    /* Select (dropdown) - FOND BLANC FORCÉ */
+    select {
+        @apply appearance-none;
+        background-color: white !important;
+        color: #111827 !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    /* Textarea */
+    textarea {
+        @apply resize-vertical min-h-[100px];
+        background-color: white !important;
+        color: #111827 !important;
+    }
+
+    /* États disabled */
+    input:disabled,
+    select:disabled,
+    textarea:disabled {
+        @apply bg-gray-100 cursor-not-allowed opacity-60;
+    }
+
+    /* États invalides */
+    input.is-invalid,
+    select.is-invalid,
+    textarea.is-invalid {
+        @apply border-red-500;
+    }
+
+    /* États valides */
+    input.is-valid,
+    select.is-valid,
+    textarea.is-valid {
+        @apply border-green-500;
+    }
+
+    /* FORCE TOUS LES BOUTONS À ÊTRE VISIBLES */
+    button {
+        background-color: transparent;
+        color: inherit;
+    }
+
+    button:not(.btn-middo):not([class*="bg-"]) {
+        @apply text-gray-700;
+    }
+
+    /* Links - FORCE VISIBLE */
+    a:not([class*="text-"]) {
+        @apply text-gray-700;
+    }
+
+    /* Headings - FORCE DARK */
+    h1, h2, h3, h4, h5, h6 {
+        color: #111827 !important;
+    }
+}
+
+/* FIX SPÉCIFIQUE : Cards et conteneurs blancs */
+.card,
+.card-body,
+.bg-white {
+    background-color: white !important;
+}
+
+.card *:not([class*="text-"]):not([class*="bg-"]),
+.card-body *:not([class*="text-"]):not([class*="bg-"]) {
+    color: #374151 !important;
+}

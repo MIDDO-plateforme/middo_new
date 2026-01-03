@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - Dashboard Quotidien</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f7fafc;
+        }
+        .email-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .kpi-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background-color: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .kpi-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #718096;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .kpi-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .charts-section {
+            margin-top: 30px;
+        }
+        .charts-section h2 {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .chart-container {
+            margin-bottom: 30px;
+            background-color: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .chart-container h3 {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        .chart-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .footer {
+            background-color: #2d3748;
+            padding: 20px 30px;
+            text-align: center;
+            color: #cbd5e0;
+            font-size: 12px;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>📊 MIDDO Dashboard Quotidien</h1>
+            <p>Rapport du {{ date }}</p>
+        </div>
+
+        <div class="content">
+            <div class="kpi-summary">
+                <div class="kpi-card">
+                    <h3>Taux de Complétion</h3>
+                    <div class="value">{{ taux_completion }}%</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>Score Productivité</h3>
+                    <div class="value">{{ score_productivite }}%</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>Tâches Totales</h3>
+                    <div class="value">{{ taches_total }}</div>
+                </div>
+                <div class="kpi-card">
+                    <h3>Utilisateurs Actifs</h3>
+                    <div class="value">{{ utilisateurs_total }}</div>
+                </div>
+            </div>
+
+            <div class="charts-section">
+                <h2>📈 Graphiques d'Analyse</h2>
+
+                <div class="chart-container">
+                    <h3>1. Évolution du Taux de Complétion</h3>
+                    <img src="{{ chart_completion_url }}" alt="Evolution Taux Complétion">
+                </div>
+
+                <div class="chart-container">
+                    <h3>2. Score de Productivité Quotidien</h3>
+                    <img src="{{ chart_productivity_url }}" alt="Score Productivité">
+                </div>
+
+                <div class="chart-container">
+                    <h3>3. Répartition des Tâches</h3>
+                    <img src="{{ chart_tasks_url }}" alt="Répartition Tâches">
+                </div>
+
+                <div class="chart-container">
+                    <h3>4. Notifications : Lues vs Non Lues</h3>
+                    <img src="{{ chart_notifications_url }}" alt="Notifications">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 MIDDO - Plateforme Collaborative Innovante</p>
+            <p>Ce rapport est généré automatiquement chaque jour à 9h00</p>
+            <p><a href="http://localhost:8000">Accéder à MIDDO</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Recherche - MIDDO{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 py-12">
+    <div class="container mx-auto px-4 max-w-6xl">
+        
+        {# Hero Section #}
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold text-gray-900 mb-4">
+                🔍 Recherche Universelle
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Trouvez des projets, entrepreneurs, compétences et opportunités partout dans le monde
+            </p>
+        </div>
+
+        {# Barre de recherche principale #}
+        <div class="bg-white rounded-2xl shadow-2xl p-8 mb-8">
+            <form action="{{ path('search_results') }}" method="GET" class="space-y-6">
+                
+                {# Champ recherche principal #}
+                <div class="relative">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ query }}"
+                        placeholder="Rechercher un projet, une personne, une compétence..."
+                        class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all"
+                        autofocus
+                    />
+                    <button
+                        type="submit"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+                    >
+                        🔍 Rechercher
+                    </button>
+                </div>
+
+                {# Filtres rapides #}
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    
+                    {# Type #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+                        <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Tous</option>
+                            <option value="project">📁 Projets</option>
+                            <option value="entrepreneur">👤 Entrepreneurs</option>
+                            <option value="skill">💼 Compétences</option>
+                            <option value="opportunity">🚀 Opportunités</option>
+                        </select>
+                    </div>
+
+                    {# Catégorie #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Catégorie</label>
+                        <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Toutes</option>
+                            <option value="tech">💻 Technologie</option>
+                            <option value="finance">💰 Finance</option>
+                            <option value="health">🏥 Santé</option>
+                            <option value="education">📚 Éducation</option>
+                            <option value="ecommerce">🛒 E-commerce</option>
+                            <option value="other">🌐 Autre</option>
+                        </select>
+                    </div>
+
+                    {# Localisation #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Localisation</label>
+                        <select name="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Monde entier 🌍</option>
+                            <option value="africa">🌍 Afrique</option>
+                            <option value="europe">🇪🇺 Europe</option>
+                            <option value="asia">🌏 Asie</option>
+                            <option value="americas">🌎 Amériques</option>
+                            <option value="oceania">🌊 Océanie</option>
+                        </select>
+                    </div>
+
+                    {# Tri #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Trier par</label>
+                        <select name="sort" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="relevance">Pertinence</option>
+                            <option value="date_desc">Plus récent</option>
+                            <option value="date_asc">Plus ancien</option>
+                            <option value="popular">Popularité</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                {# Lien recherche avancée #}
+                <div class="text-center">
+                    <a href="{{ path('app_search_advanced') }}" class="text-blue-600 hover:text-blue-700 font-semibold">
+                        ⚙️ Recherche avancée avec plus de filtres
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
+        {# Suggestions populaires #}
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">🔥 Recherches populaires</h2>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ path('search_results', {q: 'startup'}) }}" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full font-semibold transition-all">
+                    Startup
+                </a>
+                <a href="{{ path('search_results', {q: 'développeur'}) }}" class="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-full font-semibold transition-all">
+                    Développeur
+                </a>
+                <a href="{{ path('search_results', {q: 'investissement'}) }}" class="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-full font-semibold transition-all">
+                    Investissement
+                </a>
+                <a href="{{ path('search_results', {q: 'e-commerce'}) }}" class="px-4 py-2 bg-pink-100 hover:bg-pink-200 text-pink-700 rounded-full font-semibold transition-all">
+                    E-commerce
+                </a>
+                <a href="{{ path('search_results', {q: 'blockchain'}) }}" class="px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full font-semibold transition-all">
+                    Blockchain
+                </a>
+                <a href="{{ path('search_results', {q: 'afrique'}) }}" class="px-4 py-2 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-full font-semibold transition-all">
+                    Afrique 🌍
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

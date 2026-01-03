@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-animations.css') }}">
+<script src="{{ asset('assets/js/middo-cache.js') }}" defer></script>
+<script src="{{ asset('assets/js/favorites.js') }}" defer></script>
+{% endblock %}
+
+{% block title %}Discover Projects - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">🔍 Discover Your Perfect Projects</h1>
+    
+    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <form id="discoverProjectsForm">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Your Skills</label>
+                <input type="text" id="userSkills" placeholder="PHP, Symfony, Docker, PostgreSQL..." 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                <small style="color: #7f8c8d;">✏️ Separate skills with commas</small>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Your Interests</label>
+                <input type="text" id="interests" placeholder="API, Backend, Microservices..." 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                <small style="color: #7f8c8d;">✏️ Separate interests with commas</small>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Availability (%)</label>
+                <input type="number" id="availability" value="50" min="0" max="100" 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+                <small style="color: #7f8c8d;">⏰ How much time can you dedicate to a project?</small>
+            </div>
+            
+            <button type="submit" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+                🚀 Find Matching Projects
+            </button>
+        </form>
+    </div>
+    
+    <div id="loading" style="display:none; text-align: center; padding: 40px;">
+        <div style="display: inline-block; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px; color: #7f8c8d; font-size: 18px;">🤖 Finding your perfect projects with AI...</p>
+    </div>
+    
+    <div id="results"></div>
+</div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+button:hover {
+    transform: translateY(-2px);
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(100%);
+    opacity: 0.5;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2) rotate(15deg);
+    opacity: 1;
+}
+
+.favorite-btn.active {
+    filter: grayscale(0);
+    opacity: 1;
+    animation: starPop 0.3s ease;
+}
+
+@keyframes starPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+</style>
+
+<script>
+document.getElementById('discoverProjectsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').innerHTML = '';
+    
+    const skills = document.getElementById('userSkills').value.split(',').map(s => s.trim()).filter(s => s);
+    const interests = document.getElementById('interests').value.split(',').map(s => s.trim()).filter(s => s);
+    const availability = parseInt(document.getElementById('availability').value);
+    
+    if (skills.length === 0) {
+        alert('Please enter at least one skill!');
+        document.getElementById('loading').style.display = 'none';
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/matching/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: 1,
+                userSkills: skills,
+                interests: interests,
+                availability: availability,
+                maxResults: 5
+            })
+        });
+        
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.success && data.suggestions && data.suggestions.projects) {
+            displayProjects(data.suggestions.projects, data.suggestions.provider);
+        } else {
+            document.getElementById('results').innerHTML = '<p style="color: red; text-align: center;">❌ Error loading projects. Please try again.</p>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('results').innerHTML = '<p style="color: red; text-align: center;">❌ Network error. Please check your connection.</p>';
+    }
+});
+
+function displayProjects(projects, provider) {
+    const resultsDiv = document.getElementById('results');
+    
+    let html = '<div style="margin-top: 30px;">';
+    html += '<h2 style="text-align: center; color: #2c3e50; margin-bottom: 10px;">🎯 Your AI-Matched Projects</h2>';
+    html += '<p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">Powered by ' + (provider === 'openai' ? '✨ OpenAI GPT-4o-mini' : '🤖 AI Engine') + '</p>';
+    
+    projects.forEach((project, index) => {
+        const projectId = project.id || `project_${index}_${Date.now()}`;
+        const matchColor = project.match_score >= 90 ? '#27ae60' : project.match_score >= 70 ? '#f39c12' : '#e74c3c';
+        html += `
+            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid ${matchColor};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-grow: 1;">
+                        <h3 style="margin: 0; color: #2c3e50;">${project.project_name}</h3>
+                        <button class="favorite-btn" onclick="toggleFavorite('project', '${projectId}', '${project.project_name.replace(/'/g, "\\'")}', ${project.match_score})" title="Ajouter aux favoris">⭐</button>
+                    </div>
+                    <span style="background: ${matchColor}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px;">${project.match_score}% Match</span>
+                </div>
+                
+                <p style="color: #34495e; line-height: 1.6; margin-bottom: 15px;">${project.description}</p>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <p style="margin: 0 0 8px 0;"><strong style="color: #27ae60;">✅ Matching Skills:</strong> ${project.matching_skills.join(', ')}</p>
+                    <p style="margin: 0;"><strong style="color: #e74c3c;">📚 Skills to Learn:</strong> ${project.missing_skills.length > 0 ? project.missing_skills.join(', ') : 'None! Perfect match!'}</p>
+                </div>
+                
+                <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; margin-bottom: 15px;">
+                    <p style="margin: 0; color: #2c3e50;"><strong>💡 Why this project?</strong> ${project.why}</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; font-size: 14px; color: #7f8c8d;">
+                    <div><strong>👥 Team:</strong> ${project.team_size} members</div>
+                    <div><strong>⏱️ Duration:</strong> ${project.duration_weeks} weeks</div>
+                    <div><strong>⏰ Time needed:</strong> ${project.estimated_availability_needed}%</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+function toggleFavorite(type, id, name, score) {
+    const button = event.target;
+    
+    if (!window.FavoritesManager) {
+        alert('❌ Le système de favoris n\'est pas chargé. Rechargez la page.');
+        return;
+    }
+    
+    if (window.FavoritesManager.isFavorite(type, id)) {
+        window.FavoritesManager.removeFavorite(type, id);
+        button.classList.remove('active');
+    } else {
+        window.FavoritesManager.addFavorite(type, id, {
+            name: name,
+            score: score,
+            type: 'project'
+        });
+        button.classList.add('active');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,140 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Project;
+use App\Service\AIAssistantInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/api/ai', name: 'api_ai_')]
+class AIAssistantController extends AbstractController
+{
+    private AIAssistantInterface $aiService;
+    private EntityManagerInterface $em;
+
+    public function __construct(
+        AIAssistantInterface $aiService,
+        EntityManagerInterface $em
+    ) {
+        $this->aiService = $aiService;
+        $this->em = $em;
+    }
+
+    #[Route('/chat', name: 'chat', methods: ['POST'])]
+    public function chat(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $message = $data['message'] ?? '';
+
+        if (empty($message)) {
+            return $this->json(['error' => 'Message requis'], 400);
+        }
+
+        try {
+            $response = $this->aiService->generateResponse(
+                $message,
+                $this->getUser()?->getId()
+            );
+
+            return $this->json([
+                'success' => true,
+                'response' => $response
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    #[Route('/suggest-improvements/{projectId}', name: 'suggest_improvements', methods: ['POST'])]
+    public function suggestImprovements(int $projectId): JsonResponse
+    {
+        $project = $this->em->getRepository(Project::class)->find($projectId);
+
+        if (!$project) {
+            return $this->json(['error' => 'Projet non trouv?'], 404);
+        }
+
+        try {
+            $suggestions = $this->aiService->suggestProjectImprovements(
+                $project->getDescription() ?? '',
+                [
+                    'title' => $project->getTitle(),
+                    'budget' => $project->getBudget(),
+                    'status' => $project->getStatus()
+                ]
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    #[Route('/match-users/{projectId}', name: 'match_users', methods: ['POST'])]
+    public function matchUsers(int $projectId): JsonResponse
+    {
+        $project = $this->em->getRepository(Project::class)->find($projectId);
+
+        if (!$project) {
+            return $this->json(['error' => 'Projet non trouv?'], 404);
+        }
+
+        try {
+            $matches = $this->aiService->matchUsersToProject(
+                $project->getDescription() ?? '',
+                [
+                    'title' => $project->getTitle(),
+                    'budget' => $project->getBudget()
+                ]
+            );
+
+            return $this->json([
+                'success' => true,
+                'matches' => $matches
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    #[Route('/analyze-sentiment', name: 'analyze_sentiment', methods: ['POST'])]
+    public function analyzeSentiment(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $text = $data['text'] ?? '';
+
+        if (empty($text)) {
+            return $this->json(['error' => 'Texte requis'], 400);
+        }
+
+        try {
+            $analysis = $this->aiService->analyzeSentiment($text);
+
+            return $this->json([
+                'success' => true,
+                'analysis' => $analysis
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+}

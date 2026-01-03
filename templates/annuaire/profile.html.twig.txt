@@ -1,0 +1,399 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.email }} - Profil MIDDO{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .profile-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .profile-header-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 50px 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .profile-header-content {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .profile-avatar-large {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: white;
+        color: #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: 700;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .profile-header-info h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .profile-header-meta {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin-bottom: 20px;
+    }
+
+    .profile-header-actions {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn-profile {
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary-profile {
+        background: white;
+        color: #667eea;
+    }
+
+    .btn-primary-profile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 20px rgba(255,255,255,0.3);
+    }
+
+    .btn-secondary-profile {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary-profile:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    .profile-main {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    .profile-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2d3748;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .bio-text {
+        color: #4a5568;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .skills-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .skill-badge-large {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .skill-badge-large:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .company-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        background: #f7fafc;
+        border-radius: 12px;
+    }
+
+    .company-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .company-info h3 {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+        color: #2d3748;
+    }
+
+    .company-info p {
+        color: #718096;
+        font-size: 0.95rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-icon {
+        font-size: 1.3rem;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #718096;
+        margin-bottom: 3px;
+    }
+
+    .info-value {
+        font-weight: 500;
+        color: #2d3748;
+    }
+
+    .similar-profiles {
+        margin-top: 20px;
+    }
+
+    .similar-profile-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: #f7fafc;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .similar-profile-item:hover {
+        background: #edf2f7;
+        transform: translateX(5px);
+    }
+
+    .similar-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .similar-info h4 {
+        font-size: 1rem;
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .similar-info p {
+        font-size: 0.85rem;
+        color: #718096;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        gap: 12px;
+    }
+
+    @media (max-width: 968px) {
+        .profile-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-main {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-header-card {
+            padding: 30px 20px;
+        }
+
+        .profile-header-info h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-container">
+    <a href="{{ path('app_directory_search') }}" class="back-link">
+        ← Retour à l'annuaire
+    </a>
+
+    <div class="profile-header-card">
+        <div class="profile-header-content">
+            <div class="profile-avatar-large">
+                {{ user.email|slice(0, 1)|upper }}
+            </div>
+            <div class="profile-header-info">
+                <h1>{{ user.email }}</h1>
+                <div class="profile-header-meta">
+                    {% if company %}
+                        💼 {{ company.name }}
+                    {% endif %}
+                </div>
+                <div class="profile-header-actions">
+                    <button class="btn-profile btn-primary-profile">
+                        ✉️ Envoyer un message
+                    </button>
+                    <button class="btn-profile btn-secondary-profile">
+                        ➕ Ajouter au réseau
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-main">
+        <div>
+            {% if skills|length > 0 %}
+            <div class="profile-section">
+                <div class="section-title">
+                    🎯 Compétences
+                </div>
+                <div class="skills-grid">
+                    {% for skill in skills %}
+                    <span class="skill-badge-large">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if company %}
+            <div class="profile-section">
+                <div class="section-title">
+                    🏢 Entreprise
+                </div>
+                <div class="company-card">
+                    <div class="company-icon">
+                        🏢
+                    </div>
+                    <div class="company-info">
+                        <h3>{{ company.name }}</h3>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="profile-section">
+                <div class="section-title">
+                    ℹ️ Informations
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">✉️</div>
+                    <div class="info-content">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🔑</div>
+                    <div class="info-content">
+                        <div class="info-label">ID Utilisateur</div>
+                        <div class="info-value">#{{ user.id }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if similarProfiles|length > 0 %}
+            <div class="profile-section">
+                <div class="section-title">
+                    👥 Profils similaires
+                </div>
+                <div class="similar-profiles">
+                    {% for similar in similarProfiles %}
+                    <div class="similar-profile-item" onclick="window.location.href='{{ path('app_directory_profile', {id: similar.id}) }}'">
+                        <div class="similar-avatar">
+                            {{ similar.email|slice(0, 1)|upper }}
+                        </div>
+                        <div class="similar-info">
+                            <h4>{{ similar.email }}</h4>
+                            <p>
+                                {% if similar.skills|length > 0 %}
+                                    {{ similar.skills|slice(0, 2)|join(', ') }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

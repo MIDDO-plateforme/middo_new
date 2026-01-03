@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Service;
+
+use Psr\Log\LoggerInterface;
+
+class AnthropicService
+{
+    private string $apiKey;
+    private LoggerInterface $logger;
+    private array $callStats = ['total' => 0, 'success' => 0, 'errors' => 0];
+
+    public function __construct(string $apiKey, LoggerInterface $logger)
+    {
+        $this->apiKey = $apiKey;
+        $this->logger = $logger;
+    }
+
+    public function findProfiles(): array
+    {
+        try {
+            $this->callStats['total']++;
+            $this->logger->info('[Anthropic] Appel Claude-3 pour matching...', [
+                'model' => 'claude-3-5-sonnet-20241022',
+                'max_tokens' => 1024
+            ]);
+
+            $response = $this->callAnthropic(
+                'Génère UNIQUEMENT un tableau JSON de 5 profils professionnels pour une plateforme collaborative. Format exact: [{"title": "Chef de Projet Digital", "skills": ["Agile", "Scrum"], "value": "email@example.com", "score": 95}, ...]. Retourne UNIQUEMENT le JSON, aucun texte avant/après.',
+                'claude-3-5-sonnet-20241022'
+            );
+
+            if (isset($response['content'][0]['text'])) {
+                $content = $response['content'][0]['text'];
+                $profiles = json_decode($content, true);
+
+                if (is_array($profiles) && count($profiles) >= 5) {
+                    $this->callStats['success']++;
+                    $this->logger->info('[Anthropic] 5 profils générés avec succès', [
+                        'profiles_count' => count($profiles),
+                        'tokens_used' => $response['usage']['input_tokens'] ?? 'N/A'
+                    ]);
+                    return array_slice($profiles, 0, 5);
+                }
+            }
+
+            throw new \Exception('Format réponse Anthropic invalide');
+
+        } catch (\Throwable $e) {
+            $this->callStats['errors']++;
+            $this->logger->error('[Anthropic] Erreur matching', [
+                'error' => $e->getMessage(),
+                'stats' => $this->callStats
+            ]);
+            return [];
+        }
+    }
+
+    public function generateChatResponse(string $message): string
+    {
+        try {
+            $this->callStats['total']++;
+            $this->logger->info('[Anthropic] Réponse chatbot Claude-3...', [
+                'message_length' => strlen($message)
+            ]);
+
+            $response = $this->callAnthropic(
+                "Réponds de manière amicale et professionnelle : \"$message\"",
+                'claude-3-5-sonnet-20241022'
+            );
+
+            if (isset($response['content'][0]['text'])) {
+                $this->callStats['success']++;
+                $this->logger->info('[Anthropic] Réponse chatbot générée', [
+                    'response_length' => strlen($response['content'][0]['text']),
+                    'tokens_used' => $response['usage']['input_tokens'] ?? 'N/A'
+                ]);
+                return $response['content'][0]['text'];
+            }
+
+            throw new \Exception('Format réponse Anthropic invalide');
+
+        } catch (\Throwable $e) {
+            $this->callStats['errors']++;
+            $this->logger->error('[Anthropic] Erreur chatbot', [
+                'error' => $e->getMessage(),
+                'stats' => $this->callStats
+            ]);
+            return 'Désolé, une erreur est survenue. Mode DEMO activé.';
+        }
+    }
+
+    private function callAnthropic(string $prompt, string $model): array
+    {
+        $startTime = microtime(true);
+        
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        
+        $data = [
+            'model' => $model,
+            'max_tokens' => 1024,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ]
+        ];
+        
+        // FIX CRITIQUE : JSON encodé en UTF-8 sans BOM
+        $jsonBody = json_encode($data, JSON_UNESCAPED_UNICODE);
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $jsonBody,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-api-key: ' . $this->apiKey,
+                'anthropic-version: 2023-06-01'
+            ],
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => true
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        $duration = round((microtime(true) - $startTime) * 1000, 2);
+        curl_close($ch);
+
+        $this->logger->info('[Anthropic] Appel API terminé', [
+            'http_code' => $httpCode,
+            'duration_ms' => $duration,
+            'curl_error' => $curlError ?: 'none'
+        ]);
+
+        if ($httpCode !== 200) {
+            $errorBody = json_decode($response, true);
+            $errorMsg = $errorBody['error']['message'] ?? 'Unknown error';
+            throw new \Exception("Anthropic API HTTP $httpCode: $errorMsg");
+        }
+
+        return json_decode($response, true) ?? [];
+    }
+
+    public function getCallStats(): array
+    {
+        return $this->callStats;
+    }
+}

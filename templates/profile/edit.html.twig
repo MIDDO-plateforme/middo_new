@@ -1,0 +1,1039 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil - MIDDO{% endblock %}
+
+{% block body %}
+<style>
+    /* ===================================
+       VARIABLES & BASE STYLES
+    =================================== */
+    :root {
+        --primary: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --dark: #1f2937;
+        --light: #f9fafb;
+        --border: #e5e7eb;
+    }
+
+    .edit-profile-container {
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+
+    /* ===================================
+       HEADER SECTION
+    =================================== */
+    .edit-header {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .header-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--primary), var(--info));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+    }
+
+    .header-left h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .header-left p {
+        margin: 0.25rem 0 0 0;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .btn-back {
+        background: var(--light);
+        color: #6b7280;
+        border: 2px solid var(--border);
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: white;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    /* ===================================
+       TABS NAVIGATION
+    =================================== */
+    .tabs-container {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .tabs-nav {
+        display: flex;
+        gap: 1rem;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .tab-btn {
+        padding: 1rem 2rem;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+        color: var(--primary);
+    }
+
+    .tab-btn.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+
+    /* ===================================
+       TAB CONTENT
+    =================================== */
+    .tab-content {
+        display: none;
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===================================
+       FORM STYLES
+    =================================== */
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-required {
+        color: var(--danger);
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+        width: 100%;
+        padding: 0.875rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-help {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        margin-top: 0.25rem;
+    }
+
+    /* ===================================
+       PHOTO UPLOAD
+    =================================== */
+    .photo-upload-section {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .current-photo {
+        flex-shrink: 0;
+    }
+
+    .photo-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--info));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .upload-area {
+        flex: 1;
+    }
+
+    .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.02);
+    }
+
+    .upload-zone.dragover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.05);
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .upload-text {
+        font-size: 0.9375rem;
+        color: var(--dark);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-hint {
+        font-size: 0.875rem;
+        color: #9ca3af;
+    }
+
+    /* ===================================
+       TOGGLE SWITCH
+    =================================== */
+    .toggle-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--light);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .toggle-info h4 {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .toggle-info p {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 52px;
+        height: 28px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e0;
+        transition: 0.3s;
+        border-radius: 28px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+        background-color: var(--primary);
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(24px);
+    }
+
+    /* ===================================
+       PASSWORD STRENGTH
+    =================================== */
+    .password-strength {
+        margin-top: 0.5rem;
+        height: 4px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .password-strength-bar {
+        height: 100%;
+        width: 0;
+        transition: all 0.3s ease;
+    }
+
+    .password-strength-bar.weak {
+        width: 33%;
+        background: var(--danger);
+    }
+
+    .password-strength-bar.medium {
+        width: 66%;
+        background: var(--warning);
+    }
+
+    .password-strength-bar.strong {
+        width: 100%;
+        background: var(--success);
+    }
+
+    /* ===================================
+       BUTTONS
+    =================================== */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--border);
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary {
+        background: var(--light);
+        color: #6b7280;
+    }
+
+    .btn-secondary:hover {
+        background: var(--border);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--info));
+        color: white;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+
+    /* ===================================
+       SESSIONS LIST
+    =================================== */
+    .sessions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .session-item {
+        padding: 1rem;
+        background: var(--light);
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .session-info {
+        flex: 1;
+    }
+
+    .session-device {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .session-badge {
+        padding: 0.25rem 0.5rem;
+        background: var(--success);
+        color: white;
+        font-size: 0.625rem;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .session-details {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    /* ===================================
+       RESPONSIVE
+    =================================== */
+    @media (max-width: 768px) {
+        .edit-profile-container {
+            padding: 1rem;
+        }
+
+        .edit-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-back {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .tabs-nav {
+            flex-direction: column;
+            border-bottom: none;
+        }
+
+        .tab-btn {
+            border-bottom: none;
+            border-left: 3px solid transparent;
+            justify-content: flex-start;
+        }
+
+        .tab-btn.active {
+            border-left-color: var(--primary);
+        }
+
+        .photo-upload-section {
+            flex-direction: column;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="edit-profile-container">
+    <!-- HEADER -->
+    <div class="edit-header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="bi bi-pencil-fill"></i>
+            </div>
+            <div>
+                <h1>Modifier mon profil</h1>
+                <p>Gérez vos informations personnelles et préférences</p>
+            </div>
+        </div>
+        <a href="{{ path('app_profile') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            Retour au profil
+        </a>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="profile">
+                <i class="bi bi-person-fill"></i>
+                Profil
+            </button>
+            <button class="tab-btn" data-tab="security">
+                <i class="bi bi-shield-fill-check"></i>
+                Sécurité
+            </button>
+            <button class="tab-btn" data-tab="preferences">
+                <i class="bi bi-gear-fill"></i>
+                Préférences
+            </button>
+        </div>
+    </div>
+
+    <!-- TAB CONTENT: PROFIL -->
+    <div class="tab-content active" id="tab-profile">
+        <form>
+            <!-- PHOTO SECTION -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-camera-fill"></i>
+                    Photo de profil
+                </div>
+                <div class="photo-upload-section">
+                    <div class="current-photo">
+                        <div class="photo-avatar">
+                            {{ app.user.email|slice(0,1)|upper }}
+                        </div>
+                    </div>
+                    <div class="upload-area">
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-icon">
+                                <i class="bi bi-cloud-upload-fill"></i>
+                            </div>
+                            <div class="upload-text">
+                                Cliquez pour télécharger ou glissez une image
+                            </div>
+                            <div class="upload-hint">
+                                PNG, JPG ou GIF (max. 2MB) - Recommandé : 400x400px
+                            </div>
+                            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFORMATIONS PERSONNELLES -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Informations personnelles
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Nom complet <span class="form-required">*</span>
+                    </label>
+                    <input type="text" class="form-input" value="{{ app.user.email|split('@')[0]|title }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Adresse email <span class="form-required">*</span>
+                    </label>
+                    <input type="email" class="form-input" value="{{ app.user.email }}" required>
+                    <div class="form-help">Votre email ne sera pas visible publiquement</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Bio / Description</label>
+                    <textarea class="form-textarea" placeholder="Parlez-nous de vous...">Passionné par l'innovation et la collaboration, je travaille sur MIDDO pour créer une plateforme universelle qui connecte entrepreneurs, entreprises, freelancers et investisseurs.</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Localisation</label>
+                    <input type="text" class="form-input" value="Paris, France" placeholder="Ex: Paris, France">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Site web</label>
+                    <input type="url" class="form-input" value="www.middo-platform.com" placeholder="Ex: www.example.com">
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary">
+                    Annuler
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Sauvegarder les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB CONTENT: SÉCURITÉ -->
+    <div class="tab-content" id="tab-security">
+        <form>
+            <!-- CHANGEMENT MOT DE PASSE -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-key-fill"></i>
+                    Changer le mot de passe
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Mot de passe actuel <span class="form-required">*</span>
+                    </label>
+                    <input type="password" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Nouveau mot de passe <span class="form-required">*</span>
+                    </label>
+                    <input type="password" class="form-input" id="newPassword" required>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="form-help">Minimum 8 caractères avec majuscules, chiffres et symboles</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Confirmer le nouveau mot de passe <span class="form-required">*</span>
+                    </label>
+                    <input type="password" class="form-input" required>
+                </div>
+            </div>
+
+            <!-- AUTHENTIFICATION 2FA -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Authentification à deux facteurs (2FA)
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Activer la 2FA</h4>
+                        <p>Ajoutez une couche de sécurité supplémentaire à votre compte</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SESSIONS ACTIVES -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-laptop"></i>
+                    Sessions actives
+                </div>
+
+                <div class="sessions-list">
+                    <div class="session-item">
+                        <div class="session-info">
+                            <div class="session-device">
+                                <i class="bi bi-laptop"></i>
+                                Windows 11 - Chrome
+                                <span class="session-badge">ACTUELLE</span>
+                            </div>
+                            <div class="session-details">
+                                Paris, France • 18 Déc 2025, 13:00
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm">
+                            Déconnecter
+                        </button>
+                    </div>
+
+                    <div class="session-item">
+                        <div class="session-info">
+                            <div class="session-device">
+                                <i class="bi bi-phone"></i>
+                                iPhone 14 - Safari
+                            </div>
+                            <div class="session-details">
+                                Paris, France • 17 Déc 2025, 22:30
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm">
+                            Déconnecter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary">
+                    Annuler
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Sauvegarder
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB CONTENT: PRÉFÉRENCES -->
+    <div class="tab-content" id="tab-preferences">
+        <form>
+            <!-- NOTIFICATIONS -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-bell-fill"></i>
+                    Notifications
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Notifications par email</h4>
+                        <p>Recevez des emails pour les activités importantes</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Nouveaux messages</h4>
+                        <p>Soyez notifié des nouveaux messages reçus</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Activité sur les projets</h4>
+                        <p>Notifications pour les mises à jour de vos projets</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Suggestions IA</h4>
+                        <p>Recevez des recommandations personnalisées</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- LANGUE & RÉGION -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-globe"></i>
+                    Langue & Région
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Langue de l'interface</label>
+                    <select class="form-select">
+                        <option value="fr" selected>Français</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Fuseau horaire</label>
+                    <select class="form-select">
+                        <option value="Europe/Paris" selected>Europe/Paris (GMT+1)</option>
+                        <option value="America/New_York">America/New York (GMT-5)</option>
+                        <option value="Asia/Tokyo">Asia/Tokyo (GMT+9)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- APPARENCE -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-palette-fill"></i>
+                    Apparence
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Thème</label>
+                    <select class="form-select">
+                        <option value="light" selected>Clair</option>
+                        <option value="dark">Sombre</option>
+                        <option value="auto">Automatique</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CONFIDENTIALITÉ -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-lock-fill"></i>
+                    Confidentialité
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Profil public</h4>
+                        <p>Autoriser les autres membres à voir votre profil</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div class="toggle-info">
+                        <h4>Afficher l'email</h4>
+                        <p>Rendre votre adresse email visible sur votre profil</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary">
+                    Annuler
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Sauvegarder
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// ==========================================
+// TABS MANAGEMENT
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Remove active class from all tabs
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            document.getElementById('tab-' + targetTab).classList.add('active');
+        });
+    });
+});
+
+// ==========================================
+// PHOTO UPLOAD (DRAG & DROP)
+// ==========================================
+const uploadZone = document.getElementById('uploadZone');
+const photoInput = document.getElementById('photoInput');
+
+uploadZone.addEventListener('click', () => photoInput.click());
+
+uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('dragover');
+});
+
+uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFileUpload(files[0]);
+    }
+});
+
+photoInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFileUpload(e.target.files[0]);
+    }
+});
+
+function handleFileUpload(file) {
+    // Validation
+    if (!file.type.startsWith('image/')) {
+        alert('Veuillez sélectionner une image valide (PNG, JPG, GIF)');
+        return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) {
+        alert('L\'image est trop volumineuse (max. 2MB)');
+        return;
+    }
+    
+    // Preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const photoAvatar = document.querySelector('.photo-avatar');
+        photoAvatar.style.backgroundImage = `url(${e.target.result})`;
+        photoAvatar.style.backgroundSize = 'cover';
+        photoAvatar.style.backgroundPosition = 'center';
+        photoAvatar.textContent = '';
+    };
+    reader.readAsDataURL(file);
+    
+    // TODO: Upload to server
+    console.log('Fichier à uploader:', file.name);
+}
+
+// ==========================================
+// PASSWORD STRENGTH INDICATOR
+// ==========================================
+const newPasswordInput = document.getElementById('newPassword');
+const strengthBar = document.getElementById('strengthBar');
+
+if (newPasswordInput) {
+    newPasswordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        strengthBar.className = 'password-strength-bar';
+        
+        if (strength <= 1) {
+            strengthBar.classList.add('weak');
+        } else if (strength <= 3) {
+            strengthBar.classList.add('medium');
+        } else {
+            strengthBar.classList.add('strong');
+        }
+    });
+}
+
+// ==========================================
+// FORM VALIDATION
+// ==========================================
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // TODO: Implement server-side save
+        alert('Modifications sauvegardées !\n\nFonctionnalité backend à implémenter.');
+    });
+});
+</script>
+
+{% endblock %}

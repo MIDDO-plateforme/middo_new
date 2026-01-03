@@ -1,0 +1,164 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Recherche Avancée - MIDDO{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 py-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        
+        {# En-tête #}
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-3">
+                ⚙️ Recherche Avancée
+            </h1>
+            <p class="text-lg text-gray-600">
+                Affinez votre recherche avec des critères détaillés
+            </p>
+        </div>
+
+        {# Formulaire de recherche avancée #}
+        <form action="{{ path('search_results') }}" method="GET" class="bg-white rounded-2xl shadow-2xl p-8">
+            
+            {# Recherche textuelle #}
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">🔍 Mots-clés</h2>
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Entrez vos mots-clés..."
+                    class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
+                />
+            </div>
+
+            {# Filtres principaux #}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                
+                {# Type de résultat #}
+                <div>
+                    <label class="block text-lg font-bold text-gray-900 mb-3">📂 Type de contenu</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="types[]" value="project" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
+                            <span class="text-gray-700">📁 Projets</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="types[]" value="entrepreneur" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
+                            <span class="text-gray-700">👤 Entrepreneurs</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="types[]" value="skill" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
+                            <span class="text-gray-700">💼 Compétences</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" name="types[]" value="opportunity" class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
+                            <span class="text-gray-700">🚀 Opportunités</span>
+                        </label>
+                    </div>
+                </div>
+
+                {# Secteurs #}
+                <div>
+                    <label class="block text-lg font-bold text-gray-900 mb-3">🏢 Secteurs</label>
+                    <div class="space-y-2">
+                        {% for key, value in filters.sectors %}
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="sectors[]" value="{{ key }}" class="w-5 h-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500" />
+                                <span class="text-gray-700">{{ value }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# Localisations #}
+                <div>
+                    <label class="block text-lg font-bold text-gray-900 mb-3">🌍 Localisation</label>
+                    <div class="space-y-2">
+                        {% for key, value in filters.locations %}
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="locations[]" value="{{ key }}" class="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500" />
+                                <span class="text-gray-700">{{ value }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+            {# Filtres supplémentaires #}
+            <div class="border-t pt-8 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">🎯 Critères supplémentaires</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {# Plage de budget #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">💰 Budget du projet</label>
+                        <select name="budget_range" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Tous les budgets</option>
+                            {% for key, value in filters.budgetRanges %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {# Type d'utilisateur #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">👥 Type d'utilisateur</label>
+                        <select name="user_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Tous les types</option>
+                            {% for key, value in filters.userTypes %}
+                                <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {# Période #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">📅 Période</label>
+                        <select name="date_range" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="">Toutes les dates</option>
+                            <option value="today">Aujourd'hui</option>
+                            <option value="week">Cette semaine</option>
+                            <option value="month">Ce mois</option>
+                            <option value="year">Cette année</option>
+                        </select>
+                    </div>
+
+                    {# Tri #}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">📊 Trier par</label>
+                        <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <option value="relevance">Pertinence</option>
+                            <option value="date_desc">Plus récent</option>
+                            <option value="date_asc">Plus ancien</option>
+                            <option value="popular">Popularité</option>
+                            <option value="budget_desc">Budget (décroissant)</option>
+                            <option value="budget_asc">Budget (croissant)</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            {# Boutons d'action #}
+            <div class="flex gap-4 justify-center">
+                <button
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                    🔍 Lancer la recherche
+                </button>
+                <a
+                    href="{{ path('app_search_index') }}"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-10 py-4 rounded-xl transition-all"
+                >
+                    ← Recherche simple
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+

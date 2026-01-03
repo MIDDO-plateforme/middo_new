@@ -1,0 +1,291 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SOIA Monitoring Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-container {
+            padding: 30px;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .circuit-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 4px;
+        }
+        
+        .circuit-closed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .circuit-open {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .circuit-half-open {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .log-entry {
+            padding: 12px;
+            border-left: 3px solid #667eea;
+            background: #f9fafb;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .refresh-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-2">🛡️ SOIA Monitoring Dashboard</h1>
+                <p class="mb-0">Surveillance en temps réel du système d'auto-guérison</p>
+            </div>
+            <div class="text-end">
+                <span class="refresh-indicator"></span>
+                <span class="ms-2">Auto-refresh : 5s</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-label">System Status</div>
+                <div class="stat-value" id="system-status">--</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <div class="stat-label">Uptime</div>
+                <div class="stat-value" id="uptime">--</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                <div class="stat-label">Total Fallbacks</div>
+                <div class="stat-value" id="total-fallbacks">--</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                <div class="stat-label">Open Circuits</div>
+                <div class="stat-value" id="open-circuits">--</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Circuits Status -->
+    <div class="dashboard-card">
+        <h3 class="mb-3">🔌 État des Circuits</h3>
+        <div id="circuits-container">
+            <p class="text-muted">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Fallback Statistics -->
+    <div class="dashboard-card">
+        <h3 class="mb-3">📊 Statistiques Fallbacks</h3>
+        <canvas id="fallbackChart" width="400" height="100"></canvas>
+    </div>
+
+    <!-- Recent Logs -->
+    <div class="dashboard-card">
+        <h3 class="mb-3">📋 Logs Récents</h3>
+        <div id="logs-container">
+            <p class="text-muted">Aucun log disponible</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+let fallbackChart;
+
+async function fetchSOIAStatus() {
+    try {
+        const response = await fetch('/admin/soia/status');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('system-status').textContent = data.system_status.toUpperCase();
+        document.getElementById('uptime').textContent = data.uptime + '%';
+        document.getElementById('total-fallbacks').textContent = data.fallbacks.total;
+        
+        // Count open circuits
+        const openCircuits = Object.values(data.circuits || {}).filter(c => c.state === 'OPEN').length;
+        document.getElementById('open-circuits').textContent = openCircuits;
+        
+        // Update circuits
+        updateCircuits(data.circuits);
+        
+        // Update chart
+        updateChart(data.fallbacks.stats);
+        
+        // Update logs (simulated)
+        updateLogs(data);
+        
+    } catch (error) {
+        console.error('Erreur fetch SOIA:', error);
+    }
+}
+
+function updateCircuits(circuits) {
+    const container = document.getElementById('circuits-container');
+    
+    if (!circuits || Object.keys(circuits).length === 0) {
+        container.innerHTML = '<p class="text-muted">Aucun circuit actif</p>';
+        return;
+    }
+    
+    let html = '<div class="row">';
+    for (const [name, circuit] of Object.entries(circuits)) {
+        const badgeClass = circuit.state === 'CLOSED' ? 'circuit-closed' : 
+                          circuit.state === 'OPEN' ? 'circuit-open' : 'circuit-half-open';
+        
+        html += `
+            <div class="col-md-4 mb-3">
+                <div class="p-3 border rounded">
+                    <h5>${name}</h5>
+                    <span class="circuit-badge ${badgeClass}">${circuit.state}</span>
+                    <div class="mt-2 small text-muted">
+                        Failures: ${circuit.failures || 0}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function updateChart(stats) {
+    const ctx = document.getElementById('fallbackChart').getContext('2d');
+    
+    const labels = Object.keys(stats || {});
+    const values = Object.values(stats || {});
+    
+    if (fallbackChart) {
+        fallbackChart.destroy();
+    }
+    
+    fallbackChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels.length > 0 ? labels : ['Aucune donnée'],
+            datasets: [{
+                label: 'Fallbacks Activés',
+                data: values.length > 0 ? values : [0],
+                backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                borderColor: 'rgba(102, 126, 234, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateLogs(data) {
+    const container = document.getElementById('logs-container');
+    const timestamp = new Date(data.timestamp * 1000).toLocaleString('fr-FR');
+    
+    let html = `
+        <div class="log-entry">
+            [${timestamp}] System Status: ${data.system_status} | Uptime: ${data.uptime}%
+        </div>
+    `;
+    
+    if (data.circuits && Object.keys(data.circuits).length > 0) {
+        for (const [name, circuit] of Object.entries(data.circuits)) {
+            html += `
+                <div class="log-entry">
+                    [${timestamp}] Circuit [${name}]: ${circuit.state} | Failures: ${circuit.failures || 0}
+                </div>
+            `;
+        }
+    }
+    
+    container.innerHTML = html;
+}
+
+// Initial fetch
+fetchSOIAStatus();
+
+// Auto-refresh every 5 seconds
+setInterval(fetchSOIAStatus, 5000);
+</script>
+{% endblock %}

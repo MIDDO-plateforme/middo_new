@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MIDDO - Plateforme Universelle{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* ===================================
+           CORRECTION HEADER STICKY
+           =================================== */
+        /* Rendre le header toujours visible en haut */
+        nav.bg-gradient-to-r {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            width: 100%;
+            background: linear-gradient(to right, #6366f1, #8b5cf6) !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+        }
+        
+        /* Compenser l'espace pris par le header fixe */
+        body {
+            padding-top: 64px; /* Hauteur du header (h-16 = 64px) */
+        }
+        
+        main {
+            position: relative;
+            z-index: 1;
+        }
+        
+        footer {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="h-full bg-gray-50">
+    <nav class="bg-gradient-to-r from-middo-primary to-middo-secondary shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ path('app_home') }}" class="flex items-center space-x-2 text-white font-bold text-xl hover:text-gray-100 transition">
+                        <i class="bi bi-globe text-2xl"></i>
+                        <span class="tracking-wider">MIDDO</span>
+                    </a>
+                    <div class="hidden md:flex md:ml-10 md:space-x-8">
+                        <a href="{{ path('app_home') }}" class="text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            Accueil
+                        </a>
+                        <a href="{{ path('app_users') }}" class="text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            Explorer
+                        </a>
+                        <a href="{{ path('app_search_index') }}" class="text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            🔍 Recherche
+                        </a>
+                        <a href="{{ path('app_search_index') }}" class="text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            🔍 Recherche
+                        </a>
+                    </div>
+                </div>
+
+                {% if app.user %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ path('app_messages') }}" class="relative text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="bi bi-envelope text-lg"></i>
+                            <span class="ml-1">Messages</span>
+                            {% set unreadCount = unread_messages_count() %}
+                            {% if unreadCount > 0 %}
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                    {{ unreadCount }}
+                                </span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ path('app_project_my_projects') }}" class="text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="bi bi-briefcase-fill"></i>
+                            <span class="ml-1">Mes Projets</span>
+                        </a>
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-white hover:text-gray-100 px-3 py-2 rounded-md text-sm font-medium transition">
+                                <i class="bi bi-person-circle text-lg"></i>
+                                <span>{{ app.user.firstName }}</span>
+                                <i class="bi bi-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="{{ path('app_profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-t-lg transition">
+                                    <i class="bi bi-person mr-2"></i>Mon Profil
+                                </a>
+                                <div class="border-t border-gray-200"></div>
+                                <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-50 rounded-b-lg transition">
+                                    <i class="bi bi-box-arrow-right mr-2"></i>Deconnexion
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ path('app_login') }}" class="text-white hover:text-gray-100 px-4 py-2 rounded-md text-sm font-medium transition">
+                            <i class="bi bi-box-arrow-in-right mr-1"></i>Connexion
+                        </a>
+                        <a href="{{ path('app_register') }}" class="bg-white text-middo-primary hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition transform hover:-translate-y-0.5">
+                            <i class="bi bi-person-plus mr-1"></i>Inscription
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                <div class="bg-{{ label == 'success' ? 'green' : (label == 'error' ? 'red' : 'blue') }}-100 border border-{{ label == 'success' ? 'green' : (label == 'error' ? 'red' : 'blue') }}-400 text-{{ label == 'success' ? 'green' : (label == 'error' ? 'red' : 'blue') }}-700 px-4 py-3 rounded-lg relative" role="alert">
+                    <span class="block sm:inline">{{ message|raw }}</span>
+                    <button class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <main class="min-h-screen">
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-300">&copy; {{ 'now'|date('Y') }} MIDDO - Plateforme universelle de networking professionnel</p>
+        </div>
+    </footer>
+
+    {% block javascripts %}{% endblock %}
+    <script src="{{ asset('js/toast-notifications.js') }}"></script>
+    <script src="{{ asset('js/ai-assistant.js') }}"></script>
+</body>
+</html>
+

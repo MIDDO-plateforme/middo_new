@@ -1,0 +1,46 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}MIDDO - Constructeur de Projets{% endblock %}
+
+{% block body %}
+<style>
+    .project-builder-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .hero-section {
+        text-align: center;
+        padding: 60px 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 40px;
+    }
+    
+    .hero-section h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+    
+    .hero-section p {
+        font-size: 1.3rem;
+        opacity: 0.9;
+    }
+</style>
+
+<div class="project-builder-container">
+    <div class="hero-section">
+        <h1>🚀 Constructeur de Projets</h1>
+        <p>Transformez votre vision en entreprise clé en main</p>
+    </div>
+    
+    <div class="content">
+        <h2>Module renommé avec succès !</h2>
+        <p>✅ Clinic → Project Builder</p>
+        <p>✅ Route : /projects</p>
+        <p>✅ Template : project_builder/index.html.twig</p>
+    </div>
+</div>
+{% endblock %}

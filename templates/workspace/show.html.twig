@@ -1,0 +1,364 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ document.title }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .document-show-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .breadcrumb-nav {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            color: #6c757d;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .document-layout {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .document-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .document-main {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .document-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .document-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .document-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: white;
+            color: #f5576c;
+        }
+
+        .btn-delete {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .document-content {
+            padding: 2rem;
+        }
+
+        .content-viewer {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.05rem;
+        }
+
+        .content-viewer p {
+            margin-bottom: 1rem;
+        }
+
+        .file-preview {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .file-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            color: #6c757d;
+        }
+
+        .btn-download {
+            margin-top: 1rem;
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .document-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-analysis {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .ai-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .ai-metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .ai-metric-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .version-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .version-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        .version-item:last-child {
+            border-bottom: none;
+        }
+
+        .version-number {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .version-date {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="document-show-container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_document_index', {workspaceId: workspace.id}) }}">Documents</a></li>
+                <li class="breadcrumb-item active">{{ document.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="document-layout">
+            <!-- MAIN CONTENT -->
+            <div class="document-main">
+                <div class="document-header">
+                    <h1 class="document-title">📄 {{ document.title }}</h1>
+
+                    <div class="document-meta">
+                        <span class="document-meta-item">
+                            📂 {{ document.type|replace({'_': ' '}) }}
+                        </span>
+                        <span class="document-meta-item">
+                            🏷️ {{ document.category|default('Non catégorisé') }}
+                        </span>
+                        <span class="document-meta-item">
+                            {% if document.status == 'draft' %}📝 Brouillon
+                            {% elseif document.status == 'review' %}🔍 En révision
+                            {% elseif document.status == 'published' %}✅ Publié
+                            {% else %}📦 Archivé{% endif %}
+                        </span>
+                        <span class="document-meta-item">
+                            👤 {{ document.author.email }}
+                        </span>
+                        <span class="document-meta-item">
+                            📅 {{ document.createdAt|date('d/m/Y') }}
+                        </span>
+                    </div>
+
+                    <div class="document-actions">
+                        <a href="{{ path('app_workspace_document_edit', {workspaceId: workspace.id, id: document.id}) }}" class="btn btn-edit">
+                            ✏️ Modifier
+                        </a>
+                        <form method="post" action="{{ path('app_workspace_document_delete', {workspaceId: workspace.id, id: document.id}) }}" style="display: inline;" onsubmit="return confirm('Supprimer ce document ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ document.id) }}">
+                            <button type="submit" class="btn btn-delete">🗑️ Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="document-content">
+                    {% if document.content %}
+                        <div class="content-viewer">
+                            {{ document.content|nl2br }}
+                        </div>
+                    {% endif %}
+
+                    {% if document.filePath %}
+                        <div class="file-preview">
+                            <div class="file-icon">📎</div>
+                            <div class="file-info">
+                                <strong>{{ document.filePath }}</strong><br>
+                                {% if document.fileSize %}
+                                    {{ (document.fileSize / 1024 / 1024)|number_format(2) }} MB
+                                {% endif %}
+                            </div>
+                            <a href="/uploads/documents/{{ document.filePath }}" class="btn-download" download>
+                                ⬇️ Télécharger
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="document-sidebar">
+                <!-- IA ANALYSIS -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">🤖 Analyse IA</h3>
+                    <div class="ai-analysis">
+                        <div class="ai-metric">
+                            <span class="ai-metric-label">Sentiment</span>
+                            <span class="ai-metric-value">
+                                {% set sentiment = document.aiMetadata.sentiment_score|default(0) %}
+                                {% if sentiment > 0.5 %}😊 Positif
+                                {% elseif sentiment < -0.5 %}😞 Négatif
+                                {% else %}😐 Neutre{% endif %}
+                            </span>
+                        </div>
+                        <div class="ai-metric">
+                            <span class="ai-metric-label">Lisibilité</span>
+                            <span class="ai-metric-value">
+                                {{ (document.aiMetadata.readability_score|default(0) * 100)|round }}%
+                            </span>
+                        </div>
+                        <div class="ai-metric">
+                            <span class="ai-metric-label">Mots-clés</span>
+                            <span class="ai-metric-value">
+                                {{ document.aiMetadata.key_topics|default([])|length }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VERSION HISTORY -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">📜 Historique</h3>
+                    <div class="version-history">
+                        {% if document.history %}
+                            {% for version in document.history|reverse %}
+                                <div class="version-item">
+                                    <div class="version-number">Version {{ version.version }}</div>
+                                    <div class="version-date">{{ version.timestamp }}</div>
+                                    <div>{{ version.changes }}</div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: #6c757d; text-align: center;">Aucun historique</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}

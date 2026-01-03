@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - Tests APIs IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #667eea; margin-bottom: 2rem; text-align: center; }
+        .api-test { background: white; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .api-test h2 { color: #333; margin-bottom: 1rem; font-size: 1.2rem; }
+        button { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        button:hover { opacity: 0.9; }
+        .result { margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; }
+        .loading { color: #667eea; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        input, textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> MIDDO - Tests APIs IA (Session 51)</h1>
+        
+        <!-- API 1 : Chatbot IA -->
+        <div class="api-test">
+            <h2>1 API Chatbot IA (AIAssistantController)</h2>
+            <textarea id="chatInput" placeholder="Pose une question..." rows="3">Explique-moi ce qu'est MIDDO en 2 phrases</textarea>
+            <button onclick="testChatbot()">🤖 Tester Chatbot</button>
+            <div id="chatResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- API 2 : Matching IA -->
+        <div class="api-test">
+            <h2>2️⃣ API Matching IA (AIMatchingController)</h2>
+            <input id="skillInput" placeholder="Ex: Symfony, React, Blockchain" />
+            <button onclick="testMatching()"> Tester Matching</button>
+            <div id="matchResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- API 3 : Suggestions -->
+        <div class="api-test">
+            <h2>3 API Suggestions (MatchingController)</h2>
+            <button onclick="testSuggestions()"> Obtenir Suggestions</button>
+            <div id="suggestResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- API 4 : Analyse Sentiment -->
+        <div class="api-test">
+            <h2>4 API Analyse Sentiment (ProjectAnalysisController)</h2>
+            <textarea id="sentimentInput" placeholder="Décris un projet..." rows="3">Ce projet est fantastique ! J'adore travailler avec cette équipe.</textarea>
+            <button onclick="testSentiment()">😊 Analyser Sentiment</button>
+            <div id="sentimentResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Résumé -->
+        <div class="api-test" style="background: #667eea; color: white;">
+            <h2> RÉSUMÉ DES TESTS</h2>
+            <div id="summary" style="margin-top: 1rem; font-size: 1.1rem;"></div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = { chatbot: false, matching: false, suggestions: false, sentiment: false };
+
+        async function testChatbot() {
+            const resultDiv = document.getElementById('chatResult');
+            const input = document.getElementById('chatInput').value;
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="loading"> Test en cours...</span>';
+            
+            try {
+                const response = await fetch('/api/ai-assistant/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: input })
+                });
+                const data = await response.json();
+                testResults.chatbot = true;
+                resultDiv.innerHTML = '<span class="success">✅ API CHATBOT OK</span>\n\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                testResults.chatbot = false;
+                resultDiv.innerHTML = '<span class="error"> ERREUR</span>\n\n' + error.message;
+            }
+            updateSummary();
+        }
+
+        async function testMatching() {
+            const resultDiv = document.getElementById('matchResult');
+            const skills = document.getElementById('skillInput').value;
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="loading">⏳ Test en cours...</span>';
+            
+            try {
+                const response = await fetch('/api/ai-matching/match', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skills: skills.split(',').map(s => s.trim()) })
+                });
+                const data = await response.json();
+                testResults.matching = true;
+                resultDiv.innerHTML = '<span class="success"> API MATCHING OK</span>\n\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                testResults.matching = false;
+                resultDiv.innerHTML = '<span class="error"> ERREUR</span>\n\n' + error.message;
+            }
+            updateSummary();
+        }
+
+        async function testSuggestions() {
+            const resultDiv = document.getElementById('suggestResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="loading"> Test en cours...</span>';
+            
+            try {
+                const response = await fetch('/api/matching/suggestions', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                testResults.suggestions = true;
+                resultDiv.innerHTML = '<span class="success"> API SUGGESTIONS OK</span>\n\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                testResults.suggestions = false;
+                resultDiv.innerHTML = '<span class="error">❌ ERREUR</span>\n\n' + error.message;
+            }
+            updateSummary();
+        }
+
+        async function testSentiment() {
+            const resultDiv = document.getElementById('sentimentResult');
+            const text = document.getElementById('sentimentInput').value;
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="loading"> Test en cours...</span>';
+            
+            try {
+                const response = await fetch('/api/project-analysis/sentiment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                const data = await response.json();
+                testResults.sentiment = true;
+                resultDiv.innerHTML = '<span class="success"> API SENTIMENT OK</span>\n\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                testResults.sentiment = false;
+                resultDiv.innerHTML = '<span class="error"> ERREUR</span>\n\n' + error.message;
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const total = Object.values(testResults).filter(v => v === true).length;
+            const summary = document.getElementById('summary');
+            summary.innerHTML = total + '/4 APIs fonctionnelles';
+            if (total === 4) {
+                summary.innerHTML += '<br> SESSION 51 TERMINÉE !';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\Api;
+
+use App\Service\AI\SmartSuggestionsService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[Route('/api/suggestions')]
+#[IsGranted('ROLE_USER')]
+class SuggestionsController extends AbstractController
+{
+    public function __construct(
+        private readonly SmartSuggestionsService $suggestionsService,
+        private readonly LoggerInterface $logger,
+        private readonly RateLimiterFactory $searchLimiterLimiter  // 🔥 NOM CORRIGÉ
+    ) {}
+
+    #[Route('/task', name: 'api_suggestions_task', methods: ['POST'])]
+    public function suggestTask(
+        #[MapRequestPayload] TaskSuggestionRequest $request
+    ): JsonResponse {
+        $limiter = $this->apiSuggestionsLimiter->create($this->getUser()->getUserIdentifier());
+        
+        if (!$limiter->consume(1)->isAccepted()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Rate limit dépassé. Réessayez dans quelques instants.'
+            ], 429);
+        }
+
+        try {
+            $suggestions = $this->suggestionsService->suggestTaskImprovements(
+                $request->taskTitle,
+                $request->taskDescription,
+                $request->currentStatus,
+                $request->assignedTo,
+                $request->projectContext
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur suggestions task', [
+                'error' => $e->getMessage(),
+                'task' => $request->taskTitle
+            ]);
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Erreur lors de la génération de suggestions'
+            ], 500);
+        }
+    }
+
+    #[Route('/project', name: 'api_suggestions_project', methods: ['POST'])]
+    public function suggestProject(
+        #[MapRequestPayload] ProjectSuggestionRequest $request
+    ): JsonResponse {
+        $limiter = $this->apiSuggestionsLimiter->create($this->getUser()->getUserIdentifier());
+        
+        if (!$limiter->consume(1)->isAccepted()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Rate limit dépassé. Réessayez dans quelques instants.'
+            ], 429);
+        }
+
+        try {
+            $suggestions = $this->suggestionsService->generateProjectIdeas(
+                $request->projectName,
+                $request->projectGoals,
+                $request->teamSize,
+                $request->availableSkills,
+                $request->constraints
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur suggestions project', [
+                'error' => $e->getMessage(),
+                'project' => $request->projectName
+            ]);
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Erreur lors de la génération d\'idées projet'
+            ], 500);
+        }
+    }
+
+    #[Route('/document', name: 'api_suggestions_document', methods: ['POST'])]
+    public function suggestDocument(
+        #[MapRequestPayload] DocumentSuggestionRequest $request
+    ): JsonResponse {
+        $limiter = $this->apiSuggestionsLimiter->create($this->getUser()->getUserIdentifier());
+        
+        if (!$limiter->consume(1)->isAccepted()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Rate limit dépassé. Réessayez dans quelques instants.'
+            ], 429);
+        }
+
+        try {
+            $suggestions = $this->suggestionsService->enhanceDocumentContent(
+                $request->documentTitle,
+                $request->currentContent,
+                $request->documentType,
+                $request->targetAudience,
+                $request->desiredTone
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur suggestions document', [
+                'error' => $e->getMessage(),
+                'document' => $request->documentTitle
+            ]);
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Erreur lors de l\'amélioration du document'
+            ], 500);
+        }
+    }
+
+    #[Route('/next-actions', name: 'api_suggestions_next_actions', methods: ['POST'])]
+    public function suggestNextActions(
+        #[MapRequestPayload] NextActionsRequest $request
+    ): JsonResponse {
+        $limiter = $this->apiSuggestionsLimiter->create($this->getUser()->getUserIdentifier());
+        
+        if (!$limiter->consume(1)->isAccepted()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Rate limit dépassé. Réessayez dans quelques instants.'
+            ], 429);
+        }
+
+        try {
+            $suggestions = $this->suggestionsService->suggestNextActions(
+                $request->currentContext,
+                $request->completedTasks,
+                $request->upcomingDeadlines,
+                $request->teamAvailability
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Erreur suggestions next actions', [
+                'error' => $e->getMessage()
+            ]);
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Erreur lors de la suggestion d\'actions'
+            ], 500);
+        }
+    }
+}
+
+// ==================== DTOs ====================
+
+class TaskSuggestionRequest
+{
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Length(min: 3, max: 255)]
+        public readonly string $taskTitle,
+
+        #[Assert\NotBlank]
+        public readonly string $taskDescription,
+
+        #[Assert\NotBlank]
+        public readonly string $currentStatus,
+
+        #[Assert\Type('array')]
+        public readonly array $assignedTo = [],
+
+        public readonly ?string $projectContext = null
+    ) {}
+}
+
+class ProjectSuggestionRequest
+{
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Length(min: 3, max: 255)]
+        public readonly string $projectName,
+
+        #[Assert\NotBlank]
+        public readonly string $projectGoals,
+
+        #[Assert\Range(min: 1, max: 100)]
+        public readonly int $teamSize,
+
+        #[Assert\Type('array')]
+        public readonly array $availableSkills = [],
+
+        #[Assert\Type('array')]
+        public readonly array $constraints = []
+    ) {}
+}
+
+class DocumentSuggestionRequest
+{
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Length(min: 3, max: 255)]
+        public readonly string $documentTitle,
+
+        #[Assert\NotBlank]
+        public readonly string $currentContent,
+
+        #[Assert\NotBlank]
+        public readonly string $documentType,
+
+        public readonly ?string $targetAudience = null,
+
+        public readonly ?string $desiredTone = null
+    ) {}
+}
+
+class NextActionsRequest
+{
+    public function __construct(
+        #[Assert\NotBlank]
+        public readonly string $currentContext,
+
+        #[Assert\Type('array')]
+        public readonly array $completedTasks = [],
+
+        #[Assert\Type('array')]
+        public readonly array $upcomingDeadlines = [],
+
+        #[Assert\Type('array')]
+        public readonly array $teamAvailability = []
+    ) {}
+}

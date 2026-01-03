@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-animations.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('assets/js/favorites.js') }}" defer></script>
+{% endblock %}
+
+{% block title %}Mes Favoris - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 10px;">⭐ Mes Favoris</h1>
+    <p style="text-align: center; color: #7f8c8d; margin-bottom: 40px;">
+        Retrouvez tous vos projets et collaborateurs sauvegardés
+    </p>
+
+    <!-- ONGLETS -->
+    <div style="display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0;">
+        <button id="tab-projects" onclick="showTab('projects')" 
+                style="padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; transition: 0.3s;">
+            📂 Projets Favoris
+        </button>
+        <button id="tab-collaborators" onclick="showTab('collaborators')"
+                style="padding: 12px 24px; background: #f8f9fa; color: #7f8c8d; border: none; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; transition: 0.3s;">
+            👥 Collaborateurs Favoris
+        </button>
+    </div>
+
+    <!-- CONTENU PROJETS -->
+    <div id="content-projects" style="display: block;">
+        <div id="projects-list"></div>
+    </div>
+
+    <!-- CONTENU COLLABORATEURS -->
+    <div id="content-collaborators" style="display: none;">
+        <div id="collaborators-list"></div>
+    </div>
+</div>
+
+<style>
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.favorite-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    border-left: 5px solid #667eea;
+    transition: transform 0.2s;
+}
+
+.favorite-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.remove-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.remove-btn:hover {
+    background: #c0392b;
+    transform: scale(1.05);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+</style>
+
+<script>
+// Fonction pour afficher un onglet spécifique
+function showTab(tab) {
+    // Gestion des onglets
+    if (tab === 'projects') {
+        document.getElementById('content-projects').style.display = 'block';
+        document.getElementById('content-collaborators').style.display = 'none';
+        document.getElementById('tab-projects').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        document.getElementById('tab-projects').style.color = 'white';
+        document.getElementById('tab-collaborators').style.background = '#f8f9fa';
+        document.getElementById('tab-collaborators').style.color = '#7f8c8d';
+    } else {
+        document.getElementById('content-projects').style.display = 'none';
+        document.getElementById('content-collaborators').style.display = 'block';
+        document.getElementById('tab-collaborators').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        document.getElementById('tab-collaborators').style.color = 'white';
+        document.getElementById('tab-projects').style.background = '#f8f9fa';
+        document.getElementById('tab-projects').style.color = '#7f8c8d';
+    }
+}
+
+// Charger les projets favoris
+function loadProjects() {
+    const storage = localStorage.getItem('middo_favorite_projects');
+    const projects = storage ? JSON.parse(storage) : [];
+    
+    const container = document.getElementById('projects-list');
+    
+    if (projects.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📂</div>
+                <h2 style="color: #34495e; margin-bottom: 10px;">Aucun projet favori pour le moment</h2>
+                <p>Cliquez sur ⭐ sur la page <strong>Discover Projects</strong> pour ajouter vos projets préférés !</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    projects.forEach(project => {
+        const scoreColor = project.score >= 90 ? '#27ae60' : project.score >= 70 ? '#f39c12' : '#e74c3c';
+        html += `
+            <div class="favorite-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0 0 10px 0; color: #2c3e50;">${project.name}</h3>
+                        <span style="background: ${scoreColor}; color: white; padding: 5px 12px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                            ${project.score}% Match
+                        </span>
+                    </div>
+                    <button class="remove-btn" onclick="removeProject('${project.id}')">
+                        🗑️ Retirer
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Charger les collaborateurs favoris
+function loadCollaborators() {
+    const storage = localStorage.getItem('middo_favorite_collaborators');
+    const collaborators = storage ? JSON.parse(storage) : [];
+    
+    const container = document.getElementById('collaborators-list');
+    
+    if (collaborators.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">👥</div>
+                <h2 style="color: #34495e; margin-bottom: 10px;">Aucun collaborateur favori pour le moment</h2>
+                <p>Cliquez sur ⭐ sur la page <strong>Find Collaborators</strong> pour ajouter vos collaborateurs préférés !</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    collaborators.forEach(collab => {
+        const scoreColor = collab.score >= 90 ? '#27ae60' : collab.score >= 70 ? '#f39c12' : '#e74c3c';
+        html += `
+            <div class="favorite-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0 0 10px 0; color: #2c3e50;">${collab.name}</h3>
+                        <span style="background: ${scoreColor}; color: white; padding: 5px 12px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                            ${collab.score}% Match
+                        </span>
+                    </div>
+                    <button class="remove-btn" onclick="removeCollaborator('${collab.id}')">
+                        🗑️ Retirer
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Supprimer un projet
+function removeProject(id) {
+    if (!window.FavoritesManager) {
+        alert('❌ Le système de favoris n\'est pas disponible.');
+        return;
+    }
+    
+    if (confirm('Voulez-vous vraiment retirer ce projet de vos favoris ?')) {
+        window.FavoritesManager.removeFavorite('project', id);
+        loadProjects();
+        alert('✅ Projet retiré des favoris !');
+    }
+}
+
+// Supprimer un collaborateur
+function removeCollaborator(id) {
+    if (!window.FavoritesManager) {
+        alert('❌ Le système de favoris n\'est pas disponible.');
+        return;
+    }
+    
+    if (confirm('Voulez-vous vraiment retirer ce collaborateur de vos favoris ?')) {
+        window.FavoritesManager.removeFavorite('collaborator', id);
+        loadCollaborators();
+        alert('✅ Collaborateur retiré des favoris !');
+    }
+}
+
+// Charger les données au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    loadProjects();
+    loadCollaborators();
+});
+</script>
+{% endblock %}

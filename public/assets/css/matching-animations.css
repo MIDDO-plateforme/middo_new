@@ -1,0 +1,302 @@
+/* ═══════════════════════════════════
+   MIDDO - ANIMATIONS CSS PREMIUM
+   SESSION 44 - 11 Animations professionnelles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1. FADE IN (Apparition progressive)
+   ───────────────────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+/* 
+   2. SLIDE IN FROM LEFT (Glissement depuis la gauche)
+    */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+/* 
+   3. SLIDE IN FROM RIGHT (Glissement depuis la droite)
+    */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+}
+
+/* 
+   4. SLIDE UP (Glissement vers le haut)
+    */
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+/* 
+   5. BOUNCE (Rebond)
+    */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.bounce {
+    animation: bounce 0.6s ease;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. PULSE (Pulsation)
+   ───────────────────────────────────────────────────────────────────────── */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s ease infinite;
+}
+
+/* ─────────────────────────────────────────
+   7. SHAKE (Secousse)
+   ──────────────────────────────── */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: shake 0.3s ease;
+}
+
+/* 
+   8. ROTATE (Rotation)
+    */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: rotate 1s linear infinite;
+}
+
+/* 
+   9. SCALE IN (Zoom avant)
+    */
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.scale-in {
+    animation: scaleIn 0.4s ease-out;
+}
+
+/* 
+   10. GLOW (Lueur pulsante)
+    */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.glow {
+    animation: glow 2s ease infinite;
+}
+
+/* 
+   11. FLIP (Retournement)
+    */
+@keyframes flip {
+    from {
+        transform: perspective(400px) rotateY(0);
+    }
+    to {
+        transform: perspective(400px) rotateY(360deg);
+    }
+}
+
+.flip {
+    animation: flip 0.6s ease;
+}
+
+/* ──────────────────────────────────
+   ANIMATIONS SÉQUENTIELLES (Cards qui apparaissent une par une)
+   ───────────────────────────────────────────────────────────────────────── */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TRANSITIONS HOVER SMOOTH
+   ── */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.6);
+}
+
+/* 
+   APPLICATIONS SPÉCIFIQUES POUR LES PAGES MATCHING
+    */
+
+/* Formulaire : apparition slide-up */
+form {
+    animation: slideUp 0.6s ease-out;
+}
+
+/* Bouton submit : effet hover lift + glow */
+button[type="submit"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Loader : rotation + pulse */
+#loading > div {
+    animation: rotate 1s linear infinite;
+}
+
+/* Cards résultats : fade-in séquentiel */
+.result-card {
+    animation: slideUp 0.5s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+/* Badges score : scale-in + bounce */
+.score-badge {
+    animation: scaleIn 0.4s ease-out, bounce 0.6s ease 0.4s;
+}
+
+/* Jauge circulaire (Compatibility) : fade-in */
+canvas#compatibilityGauge {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Barre de progression (Skill Development) : slide-right */
+@keyframes slideRight {
+    from {
+        width: 0;
+    }
+}
+
+.progress-bar {
+    animation: slideRight 1.5s ease-out;
+}
+
+/* 
+   UTILITAIRES
+    */
+
+/* Désactiver les animations pour les utilisateurs qui préfèrent réduire le mouvement */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Animation au scroll (si nécessaire) */
+.animate-on-scroll {
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

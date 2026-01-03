@@ -1,0 +1,203 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ workspace.name }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .workspace-edit-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .breadcrumb-nav {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            color: #6c757d;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .workspace-edit-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .workspace-edit-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .workspace-edit-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .workspace-edit-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.4rem;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid #e1e8ed;
+            color: #333;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="workspace-edit-container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item active">Modifier</li>
+            </ol>
+        </nav>
+
+        <div class="workspace-edit-card">
+            <div class="workspace-edit-header">
+                <h1>✏️ Modifier le Workspace</h1>
+            </div>
+
+            <div class="workspace-edit-body">
+                {{ form_start(form) }}
+
+                <div class="form-group">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.visibility) }}
+                    {{ form_widget(form.visibility) }}
+                    {{ form_errors(form.visibility) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.isActive) }}
+                    <div class="form-check">
+                        {{ form_widget(form.isActive) }}
+                        {{ form_label(form.isActive) }}
+                    </div>
+                    <small class="form-help">{{ form_help(form.isActive) }}</small>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    💾 Enregistrer les modifications
+                </button>
+
+                <a href="{{ path('app_workspace_show', {id: workspace.id}) }}" class="btn-secondary">
+                    ← Annuler
+                </a>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

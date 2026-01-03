@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: middo_new-database-1
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: "!ChangeMe!"
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+  php:
+    image: php:8.2-fpm
+    container_name: middo_php
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - database
+    command: >
+      bash -c "
+      apt-get update &&
+      apt-get install -y libpq-dev &&
+      docker-php-ext-install pdo pdo_pgsql &&
+      php-fpm
+      "
+
+volumes:
+  database_data:
+
+

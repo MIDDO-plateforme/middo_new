@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.name }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .project-show-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .project-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .project-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            height: 30px;
+            margin-top: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: white;
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .dashboard-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-content {
+            color: #333;
+        }
+
+        .budget-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .budget-label {
+            color: #6c757d;
+        }
+
+        .budget-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 25px;
+        }
+
+        .member-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .task-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .task-status.todo { background: #fff3cd; color: #856404; }
+        .task-status.in_progress { background: #cce5ff; color: #004085; }
+        .task-status.completed { background: #d4edda; color: #155724; }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="project-show-container">
+        <div class="project-header">
+            <h1 class="project-title">📊 {{ project.name }}</h1>
+
+            {% if project.description %}
+                <p style="font-size: 1.1rem; opacity: 0.95;">{{ project.description }}</p>
+            {% endif %}
+
+            <div class="project-meta">
+                <span class="project-meta-item">
+                    <strong>Statut:</strong>
+                    {% if project.status == 'planning' %}📋 Planification
+                    {% elseif project.status == 'in_progress' %}🚀 En cours
+                    {% elseif project.status == 'on_hold' %}⏸️ En pause
+                    {% elseif project.status == 'completed' %}✅ Terminé
+                    {% else %}❌ Annulé{% endif %}
+                </span>
+                <span class="project-meta-item">
+                    <strong>Priorité:</strong>
+                    {% if project.priority == 'critical' %}🔴 Critique
+                    {% elseif project.priority == 'high' %}🟠 Haute
+                    {% elseif project.priority == 'medium' %}🟡 Moyenne
+                    {% else %}🟢 Basse{% endif %}
+                </span>
+                <span class="project-meta-item">
+                    👤 <strong>{{ project.owner.email }}</strong>
+                </span>
+                {% if project.deadline %}
+                    <span class="project-meta-item">
+                        📅 Deadline: <strong>{{ project.deadline|date('d/m/Y') }}</strong>
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: {{ project.progress }}%;">
+                    {{ project.progress }}%
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-widgets">
+            <!-- BUDGET -->
+            <div class="widget">
+                <h3 class="widget-title">💰 Budget</h3>
+                <div class="widget-content">
+                    <div class="budget-display">
+                        <span class="budget-label">Alloué</span>
+                        <span class="budget-value">{{ project.budget|default(0)|number_format(2) }} €</span>
+                    </div>
+                    <div class="budget-display">
+                        <span class="budget-label">Dépensé</span>
+                        <span class="budget-value" style="color: #f5576c;">{{ project.spent|default(0)|number_format(2) }} €</span>
+                    </div>
+                    <div class="budget-display">
+                        <span class="budget-label">Restant</span>
+                        <span class="budget-value" style="color: #28a745;">{{ (project.budget|default(0) - project.spent|default(0))|number_format(2) }} €</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉQUIPE -->
+            <div class="widget">
+                <h3 class="widget-title">👥 Équipe ({{ project.teamMembers|length }})</h3>
+                <div class="widget-content">
+                    <div class="team-members">
+                        {% for member in project.teamMembers %}
+                            <div class="team-member">
+                                <div class="member-avatar">{{ member.email|slice(0, 2)|upper }}</div>
+                                <span>{{ member.email }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- TÂCHES -->
+            <div class="widget" style="grid-column: 1 / -1;">
+                <h3 class="widget-title">✅ Tâches ({{ project.tasks|length }})</h3>
+                <div class="widget-content">
+                    {% if project.tasks|length > 0 %}
+                        <div class="task-list">
+                            {% for task in project.tasks|slice(0, 5) %}
+                                <div class="task-item">
+                                    <span>{{ task.title }}</span>
+                                    <span class="task-status {{ task.status }}">
+                                        {% if task.status == 'todo' %}📋 À faire
+                                        {% elseif task.status == 'in_progress' %}🚀 En cours
+                                        {% else %}✅ Terminé{% endif %}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if project.tasks|length > 5 %}
+                            <p style="text-align: center; margin-top: 1rem;">
+                                <a href="{{ path('app_workspace_task_index', {workspaceId: workspace.id, project: project.id}) }}">
+                                    Voir toutes les tâches →
+                                </a>
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p style="text-align: center; color: #6c757d;">Aucune tâche pour ce projet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

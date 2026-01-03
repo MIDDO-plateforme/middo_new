@@ -1,0 +1,183 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Notifications - MIDDO{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12">
+    <div class="max-w-6xl mx-auto px-4">
+        
+        {# Header #}
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">🔔 Centre de Notifications</h1>
+            <p class="text-gray-600">Gérez toutes vos notifications en un seul endroit</p>
+        </div>
+
+        {# Stats Cards #}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Total</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.total }}</p>
+                    </div>
+                    <div class="bg-blue-100 rounded-full p-4">
+                        <span class="text-3xl">📊</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-red-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Non lues</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.unread }}</p>
+                    </div>
+                    <div class="bg-red-100 rounded-full p-4">
+                        <span class="text-3xl">🔴</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">Aujourd'hui</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.today }}</p>
+                    </div>
+                    <div class="bg-green-100 rounded-full p-4">
+                        <span class="text-3xl">📅</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Actions #}
+        {% if stats.unread > 0 %}
+        <div class="mb-6">
+            <button 
+                onclick="markAllAsRead()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+                ✅ Tout marquer comme lu
+            </button>
+        </div>
+        {% endif %}
+
+        {# Notifications List #}
+        <div class="space-y-4">
+            {% if notifications is empty %}
+                <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
+                    <span class="text-6xl mb-4 block">🎉</span>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Aucune notification</h3>
+                    <p class="text-gray-600">Vous êtes à jour ! Toutes vos notifications ont été traitées.</p>
+                </div>
+            {% else %}
+                {% for notification in notifications %}
+                <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border-l-4 border-{{ notification.typeColor }}-500 {% if not notification.isRead %}bg-blue-50{% endif %}">
+                    <div class="flex items-start gap-4">
+                        {# Icon #}
+                        <div class="flex-shrink-0">
+                            <div class="bg-{{ notification.typeColor }}-100 rounded-full p-3">
+                                <span class="text-2xl">{{ notification.icon }}</span>
+                            </div>
+                        </div>
+
+                        {# Content #}
+                        <div class="flex-grow">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-lg font-bold text-gray-900">{{ notification.title }}</h3>
+                                {% if not notification.isRead %}
+                                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                    Non lu
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="text-gray-700 mb-3">{{ notification.message }}</p>
+
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>🕐 {{ notification.timeAgo }}</span>
+                                {% if notification.isRead %}
+                                <span>✅ Lu le {{ notification.readAt|date('d/m/Y à H:i') }}</span>
+                                {% endif %}
+                            </div>
+
+                            {# Actions #}
+                            <div class="flex gap-2 mt-4">
+                                {% if notification.actionUrl %}
+                                <a 
+                                    href="{{ notification.actionUrl }}" 
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                >
+                                    {{ notification.actionLabel|default('Voir') }}
+                                </a>
+                                {% endif %}
+
+                                {% if not notification.isRead %}
+                                <button 
+                                    onclick="markAsRead({{ notification.id }})"
+                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                >
+                                    ✅ Marquer lu
+                                </button>
+                                {% endif %}
+
+                                <button 
+                                    onclick="deleteNotification({{ notification.id }})"
+                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                                >
+                                    🗑️ Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function markAsRead(notificationId) {
+    fetch(`/notifications/${notificationId}/read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function markAllAsRead() {
+    fetch('/notifications/read-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function deleteNotification(notificationId) {
+    if (confirm('Supprimer cette notification ?')) {
+        fetch(`/notifications/${notificationId}/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

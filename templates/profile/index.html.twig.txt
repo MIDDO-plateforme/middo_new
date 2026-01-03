@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Photo de profil -->
+            <div class="card text-center">
+                <div class="card-body">
+                    {% if app.user.profilePicture %}
+                        <img src="{{ asset('uploads/profiles/' ~ app.user.profilePicture) }}" 
+                             alt="Photo de profil" 
+                             class="img-fluid rounded-circle mb-3" 
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" 
+                             style="width: 200px; height: 200px; font-size: 4rem; font-weight: bold;">
+                            {{ app.user.firstName|first|upper }}{{ app.user.lastName|first|upper }}
+                        </div>
+                    {% endif %}
+                    
+                    <h3>{{ app.user.firstName }} {{ app.user.lastName }}</h3>
+                    <p class="text-muted">
+                        <span class="badge bg-secondary">{{ app.user.userType }}</span>
+                    </p>
+                    
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-edit"></i> Modifier mon profil
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user"></i> Informations du profil</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Informations personnelles -->
+                    <h5 class="border-bottom pb-2 mb-3">Informations personnelles</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Email :</strong> {{ app.user.email }}
+                        </div>
+                        {% if app.user.telephone %}
+                        <div class="col-md-6">
+                            <strong>Téléphone :</strong> {{ app.user.telephone }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if app.user.villeActuelle or app.user.paysResidence %}
+                    <div class="row mb-3">
+                        {% if app.user.villeActuelle %}
+                        <div class="col-md-6">
+                            <strong>Ville :</strong> {{ app.user.villeActuelle }}
+                        </div>
+                        {% endif %}
+                        {% if app.user.paysResidence %}
+                        <div class="col-md-6">
+                            <strong>Pays :</strong> {{ app.user.paysResidence }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.bio %}
+                    <div class="mb-4">
+                        <strong>Bio :</strong>
+                        <p>{{ app.user.bio }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Formation & Compétences -->
+                    {% if app.user.niveauEtudes or app.user.domaineExpertise or app.user.languesParlees %}
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Formation & Compétences</h5>
+                    
+                    {% if app.user.niveauEtudes %}
+                    <div class="mb-2">
+                        <strong>Niveau d'études :</strong> {{ app.user.niveauEtudes }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.domaineExpertise %}
+                    <div class="mb-2">
+                        <strong>Domaine d'expertise :</strong> {{ app.user.domaineExpertise }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.languesParlees %}
+                    <div class="mb-2">
+                        <strong>Langues :</strong> {{ app.user.languesParlees }}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    
+                    <!-- Situation professionnelle -->
+                    {% if app.user.statutEmploi or app.user.posteActuel or app.user.secteurActivite %}
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Situation professionnelle</h5>
+                    
+                    {% if app.user.statutEmploi %}
+                    <div class="mb-2">
+                        <strong>Statut :</strong> {{ app.user.statutEmploi }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.posteActuel %}
+                    <div class="mb-2">
+                        <strong>Poste actuel :</strong> {{ app.user.posteActuel }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.anneesExperience %}
+                    <div class="mb-2">
+                        <strong>Expérience :</strong> {{ app.user.anneesExperience }} an(s)
+                    </div>
+                    {% endif %}
+                    
+                    {% if app.user.secteurActivite %}
+                    <div class="mb-2">
+                        <strong>Secteur :</strong> {{ app.user.secteurActivite }}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    
+                    <!-- Liens -->
+                    {% if app.user.linkedinUrl or app.user.siteWebUrl or app.user.portfolioUrl %}
+                    <h5 class="border-bottom pb-2 mb-3 mt-4">Liens</h5>
+                    <div class="mb-2">
+                        {% if app.user.linkedinUrl %}
+                        <a href="{{ app.user.linkedinUrl }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        {% endif %}
+                        
+                        {% if app.user.siteWebUrl %}
+                        <a href="{{ app.user.siteWebUrl }}" target="_blank" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-globe"></i> Site web
+                        </a>
+                        {% endif %}
+                        
+                        {% if app.user.portfolioUrl %}
+                        <a href="{{ app.user.portfolioUrl }}" target="_blank" class="btn btn-sm btn-outline-info">
+                            <i class="fas fa-briefcase"></i> Portfolio
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

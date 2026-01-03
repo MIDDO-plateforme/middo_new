@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - MIDDO{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto py-8 px-4">
+    <div class="card-middo">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-middo-primary to-middo-secondary text-white p-6 rounded-t-lg">
+            <h3 class="text-2xl font-bold flex items-center">
+                <i class="fas fa-user-plus mr-3"></i>
+                Créer votre compte MIDDO
+            </h3>
+            <p class="text-sm opacity-90 mt-2">Rejoignez la communauté mondiale MIDDO en quelques minutes</p>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6">
+            {{ form_start(registrationForm) }}
+
+            {# SECTION 1 : INFORMATIONS OBLIGATOIRES #}
+            <div class="mb-8 pb-8 border-b border-gray-200">
+                <h5 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-user-circle mr-3 text-middo-primary"></i>
+                    Informations de base
+                </h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>{{ form_row(registrationForm.firstName) }}</div>
+                    <div>{{ form_row(registrationForm.lastName) }}</div>
+                    <div class="md:col-span-2">{{ form_row(registrationForm.email) }}</div>
+                    <div class="md:col-span-2 relative">
+                        {{ form_row(registrationForm.plainPassword) }}
+                        <button 
+                            type="button" 
+                            id="togglePassword"
+                            class="absolute right-3 top-12 text-gray-500 hover:text-middo-primary transition"
+                        >
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="md:col-span-2">{{ form_row(registrationForm.userType) }}</div>
+                    <div class="md:col-span-2">
+                        <div class="flex items-center space-x-2">
+                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'rounded'}}) }}
+                            {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'ml-2'}}) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ACCORDÉONS POUR SECTIONS OPTIONNELLES #}
+            <div class="space-y-4">
+                
+                {# SECTION 2 : INFORMATIONS PERSONNELLES #}
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button 
+                        type="button" 
+                        class="accordion-button w-full cursor-pointer bg-gray-50 hover:bg-gray-100 p-4 font-semibold text-lg flex justify-between items-center text-left"
+                        onclick="toggleAccordion('personalInfo', this)"
+                    >
+                        <span><i class="fas fa-id-card mr-2 text-middo-primary"></i>Informations personnelles (optionnel)</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="personalInfo" class="accordion-content hidden p-6 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>{{ form_row(registrationForm.genre) }}</div>
+                            <div>{{ form_row(registrationForm.situationFamiliale) }}</div>
+                            <div>{{ form_row(registrationForm.dateNaissance) }}</div>
+                            <div>{{ form_row(registrationForm.telephone) }}</div>
+                            <div>{{ form_row(registrationForm.paysResidence) }}</div>
+                            <div>{{ form_row(registrationForm.nationalite) }}</div>
+                            <div class="md:col-span-2">{{ form_row(registrationForm.villeActuelle) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# SECTION 3 : FORMATION & COMPÉTENCES #}
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button 
+                        type="button" 
+                        class="accordion-button w-full cursor-pointer bg-gray-50 hover:bg-gray-100 p-4 font-semibold text-lg flex justify-between items-center text-left"
+                        onclick="toggleAccordion('education', this)"
+                    >
+                        <span><i class="fas fa-graduation-cap mr-2 text-middo-primary"></i>Formation & Compétences (optionnel)</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="education" class="accordion-content hidden p-6 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>{{ form_row(registrationForm.niveauEtudes) }}</div>
+                            <div>{{ form_row(registrationForm.domaineExpertise) }}</div>
+                            <div class="md:col-span-2">{{ form_row(registrationForm.ceQueVousSavezFaire) }}</div>
+                            <div class="md:col-span-2">{{ form_row(registrationForm.languesParlees) }}</div>
+                            <div class="md:col-span-2">{{ form_row(registrationForm.certifications) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# SECTION 4 : SITUATION PROFESSIONNELLE #}
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button 
+                        type="button" 
+                        class="accordion-button w-full cursor-pointer bg-gray-50 hover:bg-gray-100 p-4 font-semibold text-lg flex justify-between items-center text-left"
+                        onclick="toggleAccordion('professional', this)"
+                    >
+                        <span><i class="fas fa-briefcase mr-2 text-middo-primary"></i>Situation professionnelle (optionnel)</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="professional" class="accordion-content hidden p-6 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>{{ form_row(registrationForm.statutEmploi) }}</div>
+                            <div>{{ form_row(registrationForm.posteActuel) }}</div>
+                            <div>{{ form_row(registrationForm.anneesExperience) }}</div>
+                            <div>{{ form_row(registrationForm.secteurActivite) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# SECTION 5 : ASPIRATIONS & RECHERCHES #}
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button 
+                        type="button" 
+                        class="accordion-button w-full cursor-pointer bg-gray-50 hover:bg-gray-100 p-4 font-semibold text-lg flex justify-between items-center text-left"
+                        onclick="toggleAccordion('aspirations', this)"
+                    >
+                        <span><i class="fas fa-bullseye mr-2 text-middo-primary"></i>Aspirations & Recherches (optionnel)</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="aspirations" class="accordion-content hidden p-6 bg-white">
+                        <div class="space-y-6">
+                            <div>{{ form_row(registrationForm.objectifsProfessionnels) }}</div>
+                            <div>{{ form_row(registrationForm.ceQueVousAimezFaire) }}</div>
+                            <div>{{ form_row(registrationForm.talentCache) }}</div>
+                            
+                            <!-- Checkboxes -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h6 class="font-semibold text-gray-700 mb-4">Vos recherches et disponibilités</h6>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.pretASeFormer, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.pretASeFormer, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.pretAVousExporter, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.pretAVousExporter, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.disponiblePourMissions, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.disponiblePourMissions, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.rechercheEmploi, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.rechercheEmploi, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.sansEmploi, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.sansEmploi, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.rechercheInvestisseurs, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.rechercheInvestisseurs, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        {{ form_widget(registrationForm.recherchePartenaires, {'attr': {'class': 'rounded'}}) }}
+                                        {{ form_label(registrationForm.recherchePartenaires, null, {'label_attr': {'class': 'ml-2 text-sm'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>{{ form_row(registrationForm.domainesFormationSouhaites) }}</div>
+                            <div>{{ form_row(registrationForm.paysExportationPreference) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {# SECTION 6 : RÉSEAU & LIENS #}
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <button 
+                        type="button" 
+                        class="accordion-button w-full cursor-pointer bg-gray-50 hover:bg-gray-100 p-4 font-semibold text-lg flex justify-between items-center text-left"
+                        onclick="toggleAccordion('network', this)"
+                    >
+                        <span><i class="fas fa-link mr-2 text-middo-primary"></i>Réseau & Liens (optionnel)</span>
+                        <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+                    <div id="network" class="accordion-content hidden p-6 bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">{{ form_row(registrationForm.linkedinUrl) }}</div>
+                            <div>{{ form_row(registrationForm.siteWebUrl) }}</div>
+                            <div>{{ form_row(registrationForm.portfolioUrl) }}</div>
+                            <div class="md:col-span-2">{{ form_row(registrationForm.bio) }}</div>
+                            <div>{{ form_row(registrationForm.disponibilite) }}</div>
+                            <div>{{ form_row(registrationForm.mobiliteGeographique) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton soumission -->
+            <div class="mt-8">
+                <button 
+                    type="submit" 
+                    class="btn-middo w-full bg-gradient-to-r from-middo-primary to-middo-secondary text-white text-lg"
+                >
+                    <i class="fas fa-check-circle mr-2"></i>Créer mon compte
+                </button>
+            </div>
+
+            {{ form_end(registrationForm) }}
+
+            <!-- Lien connexion -->
+            <div class="text-center mt-6">
+                <p class="text-gray-600">
+                    Vous avez déjà un compte ? 
+                    <a href="{{ path('app_login') }}" class="text-middo-primary hover:underline font-medium">Connectez-vous</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Style pour les formulaires Symfony avec Tailwind */
+.form-control, input[type="text"], input[type="email"], input[type="tel"], input[type="date"], 
+input[type="number"], input[type="password"], input[type="url"], select, textarea {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-middo-primary focus:border-transparent transition;
+}
+
+label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+.form-error {
+    @apply text-red-600 text-sm mt-1;
+}
+
+.accordion-button.active i {
+    transform: rotate(180deg);
+}
+</style>
+
+<script>
+// JavaScript pour les accordéons
+function toggleAccordion(targetId, button) {
+    const targetContent = document.getElementById(targetId);
+    targetContent.classList.toggle('hidden');
+    button.classList.toggle('active');
+}
+
+// Bouton voir/masquer mot de passe
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.querySelector('input[name="registration_form[plainPassword]"]');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            eyeIcon.classList.toggle('fa-eye');
+            eyeIcon.classList.toggle('fa-eye-slash');
+        });
+    }
+});
+</script>
+{% endblock %}
+
+       

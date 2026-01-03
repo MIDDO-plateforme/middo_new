@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ document.title }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ include('workspace/document/new.html.twig')|striptags(false) }}
+{% endblock %}
+
+{% block body %}
+    <div class="document-create-container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_document_index', {workspaceId: workspace.id}) }}">Documents</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_document_show', {workspaceId: workspace.id, id: document.id}) }}">{{ document.title }}</a></li>
+                <li class="breadcrumb-item active">Modifier</li>
+            </ol>
+        </nav>
+
+        <div class="document-create-card">
+            <div class="document-create-header">
+                <h1>✏️ Modifier le Document</h1>
+                <span class="workspace-badge">{{ workspace.name }}</span>
+            </div>
+
+            <div class="document-create-body">
+                {{ form_start(form) }}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.type) }}
+                        {{ form_widget(form.type) }}
+                        {{ form_errors(form.type) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.content) }}
+                    {{ form_widget(form.content) }}
+                    {{ form_errors(form.content) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        💾 Enregistrer les modifications
+                    </button>
+                    <a href="{{ path('app_workspace_document_show', {workspaceId: workspace.id, id: document.id}) }}" class="btn-secondary">
+                        ← Annuler
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

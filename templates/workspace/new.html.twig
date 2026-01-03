@@ -1,0 +1,289 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau Workspace - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .workspace-create-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .workspace-create-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .workspace-create-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .workspace-create-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .workspace-create-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .workspace-create-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .visibility-radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .visibility-radio-group input[type="radio"] {
+            display: none;
+        }
+
+        .visibility-radio-group label {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .visibility-radio-group input[type="radio"]:checked + label {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            transform: translateX(5px);
+        }
+
+        .ai-preferences-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .ai-preferences-checkboxes label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-preferences-checkboxes input[type="checkbox"]:checked + label {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.4rem;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid #e1e8ed;
+            color: #333;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="workspace-create-container">
+        <div class="workspace-create-card">
+            <div class="workspace-create-header">
+                <h1>🚀 Créer un Workspace</h1>
+                <p>Donnez vie à votre prochain projet collaboratif</p>
+            </div>
+
+            <div class="workspace-create-body">
+                {{ form_start(form) }}
+
+                <div class="form-group">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                    <small class="form-help">Choisissez un nom clair et descriptif</small>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.visibility) }}
+                    <div class="visibility-radio-group">
+                        {{ form_widget(form.visibility) }}
+                    </div>
+                    {{ form_errors(form.visibility) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.settings) }}
+                    {{ form_widget(form.settings) }}
+                    {{ form_errors(form.settings) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.aiPreferences) }}
+                    <div class="ai-preferences-checkboxes">
+                        {{ form_widget(form.aiPreferences) }}
+                    </div>
+                    {{ form_errors(form.aiPreferences) }}
+                    <small class="form-help">{{ form_help(form.aiPreferences) }}</small>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ form_widget(form.isActive) }}
+                        {{ form_label(form.isActive) }}
+                    </div>
+                    <small class="form-help">{{ form_help(form.isActive) }}</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        ✨ Créer le Workspace
+                    </button>
+                    <a href="{{ path('app_workspace_index') }}" class="btn-secondary">
+                        ← Annuler
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.workspace-form');
+            
+            // Validation en temps réel
+            const nameInput = document.querySelector('#workspace_name');
+            if (nameInput) {
+                nameInput.addEventListener('input', function() {
+                    if (this.value.length >= 3) {
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                    } else {
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    }
+                });
+            }
+
+            // Confirmation avant soumission
+            form.addEventListener('submit', function(e) {
+                const submitBtn = form.querySelector('.btn-primary');
+                submitBtn.innerHTML = '⏳ Création en cours...';
+                submitBtn.disabled = true;
+            });
+        });
+    </script>
+{% endblock %}

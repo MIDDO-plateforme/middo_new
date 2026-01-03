@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Controller\Api;
+
+use OpenAI\Client;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/api/chatbot', name: 'api_chatbot_')]
+class ChatbotController extends AbstractController
+{
+    private Client $openai;
+
+    public function __construct(Client $openai)
+    {
+        $this->openai = $openai;
+    }
+
+    #[Route('/message', name: 'send_message', methods: ['POST'])]
+    public function sendMessage(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $userMessage = $data['message'] ?? '';
+
+            if (empty($userMessage)) {
+                return $this->json(['success' => false, 'error' => 'Message vide'], 400);
+            }
+
+            $systemPrompt = "Tu es assistant IA de MIDDO, plateforme de collaboration professionnelle.";
+
+            $response = $this->openai->chat()->create([
+                'model' => 'gpt-4',
+                'messages' => [
+                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'user', 'content' => $userMessage]
+                ],
+                'max_tokens' => 500
+            ]);
+
+            return $this->json([
+                'success' => true,
+                'message' => $response->choices[0]->message->content,
+                'timestamp' => time()
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analytics - SESSION 69</title>
+    <link rel="stylesheet" href="/css/dashboard-analytics.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1> Dashboard Analytics</h1>
+            <p>SESSION 69 - Graphiques interactifs avec Chart.js</p>
+        </header>
+
+        <!-- Filtres temporels + Export -->
+        <section class="filters-section">
+            <div class="time-filters">
+                <button class="filter-btn active" data-period="7d">7 jours</button>
+                <button class="filter-btn" data-period="30d">30 jours</button>
+                <button class="filter-btn" data-period="90d">90 jours</button>
+                <button class="filter-btn" data-period="1y">1 an</button>
+            </div>
+            
+            <div class="export-buttons">
+                <button class="export-btn export-csv" id="export-csv-btn">
+                    <span></span> Export CSV
+                </button>
+                <button class="export-btn export-json" id="export-json-btn">
+                    <span></span> Export JSON
+                </button>
+            </div>
+        </section>
+
+        <!-- KPIs Grid -->
+        <section class="kpis-grid">
+            <!-- KPI 1: Revenus -->
+            <div class="kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-value" id="kpi-revenue">0 €</div>
+                <div class="kpi-label">Revenus Total</div>
+                <span class="kpi-trend up"> +12.5%</span>
+            </div>
+
+            <!-- KPI 2: Missions -->
+            <div class="kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-value" id="kpi-missions">0</div>
+                <div class="kpi-label">Missions Complétées</div>
+                <span class="kpi-trend up"> +8.3%</span>
+            </div>
+
+            <!-- KPI 3: Satisfaction -->
+            <div class="kpi-card">
+                <div class="kpi-icon"></div>
+                <div class="kpi-value" id="kpi-satisfaction">0%</div>
+                <div class="kpi-label">Clients Satisfaits</div>
+                <span class="kpi-trend up">↗ +3.7%</span>
+            </div>
+
+            <!-- KPI 4: Temps réponse -->
+            <div class="kpi-card">
+                <div class="kpi-icon">⏱️</div>
+                <div class="kpi-value" id="kpi-response">0h</div>
+                <div class="kpi-label">Temps Moyen Réponse</div>
+                <span class="kpi-trend down"> -15.2%</span>
+            </div>
+        </section>
+
+        <!-- Charts Grid -->
+        <section class="charts-grid">
+            <!-- Chart 1: Line - Évolution revenus -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title"> Évolution des Revenus</h3>
+                    <span class="chart-info">7 derniers jours</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenue-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Bar - Missions par catégorie -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title"> Missions par Catégorie</h3>
+                    <span class="chart-info">Total: 78 missions</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="missions-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Doughnut - Répartition compétences -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title"> Répartition Compétences</h3>
+                    <span class="chart-info">Top 5</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="skills-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Radar - Performance -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title"> Performance Utilisateur</h3>
+                    <span class="chart-info">5 axes d'évaluation</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/dashboard-analytics.js"></script>
+  <script src="js/universal-dark-mode.js"></script>
+</body>
+</html>

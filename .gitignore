@@ -1,0 +1,11 @@
+﻿# Secrets
+.env
+.env.*
+!.env.example
+test_new_key.php
+
+# Dossiers
+/var/
+/vendor/
+/public/bundles/
+/node_modules/

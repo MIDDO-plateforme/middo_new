@@ -1,0 +1,80 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Explorer les profils - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Explorer les profils</h1>
+    <p class="lead mb-4">Découvrez les professionnels de la communauté MIDDO mondiale</p>
+
+    <div class="mb-4">
+        <h5>Filtrer par type</h5>
+        <div class="btn-group flex-wrap" role="group">
+            <a href="{{ path('app_users') }}" class="btn btn-outline-primary">Tous</a>
+            <a href="{{ path('app_users', {type: 'Entrepreneur'}) }}" class="btn btn-outline-primary">Entrepreneurs</a>
+            <a href="{{ path('app_users', {type: 'Investisseur'}) }}" class="btn btn-outline-primary">Investisseurs</a>
+            <a href="{{ path('app_users', {type: 'Entreprise'}) }}" class="btn btn-outline-primary">Entreprises</a>
+            <a href="{{ path('app_users', {type: 'Particulier'}) }}" class="btn btn-outline-primary">Particuliers</a>
+            <a href="{{ path('app_users', {type: 'Association'}) }}" class="btn btn-outline-primary">Associations</a>
+            <a href="{{ path('app_users', {type: 'Institution'}) }}" class="btn btn-outline-primary">Institutions</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for user in users %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    {% if user.profilePicture %}
+                        <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" 
+                             alt="Photo de profil" 
+                             class="rounded-circle mb-3" 
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 120px; height: 120px; font-size: 2.5rem; font-weight: bold;">
+                            {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                        </div>
+                    {% endif %}
+                    
+                    <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
+                    <p class="text-muted">{{ user.userType }}</p>
+                    
+                    {% if user.bio %}
+                        <p class="card-text small">{{ user.bio }}</p>
+                    {% endif %}
+                    
+                    <p class="text-muted small">
+                        {% if user.villeActuelle or user.paysResidence %}
+                            <i class="fas fa-map-marker-alt"></i> 
+                            {% if user.villeActuelle %}{{ user.villeActuelle }}{% endif %}{% if user.villeActuelle and user.paysResidence %} , {% endif %}{% if user.paysResidence %}{{ user.paysResidence }}{% endif %}
+                        {% endif %}
+                    </p>
+                    
+                    {% if user.domaineExpertise %}
+                        <p class="card-text small"><strong>{{ user.domaineExpertise }}</strong></p>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        {% if user.rechercheEmploi %}
+                            <span class="badge bg-warning text-dark">Recherche emploi</span>
+                        {% endif %}
+                        {% if user.disponiblePourMissions %}
+                            <span class="badge bg-success">Disponible</span>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="{{ path('app_user_show', {id: user.id}) }}" class="btn btn-primary btn-sm">
+                        Voir le profil
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <p class="text-center text-muted">Aucun utilisateur trouvé.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,1411 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* ============================================
+           MIDDO SEARCH PAGE - PREMIUM STYLES
+           ============================================ */
+        
+        :root {
+            --search-primary: #667eea;
+            --search-secondary: #764ba2;
+            --search-accent: #f093fb;
+            --search-success: #4ade80;
+            --search-warning: #fbbf24;
+            --search-danger: #ef4444;
+            --search-dark: #1e293b;
+            --search-light: #f8fafc;
+            --search-border: #e2e8f0;
+            --search-shadow: rgba(0, 0, 0, 0.1);
+            --search-radius: 16px;
+        }
+
+        .search-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+            margin-top: 70px;
+        }
+
+        .search-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .search-header {
+            background: white;
+            border-radius: var(--search-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px var(--search-shadow);
+        }
+
+        .search-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar {
+            position: relative;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.5rem;
+            border: 2px solid var(--search-border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--search-primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--search-primary);
+            font-size: 1.3rem;
+        }
+
+        .search-btn-advanced {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn-advanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--search-border);
+        }
+
+        .results-count {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .results-count strong {
+            color: var(--search-primary);
+            font-weight: 700;
+        }
+
+        .results-sort {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .results-sort select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--search-border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .search-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .search-tabs {
+            background: white;
+            border-radius: var(--search-radius);
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px var(--search-shadow);
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--search-border);
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--search-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--search-primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+        }
+
+        .tab-badge {
+            display: inline-block;
+            margin-left: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            background: var(--search-primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            background: var(--search-light);
+            border: 1px solid var(--search-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--search-shadow);
+            border-color: var(--search-primary);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .result-title {
+            flex: 1;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--search-dark);
+        }
+
+        .result-title .highlight {
+            background: linear-gradient(135deg, #fef3c7, #fde047);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .result-description {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .result-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--search-border);
+        }
+
+        .result-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .result-tag {
+            padding: 0.3rem 0.8rem;
+            background: white;
+            border: 1px solid var(--search-border);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .result-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 6px;
+            background: var(--search-border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--search-success), #22c55e);
+            border-radius: 3px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--search-light);
+            border: 1px solid var(--search-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--search-shadow);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--search-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .user-role {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-skills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .user-skill {
+            padding: 0.2rem 0.6rem;
+            background: white;
+            border: 1px solid var(--search-border);
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .search-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: var(--search-radius);
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px var(--search-shadow);
+        }
+
+        .sidebar-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--search-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-card h3 i {
+            color: var(--search-primary);
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: var(--search-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--search-border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .filter-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .filter-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.7rem;
+            background: var(--search-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: #e2e8f0;
+        }
+
+        .history-item i {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .history-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .popular-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+
+        .popular-tag {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--search-primary), var(--search-secondary));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .popular-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination-btn {
+            padding: 0.7rem 1.2rem;
+            background: white;
+            border: 1px solid var(--search-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover {
+            background: var(--search-primary);
+            color: white;
+            border-color: var(--search-primary);
+        }
+
+        .pagination-btn.active {
+            background: var(--search-primary);
+            color: white;
+            border-color: var(--search-primary);
+        }
+
+        @media (max-width: 1024px) {
+            .search-layout {
+                grid-template-columns: 1fr;
+            }
+            .search-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-page {
+                padding: 1rem 0;
+            }
+            .search-container {
+                padding: 0 1rem;
+            }
+            .search-bar {
+                flex-direction: column;
+            }
+            .tabs-nav {
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .tabs-nav::-webkit-scrollbar {
+                display: none;
+            }
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="search-page">
+    <div class="search-container">
+        
+        <div class="search-header">
+            <h1>
+                <i class="bi bi-search"></i> Recherche MIDDO
+            </h1>
+
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <i class="bi bi-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput"
+                        placeholder="Rechercher des projets, messages, utilisateurs, tâches..."
+                        value="MIDDO"
+                    >
+                </div>
+                <button class="search-btn-advanced">
+                    <i class="bi bi-sliders"></i> Avancée
+                </button>
+            </div>
+
+            <div class="search-results-info">
+                <div class="results-count">
+                    <strong>58 résultats</strong> trouvés pour "<strong>MIDDO</strong>"
+                </div>
+                <div class="results-sort">
+                    <span style="font-size: 0.9rem; color: #64748b;">Trier par:</span>
+                    <select class="results-sort-select">
+                        <option>Pertinence</option>
+                        <option>Plus récent</option>
+                        <option>Plus ancien</option>
+                        <option>Alphabétique</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-layout">
+            
+            <div class="search-tabs">
+                
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="projects">
+                        <i class="bi bi-folder"></i> Projets
+                        <span class="tab-badge">12</span>
+                    </button>
+                    <button class="tab-btn" data-tab="messages">
+                        <i class="bi bi-envelope"></i> Messages
+                        <span class="tab-badge">8</span>
+                    </button>
+                    <button class="tab-btn" data-tab="users">
+                        <i class="bi bi-people"></i> Utilisateurs
+                        <span class="tab-badge">15</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tasks">
+                        <i class="bi bi-check-circle"></i> Tâches
+                        <span class="tab-badge">23</span>
+                    </button>
+                </div>
+
+                <div class="tab-content active" id="tab-projects">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">
+                                    <span class="highlight">MIDDO</span> Dashboard
+                                </div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 17/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 5 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Dashboard analytique complet avec 4 graphiques Google Sheets intégrés, KPI cards animées et timeline des 60 sessions.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">En cours</span>
+                                <span class="result-tag">High Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">85%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Email Automation</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 16/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 4 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Automatisation complète des emails transactionnels avec templates personnalisés et suivi des performances.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Terminé</span>
+                                <span class="result-tag">Medium Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">IA Integration</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 15/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 6 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Intégration de 4 APIs IA premium : Chatbot, Suggestions, Matching et Analyse de sentiment.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">En cours</span>
+                                <span class="result-tag">High Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">65%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">N8N Workflows</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 14/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 3 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Workflows automatisés pour la synchronisation des données et notifications intelligentes.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">En attente</span>
+                                <span class="result-tag">Low Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 40%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">40%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Mobile App</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 13/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 7 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Application mobile native React Native avec synchronisation temps réel.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">En cours</span>
+                                <span class="result-tag">Medium Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 20%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">20%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">API REST v2</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> 12/12/2024</span>
+                                    <span><i class="bi bi-person"></i> 4 membres</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            API REST complète avec authentification JWT et documentation Swagger.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Terminé</span>
+                                <span class="result-tag">High Priority</span>
+                            </div>
+                            <div class="result-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 90%"></div>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 600; color: #64748b;">90%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pagination">
+    <button class="pagination-btn" onclick="alert('📄 Page précédente (fonctionnalité en développement)')">‹ Précédent</button>
+    <button class="pagination-btn active">1</button>
+    <button class="pagination-btn" onclick="alert('📄 Page 2 (fonctionnalité en développement)')">2</button>
+    <button class="pagination-btn" onclick="alert('📄 Page suivante (fonctionnalité en développement)')">Suivant ›</button>
+</div>
+                </div>
+
+                <div class="tab-content" id="tab-messages">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Marie Dupont</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-clock"></i> Il y a 2h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Super ! Les graphiques sont parfaitement intégrés. On continue avec la page Messages ?
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Non lu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Jean Martin</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-clock"></i> Il y a 5h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            J'ai terminé l'intégration de l'API IA. Tu peux tester ?
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Lu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Sophie Leroy</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-clock"></i> Hier</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Réunion demain à 14h pour valider le dashboard.
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Non lu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Thomas Bernard</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-clock"></i> Il y a 3 jours</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Les workflows N8N sont opérationnels 🎉
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Lu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Emma Petit</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-clock"></i> Il y a 1 semaine</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            Nouveau design validé par le client !
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Lu</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-users">
+                    <div class="user-card">
+                        <div class="user-avatar">M</div>
+                        <div class="user-info">
+                            <div class="user-name">Marie Dupont</div>
+                            <div class="user-role">Chef de Projet</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Gestion de projet</span>
+                                <span class="user-skill">Agile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">J</div>
+                        <div class="user-info">
+                            <div class="user-name">Jean Martin</div>
+                            <div class="user-role">Développeur Full-Stack</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Symfony</span>
+                                <span class="user-skill">React</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">S</div>
+                        <div class="user-info">
+                            <div class="user-name">Sophie Leroy</div>
+                            <div class="user-role">Designer UI/UX</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Figma</span>
+                                <span class="user-skill">UI/UX</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">T</div>
+                        <div class="user-info">
+                            <div class="user-name">Thomas Bernard</div>
+                            <div class="user-role">DevOps Engineer</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Docker</span>
+                                <span class="user-skill">AWS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">E</div>
+                        <div class="user-info">
+                            <div class="user-name">Emma Petit</div>
+                            <div class="user-role">Product Owner</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Scrum</span>
+                                <span class="user-skill">Product</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">L</div>
+                        <div class="user-info">
+                            <div class="user-name">Lucas Moreau</div>
+                            <div class="user-role">Data Scientist</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Python</span>
+                                <span class="user-skill">ML</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">P</div>
+                        <div class="user-info">
+                            <div class="user-name">Paul Dubois</div>
+                            <div class="user-role">Frontend Developer</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Vue.js</span>
+                                <span class="user-skill">CSS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card">
+                        <div class="user-avatar">C</div>
+                        <div class="user-info">
+                            <div class="user-name">Clara Rousseau</div>
+                            <div class="user-role">Scrum Master</div>
+                            <div class="user-skills">
+                                <span class="user-skill">Agile</span>
+                                <span class="user-skill">Coaching</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-tasks">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Intégrer les 4 graphiques PNG</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 19/12</span>
+                                    <span><i class="bi bi-person"></i> Baudouin</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag" style="background: #fef3c7; color: #92400e;">En cours</span>
+                                <span class="result-tag" style="background: #fee2e2; color: #991b1b;">High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Créer la page Messages</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 20/12</span>
+                                    <span><i class="bi bi-person"></i> Marie</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag" style="background: #fef3c7; color: #92400e;">En cours</span>
+                                <span class="result-tag" style="background: #fee2e2; color: #991b1b;">High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Finaliser le profil utilisateur</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 21/12</span>
+                                    <span><i class="bi bi-person"></i> Jean</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag" style="background: #fef3c7; color: #92400e;">En cours</span>
+                                <span class="result-tag">Medium</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Tester la recherche avancée</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 22/12</span>
+                                    <span><i class="bi bi-person"></i> Sophie</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">À faire</span>
+                                <span class="result-tag" style="background: #fee2e2; color: #991b1b;">High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Documenter l'API REST</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 23/12</span>
+                                    <span><i class="bi bi-person"></i> Thomas</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">À faire</span>
+                                <span class="result-tag">Low</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Configurer N8N</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 24/12</span>
+                                    <span><i class="bi bi-person"></i> Emma</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">À faire</span>
+                                <span class="result-tag">Medium</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Déployer en production</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 25/12</span>
+                                    <span><i class="bi bi-person"></i> Lucas</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">À faire</span>
+                                <span class="result-tag" style="background: #fee2e2; color: #991b1b;">High</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Valider les KPI cards</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 26/12</span>
+                                    <span><i class="bi bi-person"></i> Paul</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Terminé</span>
+                                <span class="result-tag">Medium</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Optimiser les performances</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 27/12</span>
+                                    <span><i class="bi bi-person"></i> Clara</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Terminé</span>
+                                <span class="result-tag">Low</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon" style="background: linear-gradient(135deg, #4ade80, #22c55e);">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="result-title">Réunion équipe</div>
+                                <div class="result-meta">
+                                    <span><i class="bi bi-calendar"></i> Deadline: 28/12</span>
+                                    <span><i class="bi bi-person"></i> Équipe</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-footer">
+                            <div class="result-tags">
+                                <span class="result-tag">Terminé</span>
+                                <span class="result-tag">Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="search-sidebar">
+                
+                <div class="sidebar-card">
+                    <h3>
+                        <i class="bi bi-funnel"></i> Filtres Avancés
+                    </h3>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Date</label>
+                        <select class="filter-select">
+                            <option>Toutes les dates</option>
+                            <option>Aujourd'hui</option>
+                            <option>Cette semaine</option>
+                            <option>Ce mois</option>
+                            <option>Cette année</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Statut</label>
+                        <div class="filter-checkboxes">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" checked>
+                                <span>En cours</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" checked>
+                                <span>Terminé</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox">
+                                <span>En attente</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Catégorie</label>
+                        <select class="filter-select">
+                            <option>Toutes les catégories</option>
+                            <option>Développement</option>
+                            <option>Design</option>
+                            <option>Marketing</option>
+                            <option>Infrastructure</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Membres</label>
+                        <select class="filter-select">
+                            <option>Tous les membres</option>
+                            <option>Baudouin</option>
+                            <option>Marie Dupont</option>
+                            <option>Jean Martin</option>
+                            <option>Sophie Leroy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>
+                        <i class="bi bi-clock-history"></i> Historique
+                    </h3>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <i class="bi bi-search"></i>
+                            <span class="history-text">MIDDO Dashboard</span>
+                        </div>
+                        <div class="history-item">
+                            <i class="bi bi-search"></i>
+                            <span class="history-text">IA Integration</span>
+                        </div>
+                        <div class="history-item">
+                            <i class="bi bi-search"></i>
+                            <span class="history-text">Email Automation</span>
+                        </div>
+                        <div class="history-item">
+                            <i class="bi bi-search"></i>
+                            <span class="history-text">N8N Workflows</span>
+                        </div>
+                        <div class="history-item">
+                            <i class="bi bi-search"></i>
+                            <span class="history-text">API REST</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>
+                        <i class="bi bi-fire"></i> Recherches Populaires
+                    </h3>
+                    <div class="popular-list">
+                        <span class="popular-tag">MIDDO Dashboard</span>
+                        <span class="popular-tag">IA</span>
+                        <span class="popular-tag">Symfony</span>
+                        <span class="popular-tag">Projets</span>
+                        <span class="popular-tag">Équipe</span>
+                        <span class="popular-tag">API</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const tabId = 'tab-' + btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = e.target.value.trim();
+                if (query.length >= 2) {
+                    console.log('Recherche en temps réel:', query);
+                }
+            }, 300);
+        });
+
+        document.querySelectorAll('.history-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const query = item.querySelector('.history-text').textContent;
+                searchInput.value = query;
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            });
+        });
+
+        document.querySelectorAll('.popular-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const query = tag.textContent;
+                searchInput.value = query;
+                window.location.href = `/search?q=${encodeURIComponent(query)}`;
+            });
+        });
+
+        document.querySelectorAll('.result-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('a') && !e.target.closest('button')) {
+                    console.log('Card clicked:', card);
+                }
+            });
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query.length >= 2) {
+                    window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    </script>
+{% endblock %}

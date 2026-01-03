@@ -1,0 +1,409 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Document - {{ workspace.name }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .document-create-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .breadcrumb-nav {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumb-item {
+            color: #6c757d;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-item.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .document-create-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .document-create-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .document-create-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .workspace-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .document-create-body {
+            padding: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #f5576c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+        }
+
+        .document-editor {
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #e1e8ed;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .file-upload-area:hover {
+            border-color: #f5576c;
+            background: #fff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #f5576c;
+            background: rgba(245, 87, 108, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-info {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e7f5ff;
+            border-radius: 8px;
+            color: #0c5460;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.4rem;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid #e1e8ed;
+            color: #333;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            border-color: #f5576c;
+            color: #f5576c;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .ai-suggestion-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-suggestion-box .icon {
+            font-size: 2rem;
+        }
+
+        .ai-suggestion-box .text {
+            flex: 1;
+        }
+
+        .ai-suggestion-box .title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .ai-suggestion-box .description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="document-create-container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_document_index', {workspaceId: workspace.id}) }}">Documents</a></li>
+                <li class="breadcrumb-item active">Nouveau document</li>
+            </ol>
+        </nav>
+
+        <div class="document-create-card">
+            <div class="document-create-header">
+                <h1>📄 Nouveau Document</h1>
+                <span class="workspace-badge">{{ workspace.name }}</span>
+            </div>
+
+            <div class="document-create-body">
+                <div class="ai-suggestion-box">
+                    <div class="icon">🤖</div>
+                    <div class="text">
+                        <div class="title">IA activée</div>
+                        <div class="description">Votre document sera analysé pour extraire des mots-clés, évaluer la lisibilité et suggérer des améliorations</div>
+                    </div>
+                </div>
+
+                {{ form_start(form) }}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.type) }}
+                        {{ form_widget(form.type) }}
+                        {{ form_errors(form.type) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.content) }}
+                    {{ form_widget(form.content) }}
+                    {{ form_errors(form.content) }}
+                    <small class="form-help">{{ form_help(form.content) }}</small>
+                </div>
+
+                <div class="form-group full-width">
+                    {{ form_label(form.file) }}
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">📎</div>
+                        <div class="file-upload-text">Cliquez ou glissez un fichier ici</div>
+                        {{ form_widget(form.file, {'attr': {'id': 'fileInput', 'style': 'display: none;'}}) }}
+                        <small class="form-help">{{ form_help(form.file) }}</small>
+                    </div>
+                    <div class="file-info" id="fileInfo"></div>
+                    {{ form_errors(form.file) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        ✨ Créer le document
+                    </button>
+                    <a href="{{ path('app_workspace_document_index', {workspaceId: workspace.id}) }}" class="btn-secondary">
+                        ← Annuler
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+
+            // Click to upload
+            fileUploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // File selected
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    fileInfo.innerHTML = `
+                        <strong>📎 Fichier sélectionné :</strong><br>
+                        ${file.name} (${fileSize} MB)
+                    `;
+                    fileInfo.classList.add('show');
+                }
+            });
+
+            // Drag and drop
+            fileUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            fileUploadArea.addEventListener('dragleave', function() {
+                this.classList.remove('dragover');
+            });
+
+            fileUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    const event = new Event('change');
+                    fileInput.dispatchEvent(event);
+                }
+            });
+
+            // Real-time title validation
+            const titleInput = document.querySelector('#workspace_document_title');
+            if (titleInput) {
+                titleInput.addEventListener('input', function() {
+                    if (this.value.length >= 3) {
+                        this.style.borderColor = '#28a745';
+                    } else {
+                        this.style.borderColor = '#dc3545';
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

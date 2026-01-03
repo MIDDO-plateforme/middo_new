@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Controller;
+
+use App\Service\SearchService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Psr\Log\LoggerInterface;
+
+#[Route('/api/search', name: 'api_search_')]
+class SearchController extends AbstractController
+{
+    private SearchService $searchService;
+    private RateLimiterFactory $searchLimiter;
+    private LoggerInterface $logger;
+
+        public function __construct(
+        SearchService $searchService,
+        RateLimiterFactory $searchLimiter,
+        LoggerInterface $logger
+    ) {
+        $this->searchService = $searchService;
+        $this->searchLimiter = $searchLimiter;
+        $this->logger = $logger;
+    }
+
+    #[Route('', name: 'index', methods: ['POST'])]
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $limiter = $this->searchLimiter->create($request->getClientIp());
+            if (!$limiter->consume(1)->isAccepted()) {
+                return $this->json([
+                    'error' => 'Trop de requêtes. Veuillez réessayer plus tard.'
+                ], Response::HTTP_TOO_MANY_REQUESTS);
+            }
+
+            $data = json_decode($request->getContent(), true);
+            $query = $data['query'] ?? '';
+
+            if (empty($query)) {
+                return $this->json([
+                    'error' => 'Le champ de recherche est vide.'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            if (strlen($query) > 500) {
+                return $this->json([
+                    'error' => 'Votre requête est trop longue (max 500 caractères).'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $query = strip_tags($query);
+            $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
+
+            $dangerousPatterns = [
+                '/\b(DROP|DELETE|UPDATE|INSERT|CREATE|ALTER|EXEC|UNION|SELECT)\b/i',
+                '/(--|;|\/\*|\*\/|@@|char\(|nchar\(|varchar\(|nvarchar\()/i',
+                '/(<script|javascript:|onerror=|onload=)/i'
+            ];
+
+            foreach ($dangerousPatterns as $pattern) {
+                if (preg_match($pattern, $query)) {
+                    $this->logger->warning('Tentative injection', [
+                        'query' => $query,
+                        'ip' => $request->getClientIp()
+                    ]);
+                    return $this->json([
+                        'error' => 'Requête invalide détectée.'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+            }
+
+            $page = max(1, (int)($data['page'] ?? 1));
+            $limit = min(100, max(10, (int)($data['limit'] ?? 20)));
+
+            $results = $this->searchService->search($query, $page, $limit);
+
+            return $this->json($results);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Search error: ' . $e->getMessage());
+            return $this->json([
+                'error' => 'Une erreur est survenue lors de la recherche.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route('/health', name: 'health', methods: ['GET'])]
+    public function health(): JsonResponse
+    {
+        try {
+            $health = $this->searchService->healthCheck();
+            return $this->json($health);
+        } catch (\Exception $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+    }
+}

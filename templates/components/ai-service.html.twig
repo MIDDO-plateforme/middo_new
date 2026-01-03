@@ -1,0 +1,84 @@
+{# Service JavaScript IA #}
+class MIDDOAIService {
+    constructor() {
+        this.baseUrl = '/api/ai';
+        this.loadingCallbacks = [];
+    }
+
+    async callAPI(endpoint, data = {}, method = 'POST') {
+        try {
+            this.setLoading(true);
+            const response = await fetch(endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: method === 'POST' ? JSON.stringify(data) : undefined
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            this.setLoading(false);
+            return result;
+        } catch (error) {
+            this.setLoading(false);
+            console.error('AI API Error:', error);
+            throw error;
+        }
+    }
+
+    async analyzeSentiment(text) {
+        return await this.callAPI(`${this.baseUrl}/sentiment`, { text });
+    }
+
+    async getTaskSuggestions(title, description = null) {
+        return await this.callAPI(`${this.baseUrl}/suggestions/task`, { title, description });
+    }
+
+    async getProjectSuggestions(name, description = null, currentTasks = []) {
+        return await this.callAPI(`${this.baseUrl}/suggestions/project`, {
+            name, description, current_tasks: currentTasks
+        });
+    }
+
+    async getDocumentIdeas(title, type = null) {
+        return await this.callAPI(`${this.baseUrl}/suggestions/document`, { title, type });
+    }
+
+    async chat(message, context = null, sessionId = null) {
+        return await this.callAPI(`${this.baseUrl}/chatbot/message`, {
+            message, context, session_id: sessionId
+        });
+    }
+
+    setLoading(isLoading) {
+        this.loadingCallbacks.forEach(callback => callback(isLoading));
+    }
+
+    onLoadingChange(callback) {
+        this.loadingCallbacks.push(callback);
+    }
+
+    showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `ai-toast ai-toast-${type}`;
+        toast.innerHTML = `
+            <div class="ai-toast-icon">
+                ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+            </div>
+            <div class="ai-toast-message">${message}</div>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+}
+
+window.MIDDO_AI = new MIDDOAIService();

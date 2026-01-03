@@ -1,0 +1,55 @@
+﻿class FavoritesManager {
+    constructor() {
+        this.storageKeys = {
+            projects: 'middo_favorite_projects',
+            collaborators: 'middo_favorite_collaborators'
+        };
+    }
+    
+    addFavorite(type, id, data) {
+        const key = this.storageKeys[type];
+        let favorites = this.getFavorites(type);
+        if (!favorites.find(f => f.id === id)) {
+            favorites.push({ id, ...data, addedAt: new Date().toISOString() });
+            localStorage.setItem(key, JSON.stringify(favorites));
+            this.showToast('Ajoute aux favoris !', 'success');
+            return true;
+        }
+        return false;
+    }
+    
+    removeFavorite(type, id) {
+        const key = this.storageKeys[type];
+        let favorites = this.getFavorites(type);
+        favorites = favorites.filter(f => f.id !== id);
+        localStorage.setItem(key, JSON.stringify(favorites));
+        this.showToast('Retire des favoris', 'info');
+        return true;
+    }
+    
+    getFavorites(type) {
+        const key = this.storageKeys[type];
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    }
+    
+    isFavorite(type, id) {
+        const favorites = this.getFavorites(type);
+        return favorites.some(f => f.id === id);
+    }
+    
+    showToast(message, type) {
+        if (typeof NotificationSystem !== 'undefined') {
+            NotificationSystem.showToast(message, type);
+        } else {
+            console.log(message);
+        }
+    }
+    
+    getCount(type) {
+        return this.getFavorites(type).length;
+    }
+}
+
+window.FavoritesManager = new FavoritesManager();
+console.log('Systeme de favoris charge !');

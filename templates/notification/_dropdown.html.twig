@@ -1,0 +1,24 @@
+{# templates/notification/_dropdown.html.twig #}
+{# SESSION 23 - Dropdown amélioré avec structure complète #}
+
+<div class="notif-header">
+    <h3>Notifications</h3>
+    <button id="mark-all-read" type="button" title="Tout marquer comme lu">
+        <i class="bi bi-check-all"></i>
+    </button>
+</div>
+
+<div id="notif-list">
+    {# Chargé dynamiquement par JavaScript #}
+    <div class="p-4 text-center text-gray-500">
+        <i class="bi bi-arrow-clockwise text-2xl mb-2"></i>
+        <p class="text-sm">Chargement...</p>
+    </div>
+</div>
+
+<div class="notif-footer">
+    <a href="{{ path('app_notifications_index') }}">
+        Voir toutes les notifications
+        <i class="bi bi-arrow-right ml-1"></i>
+    </a>
+</div>

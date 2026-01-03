@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Retirer des fonds - Banque MIDDO{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .withdraw-container {
+        max-width: 700px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .withdraw-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header .subtitle {
+        color: #666;
+        font-size: 1rem;
+    }
+
+    .balance-info {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .balance-info .label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .balance-info .amount {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        outline: none;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+    }
+
+    .warning-box {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .warning-box h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #92400e;
+        margin-bottom: 0.5rem;
+    }
+
+    .warning-box ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: #78350f;
+    }
+
+    .warning-box li {
+        margin-bottom: 0.25rem;
+    }
+
+    .info-box {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .info-box h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e40af;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-box p {
+        margin: 0;
+        color: #1e3a8a;
+        font-size: 0.9rem;
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+    }
+
+    .alert-danger {
+        background: #fee;
+        color: #c33;
+    }
+
+    .alert-success {
+        background: #efe;
+        color: #3c3;
+    }
+
+    .alert-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .withdraw-container {
+            margin: 1rem auto;
+        }
+
+        .withdraw-card {
+            padding: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .balance-info .amount {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="withdraw-container">
+    <div class="withdraw-card">
+        <div class="page-header">
+            <h1>🏦 Retirer des fonds</h1>
+            <p class="subtitle">Transférez vers votre compte bancaire</p>
+        </div>
+
+        <div class="balance-info">
+            <div class="label">Solde disponible</div>
+            <div class="amount">{{ balance_formatted }} €</div>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Conditions de retrait</h4>
+            <ul>
+                <li>Montant minimum : <strong>10 €</strong></li>
+                <li>Délai de traitement : <strong>2-3 jours ouvrés</strong></li>
+                <li>Frais de traitement : <strong>0 €</strong></li>
+                <li>Vérification manuelle pour la sécurité</li>
+            </ul>
+        </div>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="amount">Montant à retirer (€)</label>
+                <input 
+                    type="number" 
+                    name="amount" 
+                    id="amount" 
+                    class="form-control" 
+                    min="10" 
+                    max="{{ balance / 100 }}" 
+                    step="0.01" 
+                    placeholder="Ex: 50.00"
+                    required
+                >
+                <small class="form-text text-muted">
+                    Maximum disponible : {{ balance_formatted }} €
+                </small>
+            </div>
+
+            <button type="submit" class="btn-warning">
+                Demander le retrait
+            </button>
+        </form>
+
+        <div class="info-box">
+            <h4>ℹ️ Informations bancaires</h4>
+            <p>
+                Le virement sera effectué vers le compte bancaire enregistré dans votre profil. 
+                Si vous n'avez pas encore ajouté vos informations bancaires, 
+                <a href="{{ path('app_profile_edit') }}">cliquez ici pour les renseigner</a>.
+            </p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_bank_dashboard') }}" class="btn btn-secondary">
+                ← Retour au dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

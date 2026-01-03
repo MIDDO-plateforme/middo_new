@@ -1,0 +1,29 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            # Clés API IA
+            $claudeApiKey: '%env(CLAUDE_API_KEY)%'
+            $openaiApiKey: '%env(OPENAI_API_KEY)%'
+            $anthropicApiKey: '%env(ANTHROPIC_API_KEY)%'
+            
+            # Chemins système
+            $projectPath: '%kernel.project_dir%'
+            $profilesDirectory: '%kernel.project_dir%/public/uploads/profiles'
+            
+            # Mercure (WebSocket)
+            $mercureHubUrl: '%env(MERCURE_URL)%'
+            $mercureJwtSecret: '%env(MERCURE_JWT_SECRET)%'
+            
+            # Alias pour compatibilité legacy
+            $apiKey: '%env(OPENAI_API_KEY)%'
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'

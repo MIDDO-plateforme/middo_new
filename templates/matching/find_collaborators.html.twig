@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/matching-animations.css') }}">
+<script src="{{ asset('assets/js/middo-cache.js') }}" defer></script>
+<script src="{{ asset('assets/js/favorites.js') }}" defer></script>
+{% endblock %}
+
+{% block title %}Find Collaborators - MIDDO{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">👥 Find Perfect Collaborators</h1>
+    
+    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px;">
+        <form id="collaboratorsForm">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Required Skills</label>
+                <input type="text" id="requiredSkills" placeholder="PHP, Symfony..." 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Optional Skills</label>
+                <input type="text" id="optionalSkills" placeholder="Docker, PostgreSQL..." 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #34495e;">Minimum Availability (%)</label>
+                <input type="number" id="minAvailability" value="50" min="0" max="100" 
+                       style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <button type="submit" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+                🔍 Find Collaborators
+            </button>
+        </form>
+    </div>
+    
+    <div id="loading" style="display:none; text-align: center; padding: 40px;">
+        <div style="display: inline-block; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px; color: #7f8c8d; font-size: 18px;">🤖 Finding your perfect team with AI...</p>
+    </div>
+    
+    <div id="results"></div>
+</div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+button:hover {
+    transform: translateY(-2px);
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2) rotate(15deg);
+}
+
+.favorite-btn.active {
+    filter: brightness(1.5);
+    animation: starPop 0.3s ease;
+}
+
+@keyframes starPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+</style>
+
+<script>
+document.getElementById('collaboratorsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('results').innerHTML = '';
+    
+    const required = document.getElementById('requiredSkills').value.split(',').map(s => s.trim()).filter(s => s);
+    const optional = document.getElementById('optionalSkills').value.split(',').map(s => s.trim()).filter(s => s);
+    const availability = parseInt(document.getElementById('minAvailability').value);
+    
+    if (required.length === 0) {
+        alert('Please enter at least one required skill!');
+        document.getElementById('loading').style.display = 'none';
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/matching/collaborators', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: 1,
+                requiredSkills: required,
+                optionalSkills: optional,
+                minimumAvailability: availability,
+                maxResults: 5
+            })
+        });
+        
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.success && data.matches) {
+            displayCollaborators(data.matches);
+        } else {
+            document.getElementById('results').innerHTML = '<p style="color: red; text-align: center;">❌ Error finding collaborators. Please try again.</p>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('results').innerHTML = '<p style="color: red; text-align: center;">❌ Network error. Please check your connection.</p>';
+    }
+});
+
+function displayCollaborators(collaborators) {
+    const resultsDiv = document.getElementById('results');
+    
+    let html = '<div style="margin-top: 30px;">';
+    html += '<h2 style="text-align: center; color: #2c3e50; margin-bottom: 10px;">🎯 Your Perfect Team</h2>';
+    html += '<p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">Powered by OpenAI GPT-4o-mini</p>';
+    
+    collaborators.forEach((collab, index) => {
+        const collabId = collab.user_id || `collab_${index}_${Date.now()}`;
+        const scoreColor = collab.match_score >= 90 ? '#27ae60' : 
+                          collab.match_score >= 70 ? '#f39c12' : '#e74c3c';
+        
+        html += `
+            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid ${scoreColor};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-grow: 1;">
+                        <h3 style="margin: 0; color: #2c3e50;">👤 Collaborator #${collabId}</h3>
+                        <button class="favorite-btn" onclick="toggleFavorite('collaborator', '${collabId}', 'Collaborator ${collabId}', ${collab.match_score})" title="Ajouter aux favoris">⭐</button>
+                    </div>
+                    <span style="background: ${scoreColor}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 14px;">${collab.match_score}% Match</span>
+                </div>
+                
+                <p style="color: #34495e; margin-bottom: 10px;"><strong>🎯 Role:</strong> ${collab.role || 'Developer'}</p>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <p style="margin: 0;"><strong style="color: #27ae60;">💪 Strengths:</strong> ${collab.strengths || collab.matching_skills?.join(', ') || 'N/A'}</p>
+                </div>
+                
+                <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="margin: 0; color: #2c3e50;"><strong>💡 Why this collaborator?</strong> ${collab.why || 'Great skills match and availability.'}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+function toggleFavorite(type, id, name, score) {
+    const button = event.target;
+    
+    if (!window.FavoritesManager) {
+        alert('❌ Le système de favoris n\'est pas chargé. Rechargez la page.');
+        return;
+    }
+    
+    if (window.FavoritesManager.isFavorite(type, id)) {
+        window.FavoritesManager.removeFavorite(type, id);
+        button.classList.remove('active');
+    } else {
+        window.FavoritesManager.addFavorite(type, id, {
+            name: name,
+            score: score,
+            type: 'collaborator'
+        });
+        button.classList.add('active');
+    }
+}
+</script>
+{% endblock %}

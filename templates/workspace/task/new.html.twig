@@ -1,0 +1,564 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Tâche - {{ workspace.name }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .task-create-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .breadcrumb-nav {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-item {
+            color: #6c757d;
+        }
+
+        .breadcrumb-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .task-create-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .task-create-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .task-create-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .workspace-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .task-create-body {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #f5576c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+        }
+
+        .time-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .time-stat {
+            text-align: center;
+        }
+
+        .time-stat .label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.3rem;
+        }
+
+        .time-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .time-stat.estimated .value {
+            color: #667eea;
+        }
+
+        .time-stat.actual .value {
+            color: #f5576c;
+        }
+
+        .time-stat.variance .value {
+            color: #28a745;
+        }
+
+        .time-stat.variance.over .value {
+            color: #dc3545;
+        }
+
+        .checklist-builder {
+            margin-top: 1rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            align-items: center;
+        }
+
+        .checklist-item input[type="text"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+        }
+
+        .checklist-item .btn-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-add-checklist {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .ai-suggestions-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .ai-suggestions-box .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-suggestion-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-suggestion-item .icon {
+            font-size: 1.2rem;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.4rem;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid #e1e8ed;
+            color: #333;
+            padding: 0.9rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            border-color: #f5576c;
+            color: #f5576c;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="task-create-container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_workspace_task_index', {workspaceId: workspace.id}) }}">Tâches</a></li>
+                <li class="breadcrumb-item active">Nouvelle tâche</li>
+            </ol>
+        </nav>
+
+        <div class="task-create-card">
+            <div class="task-create-header">
+                <h1>✅ Nouvelle Tâche</h1>
+                <span class="workspace-badge">{{ workspace.name }}</span>
+            </div>
+
+            <div class="task-create-body">
+                <div class="ai-suggestions-box">
+                    <div class="title">🤖 Suggestions IA activées</div>
+                    <div class="ai-suggestion-item">
+                        <span class="icon">⏱️</span>
+                        <span>Estimation automatique de la durée basée sur des tâches similaires</span>
+                    </div>
+                    <div class="ai-suggestion-item">
+                        <span class="icon">👥</span>
+                        <span>Recommandation d'assignation basée sur les compétences de l'équipe</span>
+                    </div>
+                    <div class="ai-suggestion-item">
+                        <span class="icon">⚠️</span>
+                        <span>Détection automatique des blockers potentiels</span>
+                    </div>
+                </div>
+
+                {{ form_start(form) }}
+
+                <!-- Section: Informations générales -->
+                <div class="form-section">
+                    <h2 class="form-section-title">📝 Informations générales</h2>
+
+                    <div class="form-group full-width">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                        {{ form_errors(form.description) }}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form_label(form.project) }}
+                        {{ form_widget(form.project) }}
+                        {{ form_errors(form.project) }}
+                    </div>
+                </div>
+
+                <!-- Section: Statut et priorité -->
+                <div class="form-section">
+                    <h2 class="form-section-title">🎯 Statut et priorité</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.status) }}
+                            {{ form_widget(form.status) }}
+                            {{ form_errors(form.status) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.priority) }}
+                            {{ form_widget(form.priority) }}
+                            {{ form_errors(form.priority) }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.assignedTo) }}
+                            {{ form_widget(form.assignedTo) }}
+                            {{ form_errors(form.assignedTo) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.dueDate) }}
+                            {{ form_widget(form.dueDate) }}
+                            {{ form_errors(form.dueDate) }}
+                            <small class="form-help">{{ form_help(form.dueDate) }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Suivi du temps -->
+                <div class="form-section">
+                    <h2 class="form-section-title">⏱️ Suivi du temps</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form_label(form.estimatedHours) }}
+                            {{ form_widget(form.estimatedHours, {'attr': {'id': 'estimatedHours'}}) }}
+                            {{ form_errors(form.estimatedHours) }}
+                            <small class="form-help">{{ form_help(form.estimatedHours) }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.actualHours) }}
+                            {{ form_widget(form.actualHours, {'attr': {'id': 'actualHours'}}) }}
+                            {{ form_errors(form.actualHours) }}
+                            <small class="form-help">{{ form_help(form.actualHours) }}</small>
+                        </div>
+                    </div>
+
+                    <div class="time-comparison">
+                        <div class="time-stat estimated">
+                            <div class="label">Estimé</div>
+                            <div class="value" id="estimatedDisplay">0.0h</div>
+                        </div>
+                        <div class="time-stat actual">
+                            <div class="label">Réel</div>
+                            <div class="value" id="actualDisplay">0.0h</div>
+                        </div>
+                        <div class="time-stat variance" id="varianceStat">
+                            <div class="label">Écart</div>
+                            <div class="value" id="varianceDisplay">0.0h</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Tags et catégorisation -->
+                <div class="form-section">
+                    <h2 class="form-section-title">🏷️ Tags et catégorisation</h2>
+
+                    <div class="form-group">
+                        {{ form_label(form.tags) }}
+                        {{ form_widget(form.tags) }}
+                        {{ form_errors(form.tags) }}
+                        <small class="form-help">{{ form_help(form.tags) }}</small>
+                    </div>
+                </div>
+
+                <!-- Section: Checklist -->
+                <div class="form-section">
+                    <h2 class="form-section-title">☑️ Checklist</h2>
+
+                    <div class="checklist-builder" id="checklistBuilder">
+                        <div class="checklist-item">
+                            <input type="text" placeholder="Item de checklist..." class="checklist-input">
+                            <button type="button" class="btn-remove" onclick="removeChecklistItem(this)">❌</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-add-checklist" onclick="addChecklistItem()">
+                        ➕ Ajouter un item
+                    </button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        ✨ Créer la tâche
+                    </button>
+                    <a href="{{ path('app_workspace_task_index', {workspaceId: workspace.id}) }}" class="btn-secondary">
+                        ← Annuler
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Time tracking calculations
+        const estimatedInput = document.getElementById('estimatedHours');
+        const actualInput = document.getElementById('actualHours');
+        const estimatedDisplay = document.getElementById('estimatedDisplay');
+        const actualDisplay = document.getElementById('actualDisplay');
+        const varianceDisplay = document.getElementById('varianceDisplay');
+        const varianceStat = document.getElementById('varianceStat');
+
+        function updateTimeComparison() {
+            const estimated = parseFloat(estimatedInput.value) || 0;
+            const actual = parseFloat(actualInput.value) || 0;
+            const variance = actual - estimated;
+
+            estimatedDisplay.textContent = estimated.toFixed(1) + 'h';
+            actualDisplay.textContent = actual.toFixed(1) + 'h';
+            varianceDisplay.textContent = Math.abs(variance).toFixed(1) + 'h';
+
+            if (variance > 0) {
+                varianceStat.classList.add('over');
+                varianceStat.classList.remove('under');
+            } else {
+                varianceStat.classList.remove('over');
+            }
+        }
+
+        if (estimatedInput && actualInput) {
+            estimatedInput.addEventListener('input', updateTimeComparison);
+            actualInput.addEventListener('input', updateTimeComparison);
+            updateTimeComparison();
+        }
+
+        // Checklist management
+        function addChecklistItem() {
+            const builder = document.getElementById('checklistBuilder');
+            const newItem = document.createElement('div');
+            newItem.className = 'checklist-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Item de checklist..." class="checklist-input">
+                <button type="button" class="btn-remove" onclick="removeChecklistItem(this)">❌</button>
+            `;
+            builder.appendChild(newItem);
+        }
+
+        function removeChecklistItem(button) {
+            const item = button.parentElement;
+            const builder = document.getElementById('checklistBuilder');
+            if (builder.children.length > 1) {
+                item.remove();
+            } else {
+                alert('Il doit rester au moins un item dans la checklist');
+            }
+        }
+
+        // Form submission with checklist data
+        const form = document.querySelector('.workspace-task-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Collect checklist items
+                const checklistInputs = document.querySelectorAll('.checklist-input');
+                const checklistData = [];
+                checklistInputs.forEach(input => {
+                    if (input.value.trim()) {
+                        checklistData.push({
+                            text: input.value.trim(),
+                            completed: false
+                        });
+                    }
+                });
+
+                // Add hidden field with checklist data
+                if (checklistData.length > 0) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'checklist_data';
+                    hiddenInput.value = JSON.stringify(checklistData);
+                    form.appendChild(hiddenInput);
+                }
+
+                const submitBtn = form.querySelector('.btn-primary');
+                submitBtn.innerHTML = '⏳ Création en cours...';
+                submitBtn.disabled = true;
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,312 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transférer des fonds - Banque MIDDO{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .transfer-container {
+        max-width: 700px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .transfer-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header .subtitle {
+        color: #666;
+        font-size: 1rem;
+    }
+
+    .balance-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .balance-info .label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .balance-info .amount {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .user-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+    }
+
+    .user-suggestions.active {
+        display: block;
+    }
+
+    .suggestion-item {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .suggestion-item:hover {
+        background: #f5f5f5;
+    }
+
+    .suggestion-email {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .suggestion-name {
+        font-size: 0.85rem;
+        color: #999;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        border-color: #667eea;
+        color: #667eea;
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: none;
+    }
+
+    .alert-danger {
+        background: #fee;
+        color: #c33;
+    }
+
+    .alert-success {
+        background: #efe;
+        color: #3c3;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .transfer-container {
+            margin: 1rem auto;
+        }
+
+        .transfer-card {
+            padding: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .balance-info .amount {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="transfer-container">
+    <div class="transfer-card">
+        <div class="page-header">
+            <h1>💸 Transférer des fonds</h1>
+            <p class="subtitle">Envoyez de l'argent à un membre MIDDO</p>
+        </div>
+
+        <div class="balance-info">
+            <div class="label">Solde disponible</div>
+            <div class="amount">{{ (balance / 100)|number_format(2, ',', ' ') }} €</div>
+        </div>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        {{ form_start(form) }}
+
+        <div class="form-group position-relative">
+            {{ form_label(form.recipient_email) }}
+            {{ form_widget(form.recipient_email) }}
+            {{ form_errors(form.recipient_email) }}
+            <div class="user-suggestions" id="userSuggestions"></div>
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.amount) }}
+            {{ form_widget(form.amount) }}
+            {{ form_errors(form.amount) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        {{ form_widget(form.submit) }}
+
+        {{ form_end(form) }}
+
+        <div class="text-center mt-3">
+            <a href="{{ path('app_bank_dashboard') }}" class="btn-secondary">
+                ← Retour au dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('recipient_email');
+    const suggestions = document.getElementById('userSuggestions');
+    let searchTimeout;
+
+    emailInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value;
+
+        if (query.length < 2) {
+            suggestions.classList.remove('active');
+            return;
+        }
+
+        searchTimeout = setTimeout(function() {
+            fetch(`{{ path('app_bank_api_search_users') }}?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(users => {
+                    if (users.length === 0) {
+                        suggestions.classList.remove('active');
+                        return;
+                    }
+
+                    suggestions.innerHTML = users.map(user => `
+                        <div class="suggestion-item" data-email="${user.email}">
+                            <div class="suggestion-email">${user.email}</div>
+                            <div class="suggestion-name">${user.name}</div>
+                        </div>
+                    `).join('');
+
+                    suggestions.classList.add('active');
+
+                    document.querySelectorAll('.suggestion-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            emailInput.value = this.dataset.email;
+                            suggestions.classList.remove('active');
+                        });
+                    });
+                });
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!emailInput.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.classList.remove('active');
+        }
+    });
+});
+</script>
+{% endblock %}

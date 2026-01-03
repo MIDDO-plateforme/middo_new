@@ -1,0 +1,190 @@
+<?php
+
+namespace App\Controller;
+
+use App\Service\OpenAIAssistantService;
+use App\Repository\UserRepository;
+use App\Repository\ProjectRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route('/api/ai', name: 'api_ai_')]
+class AIAssistantController extends AbstractController
+{
+    private OpenAIAssistantService $aiService;
+    private ProjectRepository $projectRepository;
+    private UserRepository $userRepository;
+
+    public function __construct(
+        OpenAIAssistantService $aiService,
+        ProjectRepository $projectRepository,
+        UserRepository $userRepository
+    ) {
+        $this->aiService = $aiService;
+        $this->projectRepository = $projectRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * Chatbot assistant pour la création de projets
+     */
+    #[Route('/chat', name: 'chat', methods: ['POST'])]
+    public function chat(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $message = $data['message'] ?? '';
+
+        if (empty($message)) {
+            return $this->json(['error' => 'Message vide'], 400);
+        }
+
+        try {
+            $response = $this->aiService->generateResponse($message, [
+                'user_id' => $this->getUser()?->getId()
+            ]);
+
+            return $this->json([
+                'success' => true,
+                'response' => $response
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => 'Erreur lors de la génération de la réponse'
+            ], 500);
+        }
+    }
+
+    /**
+     * Suggérer des améliorations pour un projet
+     */
+    #[Route('/suggest-improvements/{projectId}', name: 'suggest_improvements', methods: ['POST'])]
+    public function suggestImprovements(int $projectId): JsonResponse
+    {
+        $project = $this->projectRepository->find($projectId);
+
+        if (!$project) {
+            return $this->json(['error' => 'Projet non trouvé'], 404);
+        }
+
+        try {
+            $suggestions = $this->aiService->suggestProjectImprovements(
+                $project->getDescription() ?? '',
+                [
+                    'title' => $project->getTitle(),
+                    'category' => $project->getCategory(),
+                    'skills' => $project->getSkills(),
+                    'location' => $project->getLocation()
+                ]
+            );
+
+            return $this->json([
+                'success' => true,
+                'suggestions' => $suggestions
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => 'Erreur lors de la génération des suggestions'
+            ], 500);
+        }
+    }
+
+    /**
+     * Trouver les meilleurs profils pour un projet
+     */
+    #[Route('/match-users/{projectId}', name: 'match_users', methods: ['POST'])]
+    public function matchUsers(int $projectId): JsonResponse
+    {
+        $project = $this->projectRepository->find($projectId);
+
+        if (!$project) {
+            return $this->json(['error' => 'Projet non trouvé'], 404);
+        }
+
+        try {
+            // Récupère tous les utilisateurs actifs
+            $users = $this->userRepository->findAll();
+            
+            $availableUsers = [];
+            foreach ($users as $user) {
+                // Exclut le créateur du projet
+                if ($user->getId() === $project->getUser()->getId()) {
+                    continue;
+                }
+
+                $availableUsers[] = [
+                    'id' => $user->getId(),
+                    'name' => $user->getFullName(),
+                    'skills' => $user->getSkills() ?? '',
+                    'location' => $user->getLocation() ?? ''
+                ];
+            }
+
+            $matches = $this->aiService->matchUsersToProject(
+                [
+                    'title' => $project->getTitle(),
+                    'skills' => $project->getSkills(),
+                    'location' => $project->getLocation(),
+                    'category' => $project->getCategory()
+                ],
+                $availableUsers
+            );
+
+            // Enrichit les résultats avec les infos utilisateur
+            $enrichedMatches = [];
+            foreach ($matches as $match) {
+                $user = $this->userRepository->find($match['user_id']);
+                if ($user) {
+                    $enrichedMatches[] = [
+                        'user' => [
+                            'id' => $user->getId(),
+                            'name' => $user->getFullName(),
+                            'email' => $user->getEmail(),
+                            'skills' => $user->getSkills(),
+                            'location' => $user->getLocation()
+                        ],
+                        'score' => $match['score']
+                    ];
+                }
+            }
+
+            return $this->json([
+                'success' => true,
+                'matches' => $enrichedMatches
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => 'Erreur lors du matching'
+            ], 500);
+        }
+    }
+
+    /**
+     * Analyser le sentiment d'un texte
+     */
+    #[Route('/analyze-sentiment', name: 'analyze_sentiment', methods: ['POST'])]
+    public function analyzeSentiment(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $text = $data['text'] ?? '';
+
+        if (empty($text)) {
+            return $this->json(['error' => 'Texte vide'], 400);
+        }
+
+        try {
+            $analysis = $this->aiService->analyzeSentiment($text);
+
+            return $this->json([
+                'success' => true,
+                'sentiment' => $analysis['sentiment'],
+                'confidence' => $analysis['confidence']
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => 'Erreur lors de l\'analyse'
+            ], 500);
+        }
+    }
+}

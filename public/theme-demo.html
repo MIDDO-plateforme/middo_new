@@ -1,0 +1,395 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - SESSION 70 - Dark Mode + Responsive</title>
+    <link rel="stylesheet" href="/css/theme-system.css">
+    <style>
+        /* Styles spécifiques page demo */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .demo-title {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .demo-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .demo-section {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .demo-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+        
+        .demo-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary);
+        }
+        
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .card-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all var(--transition-fast);
+        }
+        
+        .card-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: var(--bg-hover);
+            border-radius: 12px;
+            transition: all var(--transition-fast);
+        }
+        
+        .feature-item:hover {
+            background: var(--bg-card);
+            transform: translateX(5px);
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        
+        .feature-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .feature-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-title {
+                font-size: 32px;
+            }
+            
+            .demo-subtitle {
+                font-size: 16px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-container {
+                padding-top: 80px;
+            }
+        }
+        
+        /* Animations scroll reveal */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Reduce motion support */
+        .reduce-motion * {
+            animation: none !important;
+            transition: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme toggle et menu mobile créés dynamiquement par JS -->
+    
+    <div class="demo-container">
+        <!-- Header -->
+        <header class="demo-header">
+            <h1 class="demo-title">🌙 MIDDO SESSION 70</h1>
+            <p class="demo-subtitle">Mode Sombre + Responsive Final - Plateforme Complète</p>
+        </header>
+
+        <!-- Stats -->
+        <section class="demo-section">
+            <h2 class="section-title"> Statistiques Projet</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">16</div>
+                    <div class="stat-label">Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">93.7%</div>
+                    <div class="stat-label">Complété</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Pages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">13</div>
+                    <div class="stat-label">APIs</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pages MIDDO -->
+        <section class="demo-section">
+            <h2 class="section-title">🎨 Pages Créées (Sessions 65-70)</h2>
+            <div class="cards-grid">
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Notifications Premium</h3>
+                    <p class="card-desc">Toasts animés, sons, historique, 4 catégories. Session 65.</p>
+                    <a href="/test-notifications-advanced.html" class="card-link">Voir démo </a>
+                </div>
+                
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Chatbot Widget</h3>
+                    <p class="card-desc">Widget flottant, API Gemini, quick replies, historique. Session 66.</p>
+                    <a href="/test-chatbot-widget.html" class="card-link">Voir démo </a>
+                </div>
+                
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Matching Missions</h3>
+                    <p class="card-desc">Filtres avancés, scoring IA, modal détails. Session 67.</p>
+                    <a href="/matching-missions.html" class="card-link">Voir démo </a>
+                </div>
+                
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Upload Premium</h3>
+                    <p class="card-desc">Drag & drop, preview, progress bars animées. Session 68.</p>
+                    <a href="/upload-premium.html" class="card-link">Voir démo </a>
+                </div>
+                
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Dashboard Analytics</h3>
+                    <p class="card-desc">Chart.js, 4 graphiques, KPIs animés, export CSV/JSON. Session 69.</p>
+                    <a href="/dashboard-analytics.html" class="card-link">Voir démo </a>
+                </div>
+                
+                <div class="demo-card card">
+                    <div class="card-icon"></div>
+                    <h3 class="card-title">Dark Mode</h3>
+                    <p class="card-desc">Toggle animé, CSS Variables, LocalStorage, responsive. Session 70.</p>
+                    <a href="#" class="card-link" onclick="window.themeManager.toggleTheme(); return false;">Toggle thème →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Session 70 -->
+        <section class="demo-section">
+            <h2 class="section-title">✨ Fonctionnalités Session 70</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">��</div>
+                    <div class="feature-content">
+                        <h4>Mode Sombre</h4>
+                        <p>Toggle ☀️/🌙 en top-right, transition fluide 0.3s, sauvegarde automatique</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-content">
+                        <h4>CSS Variables</h4>
+                        <p>Système de thème complet avec 20+ variables (colors, backgrounds, shadows)</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-content">
+                        <h4>Menu Mobile</h4>
+                        <p>Hamburger animé X, slide-in navigation, overlay cliquable</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    <div class="feature-content">
+                        <h4>LocalStorage</h4>
+                        <p>Persistance thème automatique, sync multi-onglets</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon"></div>
+                    <div class="feature-content">
+                        <h4>Scroll Reveal</h4>
+                        <p>Animations reveal au scroll avec Intersection Observer</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-content">
+                        <h4>Performance</h4>
+                        <p>Debounce resize, lazy loading, prefers-reduced-motion</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🎭</div>
+                    <div class="feature-content">
+                        <h4>Micro-Interactions</h4>
+                        <p>Hover effects, ripple click, smooth scroll, focus outlines</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📐</div>
+                    <div class="feature-content">
+                        <h4>Responsive</h4>
+                        <p>Breakpoints 768px/1024px, grilles adaptatives, mobile-first</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/theme-manager.js"></script>
+</body>
+</html>

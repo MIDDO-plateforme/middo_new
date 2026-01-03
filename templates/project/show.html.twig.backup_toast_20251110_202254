@@ -1,0 +1,612 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ project.title }} - MIDDO
+<script>
+
+// ============================================
+// SECTION SENTIMENT LARGE - SESSION 19 ÉTAPE B
+// ============================================
+
+async function loadSentimentSection() {
+    const section = document.getElementById('sentiment-section');
+    const loading = document.getElementById('sentiment-section-loading');
+    const error = document.getElementById('sentiment-section-error');
+    const circleLarge = document.getElementById('sentimentCircleLarge');
+    const percentLarge = document.getElementById('sentimentPercentLarge');
+    const labelLarge = document.getElementById('sentimentLabelLarge');
+    const detailScore = document.getElementById('detailScoreLarge');
+    const detailCategory = document.getElementById('detailCategoryLarge');
+    
+    // Reset UI
+    section.classList.add('hidden');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+        // Appel API
+        const response = await fetch('/api/ai/analyze-sentiment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectDescription })
+        });
+        
+        if (!response.ok) throw new Error('Erreur API');
+        
+        const data = await response.json();
+        
+        // Animation de la grande jauge circulaire
+        const score = Math.round(data.score || 0);
+        const circumference = 502.4; // 2 * PI * 80
+        const offset = circumference - (circumference * score / 100);
+        
+        circleLarge.style.strokeDashoffset = offset;
+        
+        // Couleur dynamique et label
+        let colorClass = '';
+        if (score < 40) {
+            circleLarge.style.stroke = '#ef4444'; // Rouge
+            labelLarge.textContent = data.label || 'Négatif';
+            labelLarge.className = 'text-lg font-semibold text-red-600 mt-2';
+            colorClass = 'text-red-600';
+        } else if (score < 60) {
+            circleLarge.style.stroke = '#f59e0b'; // Orange
+            labelLarge.textContent = data.label || 'Neutre';
+            labelLarge.className = 'text-lg font-semibold text-orange-600 mt-2';
+            colorClass = 'text-orange-600';
+        } else {
+            circleLarge.style.stroke = '#10b981'; // Vert
+            labelLarge.textContent = data.label || 'Positif';
+            labelLarge.className = 'text-lg font-semibold text-green-600 mt-2';
+            colorClass = 'text-green-600';
+        }
+        
+        // Animer le compteur
+        animateCounter(percentLarge, 0, score, 1500);
+        
+        // Mettre à jour les détails
+        detailScore.textContent = score + '%';
+        detailScore.className = 'text-3xl font-bold ' + colorClass;
+        detailCategory.textContent = data.label || '-';
+        detailCategory.className = 'text-3xl font-bold ' + colorClass;
+        
+        loading.classList.add('hidden');
+        section.classList.remove('hidden');
+        
+        // Scroll smooth vers la section
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+    } catch (err) {
+        console.error('Erreur section sentiment:', err);
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        setTimeout(() => {
+            error.classList.add('hidden');
+            section.classList.remove('hidden');
+        }, 4000);
+    }
+}
+
+// ============================================
+// WIDGET SENTIMENT SIDEBAR - SESSION 19
+// ============================================
+
+const projectDescription = `{{ project.description|raw }}`;
+let sentimentCache = null;
+
+async function loadSentimentWidget() {
+    const widget = document.getElementById('sentiment-widget');
+    const loading = document.getElementById('sentiment-loading');
+    const error = document.getElementById('sentiment-error');
+    const circle = document.getElementById('sentimentCircle');
+    const percent = document.getElementById('sentimentPercent');
+    const status = document.getElementById('sentimentStatus');
+    
+    // Reset UI
+    widget.classList.add('hidden');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+        // Appel API
+        const response = await fetch('/api/ai/analyze-sentiment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectDescription })
+        });
+        
+        if (!response.ok) throw new Error('Erreur API');
+        
+        const data = await response.json();
+        sentimentCache = data;
+        
+        // Animation de la jauge circulaire
+        const score = Math.round(data.score || 0);
+        const circumference = 264; // 2 * PI * 42
+        const offset = circumference - (circumference * score / 100);
+        
+        circle.style.strokeDashoffset = offset;
+        
+        // Couleur dynamique
+        if (score < 40) {
+            circle.style.stroke = '#ef4444'; // Rouge
+            status.textContent = data.label || 'NÃ©gatif';
+            status.className = 'text-sm font-semibold text-red-600 mb-3';
+        } else if (score < 60) {
+            circle.style.stroke = '#f59e0b'; // Orange
+            status.textContent = data.label || 'Neutre';
+            status.className = 'text-sm font-semibold text-orange-600 mb-3';
+        } else {
+            circle.style.stroke = '#10b981'; // Vert
+            status.textContent = data.label || 'Positif';
+            status.className = 'text-sm font-semibold text-green-600 mb-3';
+        }
+        
+        // Animer le compteur
+        animateCounter(percent, 0, score, 1000);
+        
+        loading.classList.add('hidden');
+        widget.classList.remove('hidden');
+        
+    } catch (err) {
+        console.error('Erreur widget sentiment:', err);
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        setTimeout(() => {
+            error.classList.add('hidden');
+            widget.classList.remove('hidden');
+        }, 3000);
+    }
+}
+
+function animateCounter(element, start, end, duration) {
+    const startTime = performance.now();
+    const step = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.floor(start + (end - start) * progress);
+        element.textContent = value + '%';
+        if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+}
+
+// Auto-chargement optionnel (dÃ©commentez pour activer)
+// window.addEventListener('load', () => setTimeout(loadSentimentWidget, 500));
+</script>
+
+{% endblock %}
+{% block body %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="container mx-auto px-4">
+        <div class="mb-6">
+            <a href="{{ path('app_project_my_projects') }}" class="inline-flex items-center text-middo-primary hover:text-middo-secondary transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Retour ÃƒÂ  mes projets
+            </a>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="card-middo">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex-1">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ project.title }}</h1>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>{{ project.createdAt|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 rounded-full text-sm font-semibold {% if project.status == 'En cours' %}bg-green-100 text-green-800{% elseif project.status == 'TerminÃƒÂ©' %}bg-gray-100 text-gray-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">{{ project.status }}</span>
+                    </div>
+                    <div class="mb-6"><h2 class="text-xl font-bold text-gray-900 mb-3">Description</h2><p id="project-description" class="text-gray-700 leading-relaxed">{{ project.description }}</p></div>
+                    {% if project.budget %}<div class="mb-6"><h2 class="text-xl font-bold text-gray-900 mb-3">Budget estimÃƒÂ©</h2><p class="text-3xl font-bold text-middo-primary">{{ project.budget|number_format(0, ',', ' ') }} FCFA</p></div>{% endif %}
+                    <div class="border-t pt-6"><h2 class="text-lg font-semibold text-gray-900 mb-3">PropriÃƒÂ©taire du projet</h2><a href="{{ path('app_user_show', {id: project.owner.id}) }}" class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-middo-primary text-white rounded-full flex items-center justify-center text-xl font-bold mr-3">{{ project.owner.firstName|first }}{{ project.owner.lastName|first }}</div><div><p class="font-semibold text-gray-900">{{ project.owner.firstName }} {{ project.owner.lastName }}</p><p class="text-sm text-gray-600">{{ project.owner.email }}</p></div></a></div>
+                    {% if app.user == project.owner %}<div class="border-t pt-6 mt-6"><a href="{{ path('app_project_edit', {id: project.id}) }}" class="btn-middo">Modifier</a></div>{% endif %}
+                </div>
+                <div class="card-middo bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><svg class="w-7 h-7 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>Assistant IA<span class="ml-3 text-xs bg-purple-600 text-white px-3 py-1 rounded-full">NOUVEAU</span></h2>
+                    <p class="text-gray-700 mb-6">Utilisez l'intelligence artificielle pour amÃƒÂ©liorer votre projet !</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button data-ai-chat class="flex items-center justify-center bg-white hover:bg-purple-50 text-purple-700 font-semibold py-4 px-6 rounded-lg border-2 border-purple-300 transition-all hover:scale-105 shadow-md">Ã°Å¸â€™Â¬ Assistant IA</button>
+                        <button data-ai-improve data-project-id="{{ project.id }}" class="flex items-center justify-center bg-white hover:bg-blue-50 text-blue-700 font-semibold py-4 px-6 rounded-lg border-2 border-blue-300 transition-all hover:scale-105 shadow-md">Ã°Å¸â€™Â¡ AmÃƒÂ©liorer</button>
+                        <button data-ai-match data-project-id="{{ project.id }}" class="flex items-center justify-center bg-white hover:bg-green-50 text-green-700 font-semibold py-4 px-6 rounded-lg border-2 border-green-300 transition-all hover:scale-105 shadow-md">Ã°Å¸Å½Â¯ Trouver des Profils</button>
+                        <button data-ai-sentiment data-target="#project-description" class="flex items-center justify-center bg-white hover:bg-orange-50 text-orange-700 font-semibold py-4 px-6 rounded-lg border-2 border-orange-300 transition-all hover:scale-105 shadow-md">Ã°Å¸ËœÅ  Analyser le Ton</button>
+                    </div>
+                </div>
+                
+                {# Section Analyse Sentiment IA - SESSION 19 ÉTAPE B #}
+                <div class="card-middo bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-purple-200">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <svg class="w-8 h-8 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            Analyse de Sentiment IA
+                        </h2>
+                        <span class="text-xs bg-purple-600 text-white px-3 py-1 rounded-full font-semibold">PREMIUM</span>
+                    </div>
+                    
+                    <div id="sentiment-section" class="text-center">
+                        {# Grande jauge sentiment #}
+                        <div class="relative w-48 h-48 mx-auto mb-6">
+                            <svg class="transform -rotate-90" width="192" height="192" viewBox="0 0 192 192">
+                                <defs>
+                                    <linearGradient id="gaugeGradientLarge" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="96" cy="96" r="80" fill="none" stroke="#e5e7eb" stroke-width="16"></circle>
+                                <circle id="sentimentCircleLarge" cx="96" cy="96" r="80" fill="none" 
+                                        stroke="url(#gaugeGradientLarge)" 
+                                        stroke-width="16" 
+                                        stroke-linecap="round"
+                                        stroke-dasharray="502.4" 
+                                        stroke-dashoffset="502.4"
+                                        style="transition: stroke-dashoffset 2s cubic-bezier(0.68, -0.55, 0.265, 1.55), stroke 0.5s ease;"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="sentimentPercentLarge" class="text-5xl font-bold text-gray-900">-</span>
+                                <span id="sentimentLabelLarge" class="text-lg font-semibold text-gray-600 mt-2">Non analysé</span>
+                            </div>
+                        </div>
+                        
+                        {# Détails #}
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white rounded-lg p-4 border-2 border-purple-100">
+                                <div class="text-sm text-gray-600 mb-1">Score</div>
+                                <div id="detailScoreLarge" class="text-3xl font-bold text-purple-600">-</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border-2 border-purple-100">
+                                <div class="text-sm text-gray-600 mb-1">Catégorie</div>
+                                <div id="detailCategoryLarge" class="text-3xl font-bold text-purple-600">-</div>
+                            </div>
+                        </div>
+                        
+                        {# Boutons d'action #}
+                        <div class="space-y-3">
+                            <button onclick="loadSentimentSection()" 
+                                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                                Analyser le sentiment maintenant
+                            </button>
+                            <a href="{{ path('app_project_analyze', {id: project.id}) }}" 
+                               class="block w-full bg-white hover:bg-purple-50 text-purple-700 font-semibold py-3 px-6 rounded-lg border-2 border-purple-300 transition-all">
+                                Voir l'analyse complète →
+                            </a>
+                        </div>
+                    </div>
+                    
+                    {# Loading state #}
+                    <div id="sentiment-section-loading" class="hidden text-center py-12">
+                        <div class="animate-spin mx-auto h-16 w-16 border-4 border-purple-200 border-t-purple-600 rounded-full mb-4"></div>
+                        <p class="text-lg text-gray-700 font-semibold">Analyse en cours...</p>
+                        <p class="text-sm text-gray-500 mt-2">L'IA analyse votre projet</p>
+                    </div>
+                    
+                    {# Error state #}
+                    <div id="sentiment-section-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 px-6 py-4 rounded-lg">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="font-semibold">Erreur lors de l'analyse. Veuillez réessayer.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="card-middo"><h3 class="text-lg font-bold text-gray-900 mb-4">Informations</h3><ul class="space-y-3"><li class="flex items-center justify-between py-2 border-b"><span class="text-gray-600">Statut</span><span class="font-semibold text-gray-900">{{ project.status }}</span></li><li class="flex items-center justify-between py-2 border-b"><span class="text-gray-600">CrÃƒÂ©ÃƒÂ© le</span><span class="font-semibold text-gray-900">{{ project.createdAt|date('d/m/Y') }}</span></li>{% if project.budget %}<li class="flex items-center justify-between py-2"><span class="text-gray-600">Budget</span><span class="font-semibold text-middo-primary">{{ project.budget|number_format(0, ',', ' ') }} F</span></li>{% endif %}</ul></div>
+                
+                {# Widget Sentiment IA - SESSION 19 #}
+                <div class="card-middo bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Sentiment
+                        </h3>
+                        <span class="text-xs bg-orange-600 text-white px-2 py-1 rounded-full">IA</span>
+                    </div>
+                    
+                    <div id="sentiment-widget" class="text-center">
+                        <div class="relative w-24 h-24 mx-auto mb-3">
+                            <svg class="transform -rotate-90" width="96" height="96" viewBox="0 0 96 96">
+                                <defs>
+                                    <linearGradient id="gaugeGradientWidget" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                        <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="48" cy="48" r="42" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                <circle id="sentimentCircle" cx="48" cy="48" r="42" fill="none" 
+                                        stroke="url(#gaugeGradientWidget)" 
+                                        stroke-width="8" 
+                                        stroke-linecap="round"
+                                        stroke-dasharray="264" 
+                                        stroke-dashoffset="264"
+                                        style="transition: stroke-dashoffset 1.5s ease-out, stroke 0.5s ease;"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="sentimentPercent" class="text-2xl font-bold text-gray-900">-</span>
+                            </div>
+                        </div>
+                        
+                        <div id="sentimentStatus" class="text-sm font-semibold text-gray-600 mb-3">Non analysÃ©</div>
+                        
+                        <button onclick="loadSentimentWidget()" 
+                                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+                            Analyser
+                        </button>
+                        
+                        <a href="{{ path('app_project_analyze', {id: project.id}) }}" 
+                           class="block mt-2 text-xs text-orange-700 hover:text-orange-900 font-medium">
+                            Voir analyse complÃ¨te â†’
+                        </a>
+                    </div>
+                    
+                    <div id="sentiment-loading" class="hidden text-center py-4">
+                        <div class="animate-spin mx-auto h-8 w-8 border-4 border-orange-200 border-t-orange-600 rounded-full"></div>
+                        <p class="text-sm text-gray-600 mt-2">Analyse en cours...</p>
+                    </div>
+                    
+                    <div id="sentiment-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+                        Erreur d'analyse. RÃ©essayez.
+                    </div>
+                </div>
+                
+                <div class="card-middo bg-gradient-to-br from-middo-primary to-middo-secondary text-white"><h3 class="text-lg font-bold mb-3">Ã°Å¸â€™Â¡ Besoin d'aide ?</h3><p class="text-sm mb-4 opacity-90">Utilisez l'assistant IA !</p><button data-ai-chat class="w-full bg-white text-middo-primary font-semibold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors">Discuter avec l'IA</button></div>
+            </div>
+        </div>
+    
+{# Modal Suggestions IA #}
+<div id="ai-suggestions-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden transform transition-all">
+        {# Header #}
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-white flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                </svg>
+                Suggestions d'Amelioration IA
+            </h3>
+            <button onclick="document.getElementById('ai-suggestions-modal').classList.add('hidden')" class="text-white hover:text-gray-200 transition-colors">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        {# Content #}
+        <div id="ai-suggestions-content" class="p-6 overflow-y-auto max-h-[60vh]">
+            {# Le contenu sera injecte par JavaScript #}
+            <div class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            </div>
+        </div>
+
+        {# Footer #}
+        <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3 border-t">
+            <button onclick="navigator.clipboard.writeText(document.getElementById('ai-suggestions-content').innerText)" class="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Copier
+            </button>
+            <button onclick="document.getElementById('ai-suggestions-modal').classList.add('hidden')" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                Fermer
+            </button>
+        </div>
+    </div>
+</div>
+{# Modal Matching Profils IA #}
+<div id="ai-matching-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden transform transition-all">
+        {# Header #}
+        <div class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-4 flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-white flex items-center">
+                <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Profils Recommandes par l'IA
+            </h3>
+            <button onclick="document.getElementById('ai-matching-modal').classList.add('hidden')" class="text-white hover:text-gray-200 transition-colors">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        {# Content #}
+        <div id="ai-matching-content" class="p-6 overflow-y-auto max-h-[65vh]">
+            {# Le contenu sera injecte par JavaScript #}
+            <div class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            </div>
+        </div>
+
+        {# Footer #}
+        <div class="bg-gray-50 px-6 py-4 flex justify-end border-t">
+            <button onclick="document.getElementById('ai-matching-modal').classList.add('hidden')" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                Fermer
+            </button>
+        </div>
+    </div>
+</div></div>
+</div>
+
+<div id="ai-chatbot-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"><div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-lg bg-white"><div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-t-lg"><div class="flex items-center space-x-3"><span class="text-3xl">ðŸ’¬</span><h3 class="text-2xl font-bold text-white">Assistant IA - Chat</h3></div><button onclick="document.getElementById('ai-chatbot-modal').classList.add('hidden')" class="text-white hover:text-gray-200 text-3xl font-bold">&times;</button></div><div id="ai-messages" class="p-6 space-y-4 max-h-96 overflow-y-auto bg-gray-50"><div class="flex items-start space-x-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0"><span class="text-xl">ðŸ¤–</span></div><div class="bg-white rounded-lg p-4 shadow max-w-md"><p class="text-gray-800">Bonjour ! Comment puis-je vous aider ?</p><span class="text-xs text-gray-500 mt-2 block">Assistant MIDDO</span></div></div></div><div class="p-4 border-t border-gray-200 bg-white rounded-b-lg"><div class="flex space-x-3"><input type="text" id="ai-chat-input" placeholder="Posez votre question..." class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onkeypress="if(event.key === 'Enter') document.getElementById('ai-send-button').click()"><button id="ai-send-button" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105">Envoyer</button></div></div></div></div>
+<div id="ai-sentiment-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"><div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 shadow-lg rounded-lg bg-white"><div class="flex items-center justify-between p-4 bg-gradient-to-r from-pink-500 to-red-500 rounded-t-lg"><div class="flex items-center space-x-3"><span class="text-3xl">ðŸ˜Š</span><h3 class="text-2xl font-bold text-white">Analyse du Ton - IA</h3></div><button onclick="document.getElementById('ai-sentiment-modal').classList.add('hidden')" class="text-white hover:text-gray-200 text-3xl font-bold">&times;</button></div><div class="p-6"><div id="ai-sentiment-result" class="space-y-6"><div class="bg-gray-100 rounded-lg p-6"><h4 class="text-lg font-bold text-gray-800 mb-4">Score de Sentiment</h4><div class="relative pt-1"><div class="flex mb-2 items-center justify-between"><div><span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-pink-600 bg-pink-200">Analyse</span></div><div class="text-right"><span id="sentiment-score-text" class="text-xs font-semibold inline-block text-pink-600">En attente...</span></div></div><div class="overflow-hidden h-4 mb-4 text-xs flex rounded bg-pink-200"><div id="sentiment-gauge" style="width: 0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-pink-500 to-red-500 transition-all duration-1000"></div></div></div></div><div id="sentiment-details" class="bg-white rounded-lg p-6 border-2 border-gray-200"><h4 class="text-lg font-bold text-gray-800 mb-3">DÃ©tails de l'Analyse</h4><div id="sentiment-content" class="text-gray-700 space-y-2"></div></div></div><div class="mt-6 flex justify-end space-x-3"><button onclick="navigator.clipboard.writeText(document.getElementById('sentiment-content').innerText)" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-300">ðŸ“‹ Copier</button><button onclick="document.getElementById('ai-sentiment-modal').classList.add('hidden')" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold rounded-lg hover:from-pink-600 hover:to-red-600 transition-all duration-300">Fermer</button></div></div></div></div>
+<script>
+
+// ============================================
+// SECTION SENTIMENT LARGE - SESSION 19 ÉTAPE B
+// ============================================
+
+async function loadSentimentSection() {
+    const section = document.getElementById('sentiment-section');
+    const loading = document.getElementById('sentiment-section-loading');
+    const error = document.getElementById('sentiment-section-error');
+    const circleLarge = document.getElementById('sentimentCircleLarge');
+    const percentLarge = document.getElementById('sentimentPercentLarge');
+    const labelLarge = document.getElementById('sentimentLabelLarge');
+    const detailScore = document.getElementById('detailScoreLarge');
+    const detailCategory = document.getElementById('detailCategoryLarge');
+    
+    // Reset UI
+    section.classList.add('hidden');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+        // Appel API
+        const response = await fetch('/api/ai/analyze-sentiment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectDescription })
+        });
+        
+        if (!response.ok) throw new Error('Erreur API');
+        
+        const data = await response.json();
+        
+        // Animation de la grande jauge circulaire
+        const score = Math.round(data.score || 0);
+        const circumference = 502.4; // 2 * PI * 80
+        const offset = circumference - (circumference * score / 100);
+        
+        circleLarge.style.strokeDashoffset = offset;
+        
+        // Couleur dynamique et label
+        let colorClass = '';
+        if (score < 40) {
+            circleLarge.style.stroke = '#ef4444'; // Rouge
+            labelLarge.textContent = data.label || 'Négatif';
+            labelLarge.className = 'text-lg font-semibold text-red-600 mt-2';
+            colorClass = 'text-red-600';
+        } else if (score < 60) {
+            circleLarge.style.stroke = '#f59e0b'; // Orange
+            labelLarge.textContent = data.label || 'Neutre';
+            labelLarge.className = 'text-lg font-semibold text-orange-600 mt-2';
+            colorClass = 'text-orange-600';
+        } else {
+            circleLarge.style.stroke = '#10b981'; // Vert
+            labelLarge.textContent = data.label || 'Positif';
+            labelLarge.className = 'text-lg font-semibold text-green-600 mt-2';
+            colorClass = 'text-green-600';
+        }
+        
+        // Animer le compteur
+        animateCounter(percentLarge, 0, score, 1500);
+        
+        // Mettre à jour les détails
+        detailScore.textContent = score + '%';
+        detailScore.className = 'text-3xl font-bold ' + colorClass;
+        detailCategory.textContent = data.label || '-';
+        detailCategory.className = 'text-3xl font-bold ' + colorClass;
+        
+        loading.classList.add('hidden');
+        section.classList.remove('hidden');
+        
+        // Scroll smooth vers la section
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+    } catch (err) {
+        console.error('Erreur section sentiment:', err);
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        setTimeout(() => {
+            error.classList.add('hidden');
+            section.classList.remove('hidden');
+        }, 4000);
+    }
+}
+
+// ============================================
+// WIDGET SENTIMENT SIDEBAR - SESSION 19
+// ============================================
+
+const projectDescription = `{{ project.description|raw }}`;
+let sentimentCache = null;
+
+async function loadSentimentWidget() {
+    const widget = document.getElementById('sentiment-widget');
+    const loading = document.getElementById('sentiment-loading');
+    const error = document.getElementById('sentiment-error');
+    const circle = document.getElementById('sentimentCircle');
+    const percent = document.getElementById('sentimentPercent');
+    const status = document.getElementById('sentimentStatus');
+    
+    // Reset UI
+    widget.classList.add('hidden');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+        // Appel API
+        const response = await fetch('/api/ai/analyze-sentiment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectDescription })
+        });
+        
+        if (!response.ok) throw new Error('Erreur API');
+        
+        const data = await response.json();
+        sentimentCache = data;
+        
+        // Animation de la jauge circulaire
+        const score = Math.round(data.score || 0);
+        const circumference = 264; // 2 * PI * 42
+        const offset = circumference - (circumference * score / 100);
+        
+        circle.style.strokeDashoffset = offset;
+        
+        // Couleur dynamique
+        if (score < 40) {
+            circle.style.stroke = '#ef4444'; // Rouge
+            status.textContent = data.label || 'NÃ©gatif';
+            status.className = 'text-sm font-semibold text-red-600 mb-3';
+        } else if (score < 60) {
+            circle.style.stroke = '#f59e0b'; // Orange
+            status.textContent = data.label || 'Neutre';
+            status.className = 'text-sm font-semibold text-orange-600 mb-3';
+        } else {
+            circle.style.stroke = '#10b981'; // Vert
+            status.textContent = data.label || 'Positif';
+            status.className = 'text-sm font-semibold text-green-600 mb-3';
+        }
+        
+        // Animer le compteur
+        animateCounter(percent, 0, score, 1000);
+        
+        loading.classList.add('hidden');
+        widget.classList.remove('hidden');
+        
+    } catch (err) {
+        console.error('Erreur widget sentiment:', err);
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        setTimeout(() => {
+            error.classList.add('hidden');
+            widget.classList.remove('hidden');
+        }, 3000);
+    }
+}
+
+function animateCounter(element, start, end, duration) {
+    const startTime = performance.now();
+    const step = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.floor(start + (end - start) * progress);
+        element.textContent = value + '%';
+        if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+}
+
+// Auto-chargement optionnel (dÃ©commentez pour activer)
+// window.addEventListener('load', () => setTimeout(loadSentimentWidget, 500));
+</script>
+
+{% endblock %}

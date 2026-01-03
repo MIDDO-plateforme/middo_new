@@ -1,0 +1,26 @@
+framework:
+    rate_limiter:
+        api_matching:
+            policy: 'sliding_window'
+            limit: 100
+            interval: '1 hour'
+        
+        api_suggestions:
+            policy: 'sliding_window'
+            limit: 100
+            interval: '1 hour'
+        
+        api_chatbot:
+            policy: 'sliding_window'
+            limit: 200
+            interval: '1 hour'
+        
+        api_sentiment:
+            policy: 'sliding_window'
+            limit: 100
+            interval: '1 hour'
+        
+        api_search:
+            policy: 'sliding_window'
+            limit: 150
+            interval: '1 hour'

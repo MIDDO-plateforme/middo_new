@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chat avec {{ otherUser.firstName }} - MIDDO{% endblock %}
+
+{% block body %}
+<div class="max-w-6xl mx-auto py-8 px-4">
+    <!-- En-tête de la conversation -->
+    <div class="card-middo mb-6">
+        <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <!-- Left side: Back button + User info -->
+            <div class="flex items-center space-x-4 w-full sm:w-auto">
+                <a href="{{ path('app_messages') }}" class="btn-middo border border-gray-300 text-gray-700 hover:bg-gray-50 flex-shrink-0">
+                    <i class="fas fa-arrow-left mr-2"></i>Retour
+                </a>
+                
+                {% if otherUser.profilePicture %}
+                    <img src="{{ asset('uploads/profiles/' ~ otherUser.profilePicture) }}" 
+                         alt="Photo de profil" 
+                         class="w-12 h-12 rounded-full object-cover border-2 border-middo-primary flex-shrink-0">
+                {% else %}
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-middo-primary to-middo-secondary text-white flex items-center justify-center text-lg font-bold flex-shrink-0">
+                        {{ otherUser.firstName|first|upper }}{{ otherUser.lastName|first|upper }}
+                    </div>
+                {% endif %}
+                
+                <div class="min-w-0 flex-1">
+                    <h5 class="font-bold text-lg text-gray-800 truncate">{{ otherUser.firstName }} {{ otherUser.lastName }}</h5>
+                    <p class="text-sm text-gray-500 flex items-center">
+                        <i class="fas fa-briefcase mr-1"></i>{{ otherUser.userType }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Right side: Profile button -->
+            <a href="{{ path('app_user_show', {id: otherUser.id}) }}" 
+               class="btn-middo border border-middo-primary text-middo-primary hover:bg-middo-primary hover:text-white flex-shrink-0">
+                <i class="fas fa-user mr-2"></i>Voir le profil
+            </a>
+        </div>
+    </div>
+
+    <!-- Zone de messages -->
+    <div class="card-middo mb-6 overflow-hidden">
+        <div class="bg-gray-50 h-[500px] overflow-y-auto p-6 space-y-4" id="messagesContainer">
+            {% if messages is empty %}
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-comments text-4xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 text-lg">Aucun message pour le moment</p>
+                    <p class="text-gray-400">Commencez la conversation !</p>
+                </div>
+            {% else %}
+                {% for message in messages %}
+                    <div class="flex {% if message.sender.id == app.user.id %}justify-end{% else %}justify-start{% endif %}">
+                        <div class="max-w-md lg:max-w-lg xl:max-w-xl">
+                            <!-- Message bubble -->
+                            <div class="px-4 py-3 rounded-2xl {% if message.sender.id == app.user.id %}bg-gradient-to-r from-middo-primary to-middo-secondary text-white rounded-br-none{% else %}bg-white border border-gray-200 rounded-bl-none{% endif %} shadow-sm">
+                                <p class="break-words">{{ message.content }}</p>
+                            </div>
+                            
+                            <!-- Timestamp -->
+                            <div class="mt-1 px-2 {% if message.sender.id == app.user.id %}text-right{% else %}text-left{% endif %}">
+                                <small class="text-gray-500 text-xs">
+                                    {{ message.createdAt|date('d/m/Y H:i') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Formulaire d'envoi -->
+    <div class="card-middo">
+        <div class="p-4">
+            <form method="post" action="{{ path('app_message_chat', {id: otherUser.id}) }}" class="flex gap-3">
+                <textarea 
+                    name="content" 
+                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-middo-primary focus:border-transparent transition resize-none" 
+                    rows="2" 
+                    placeholder="Écrivez votre message..."
+                    required
+                ></textarea>
+                <button 
+                    type="submit" 
+                    class="btn-middo bg-gradient-to-r from-middo-primary to-middo-secondary text-white px-6 h-fit self-end"
+                >
+                    <i class="fas fa-paper-plane mr-2"></i>Envoyer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-scroll to bottom on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('messagesContainer');
+    if (container) {
+        container.scrollTop = container.scrollHeight;
+    }
+});
+</script>
+{% endblock %}

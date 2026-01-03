@@ -1,0 +1,361 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Analyse de Sentiment - {{ project.title }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/sentiment-gauge-animation.css">
+    <style>
+        .analyze-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .project-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .project-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .project-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        .analyze-section {
+            margin: 30px 0;
+        }
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        .analyze-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results-container {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        .results-container.visible {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .sentiment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .detail-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .detail-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .detail-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .loading-spinner.visible {
+            display: block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            display: none;
+            padding: 15px;
+            background: #fee;
+            border-left: 4px solid #e74c3c;
+            border-radius: 6px;
+            color: #c0392b;
+            margin: 20px 0;
+        }
+        .error-message.visible {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="analyze-container">
+    <div class="project-header">
+        <h1 class="project-title">{{ project.title }}</h1>
+        <p class="project-description">{{ project.description }}</p>
+    </div>
+
+    <div class="analyze-section">
+        <button id="analyzeBtn" class="analyze-btn">
+            Analyser le sentiment du projet
+        </button>
+        <div id="loadingSpinner" class="loading-spinner"></div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <div id="resultsContainer" class="results-container">
+        <div class="sentiment-gauge-container">
+            <div class="gauge-wrapper">
+                <svg class="gauge-svg" viewBox="0 0 200 120">
+                    <defs>
+                        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#f39c12;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path class="gauge-background" 
+                          d="M 20 100 A 80 80 0 0 1 180 100" 
+                          fill="none" 
+                          stroke="#ecf0f1" 
+                          stroke-width="20" 
+                          stroke-linecap="round"/>
+                    <path id="gaugeFill" 
+                          class="gauge-fill" 
+                          d="M 20 100 A 80 80 0 0 1 180 100" 
+                          fill="none" 
+                          stroke="url(#gaugeGradient)" 
+                          stroke-width="20" 
+                          stroke-linecap="round"
+                          stroke-dasharray="251.2"
+                          stroke-dashoffset="251.2"/>
+                    <text id="gaugeScore" 
+                          x="100" 
+                          y="85" 
+                          text-anchor="middle" 
+                          class="gauge-score">0%</text>
+                    <text id="gaugeLabel" 
+                          x="100" 
+                          y="110" 
+                          text-anchor="middle" 
+                          class="gauge-label">En attente</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="sentiment-details">
+            <div class="detail-card">
+                <div class="detail-label">Score de sentiment</div>
+                <div id="detailScore" class="detail-value">-</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-label">Categorie</div>
+                <div id="detailLabel" class="detail-value">-</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================
+// JAVASCRIPT INLINE - ANIMATION JAUGE SENTIMENT
+// ============================================
+
+const projectId = {{ project.id }};
+
+// Elements DOM
+const analyzeBtn = document.getElementById('analyzeBtn');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const errorMessage = document.getElementById('errorMessage');
+const resultsContainer = document.getElementById('resultsContainer');
+const gaugeFill = document.getElementById('gaugeFill');
+const gaugeScore = document.getElementById('gaugeScore');
+const gaugeLabel = document.getElementById('gaugeLabel');
+const detailScore = document.getElementById('detailScore');
+const detailLabel = document.getElementById('detailLabel');
+
+// Configuration de la jauge
+const GAUGE_CONFIG = {
+    circumference: 251.2,
+    animationDuration: 1500,
+    colors: {
+        negative: '#e74c3c',
+        neutral: '#f39c12',
+        positive: '#27ae60'
+    },
+    thresholds: {
+        negative: 40,
+        neutral: 60
+    }
+};
+
+// Fonction principale d'analyse
+async function analyzeSentiment() {
+    try {
+        // Reset UI
+        analyzeBtn.disabled = true;
+        loadingSpinner.classList.add('visible');
+        errorMessage.classList.remove('visible');
+        resultsContainer.classList.remove('visible');
+
+        // Appel API
+        const response = await fetch('/api/ai/analyze-sentiment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                projectDescription: "{{ project.description|raw }}"
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Validation des donnees
+        if (!data.score || !data.label) {
+            throw new Error('Reponse API invalide');
+        }
+
+        // Afficher les resultats
+        displayResults(data);
+
+    } catch (error) {
+        console.error('Erreur analyse sentiment:', error);
+        showError('Impossible d\'analyser le sentiment. Veuillez reessayer.');
+    } finally {
+        loadingSpinner.classList.remove('visible');
+        analyzeBtn.disabled = false;
+    }
+}
+
+// Afficher les resultats avec animation
+function displayResults(data) {
+    const score = Math.round(data.score);
+    const label = data.label;
+
+    // Afficher le conteneur
+    resultsContainer.classList.add('visible');
+
+    // Animer la jauge
+    animateGauge(score, label);
+
+    // Mettre a jour les details
+    detailScore.textContent = score + '%';
+    detailLabel.textContent = label;
+}
+
+// Animation de la jauge (CŒUR DU SYSTEME)
+function animateGauge(targetScore, label) {
+    const startScore = 0;
+    const startTime = performance.now();
+    const duration = GAUGE_CONFIG.animationDuration;
+
+    // Couleur dynamique selon le score
+    let color;
+    if (targetScore < GAUGE_CONFIG.thresholds.negative) {
+        color = GAUGE_CONFIG.colors.negative;
+    } else if (targetScore < GAUGE_CONFIG.thresholds.neutral) {
+        color = GAUGE_CONFIG.colors.neutral;
+    } else {
+        color = GAUGE_CONFIG.colors.positive;
+    }
+
+    // Fonction d'easing (bounce)
+    function easeOutBounce(t) {
+        if (t < 1 / 2.75) {
+            return 7.5625 * t * t;
+        } else if (t < 2 / 2.75) {
+            return 7.5625 * (t -= 1.5 / 2.75) * t + 0.75;
+        } else if (t < 2.5 / 2.75) {
+            return 7.5625 * (t -= 2.25 / 2.75) * t + 0.9375;
+        } else {
+            return 7.5625 * (t -= 2.625 / 2.75) * t + 0.984375;
+        }
+    }
+
+    // Animation frame par frame
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutBounce(progress);
+        
+        const currentScore = startScore + (targetScore - startScore) * easedProgress;
+        
+        // Calculer stroke-dashoffset (251.2 = circonference totale)
+        const offset = GAUGE_CONFIG.circumference - (GAUGE_CONFIG.circumference * currentScore / 100);
+        
+        // Mettre a jour le SVG
+        gaugeFill.style.strokeDashoffset = offset;
+        gaugeFill.style.stroke = color;
+        gaugeScore.textContent = Math.round(currentScore) + '%';
+        gaugeLabel.textContent = label;
+
+        // Continuer l'animation si pas fini
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+
+    // Lancer l'animation
+    requestAnimationFrame(animate);
+}
+
+// Afficher une erreur
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.add('visible');
+}
+
+// Event listener
+analyzeBtn.addEventListener('click', analyzeSentiment);
+
+// Auto-analyse au chargement (optionnel)
+// window.addEventListener('load', analyzeSentiment);
+</script>
+{% endblock %}

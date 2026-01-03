@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}MIDDO{% endblock %}</title>
+
+    {# CSS global (ton fichier) #}
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+
+    {# Sécurité : éviter l’erreur app.user #}
+    {% if app is defined and app.user is defined and app.user %}
+        <meta name="user-id" content="{{ app.user.id }}">
+    {% endif %}
+
+    {# Autres CSS de ton projet #}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/notifications.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+
+    {# ---------------- HEADER AVEC SÉLECTEUR DE LANGUE ---------------- #}
+    <header style="display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#f8f8f8;">
+
+        <div class="logo">
+            <h2 style="margin:0;">MIDDO</h2>
+        </div>
+
+        <div class="language-selector">
+            <div class="dropdown">
+                <button class="dropdown-toggle">
+                    🌐 {{ app.request.locale|upper }}
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="{{ path('change_locale', {locale: 'fr'}) }}">🇫🇷 Français</a>
+                    <a href="{{ path('change_locale', {locale: 'en'}) }}">🇬🇧 English</a>
+                    <a href="{{ path('change_locale', {locale: 'es'}) }}">🇪🇸 Español</a>
+                    <a href="{{ path('change_locale', {locale: 'ar'}) }}">🇸🇦 العربية</a>
+                    <a href="{{ path('change_locale', {locale: 'sw'}) }}">🇹🇿 Kiswahili</a>
+                    <a href="{{ path('change_locale', {locale: 'ln'}) }}">🇨🇩 Lingála</a>
+                    <a href="{{ path('change_locale', {locale: 'wo'}) }}">🇸🇳 Wolof</a>
+                    <a href="{{ path('change_locale', {locale: 'zh'}) }}">🇨🇳 中文</a>
+                    <a href="{{ path('change_locale', {locale: 'id'}) }}">🇮🇩 Bahasa Indonesia</a>
+                    <a href="{{ path('change_locale', {locale: 'hi'}) }}">🇮🇳 हिन्दी</a>
+                    <a href="{{ path('change_locale', {locale: 'ur'}) }}">🇵🇰 اردو</a>
+                    <a href="{{ path('change_locale', {locale: 'pt'}) }}">🇵🇹 Português</a>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    {# ---------------- FIN HEADER ---------------- #}
+
+
+    {# Contenu principal #}
+    <main style="padding:20px;">
+        {% block body %}{% endblock %}
+    </main>
+
+
+    {# Scripts JS #}
+    {% block javascripts %}
+        <script src="{{ asset('js/notifications.js') }}" defer></script>
+    {% endblock %}
+
+</body>
+</html>

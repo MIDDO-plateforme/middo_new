@@ -1,0 +1,138 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Explorer les profils - MIDDO{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto py-8 px-4">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 flex items-center mb-4">
+            <i class="fas fa-users mr-4 text-middo-primary"></i>
+            Explorer les profils
+        </h1>
+        <p class="text-xl text-gray-600">Découvrez les professionnels de la communauté MIDDO mondiale</p>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card-middo mb-8">
+        <h5 class="text-lg font-semibold mb-4">Filtrer par type</h5>
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ path('app_users') }}" 
+               class="btn-middo {% if not currentFilter %}bg-gradient-to-r from-middo-primary to-middo-secondary text-white{% else %}border border-middo-primary text-middo-primary hover:bg-middo-primary hover:text-white{% endif %}">
+                Tous
+            </a>
+            <a href="{{ path('app_users', {type: 'Entrepreneur'}) }}" 
+               class="btn-middo {% if currentFilter == 'Entrepreneur' %}bg-yellow-500 text-white{% else %}border border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white{% endif %}">
+                <i class="fas fa-rocket mr-2"></i>Entrepreneurs
+            </a>
+            <a href="{{ path('app_users', {type: 'Investisseur'}) }}" 
+               class="btn-middo {% if currentFilter == 'Investisseur' %}bg-green-500 text-white{% else %}border border-green-500 text-green-600 hover:bg-green-500 hover:text-white{% endif %}">
+                <i class="fas fa-chart-line mr-2"></i>Investisseurs
+            </a>
+            <a href="{{ path('app_users', {type: 'Entreprise'}) }}" 
+               class="btn-middo {% if currentFilter == 'Entreprise' %}bg-blue-500 text-white{% else %}border border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white{% endif %}">
+                <i class="fas fa-building mr-2"></i>Entreprises
+            </a>
+            <a href="{{ path('app_users', {type: 'Particulier'}) }}" 
+               class="btn-middo {% if currentFilter == 'Particulier' %}bg-indigo-500 text-white{% else %}border border-indigo-500 text-indigo-600 hover:bg-indigo-500 hover:text-white{% endif %}">
+                <i class="fas fa-user mr-2"></i>Particuliers
+            </a>
+            <a href="{{ path('app_users', {type: 'Association'}) }}" 
+               class="btn-middo {% if currentFilter == 'Association' %}bg-gray-500 text-white{% else %}border border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white{% endif %}">
+                <i class="fas fa-users mr-2"></i>Associations
+            </a>
+            <a href="{{ path('app_users', {type: 'Institution'}) }}" 
+               class="btn-middo {% if currentFilter == 'Institution' %}bg-gray-800 text-white{% else %}border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white{% endif %}">
+                <i class="fas fa-landmark mr-2"></i>Institutions
+            </a>
+        </div>
+    </div>
+
+    <!-- Liste des utilisateurs -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for user in users %}
+        <div class="card-middo hover:shadow-xl transition-shadow duration-300">
+            <div class="flex items-start space-x-4 mb-4">
+                <!-- Photo de profil -->
+                {% if user.profilePicture %}
+                    <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" 
+                         alt="Photo de profil" 
+                         class="w-16 h-16 rounded-full object-cover border-2 border-middo-primary">
+                {% else %}
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-middo-primary to-middo-secondary text-white flex items-center justify-center text-2xl font-bold">
+                        {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                    </div>
+                {% endif %}
+                
+                <!-- Nom et type -->
+                <div class="flex-1">
+                    <h5 class="font-bold text-lg text-gray-800 mb-1">{{ user.firstName }} {{ user.lastName }}</h5>
+                    <span class="inline-block px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full">{{ user.userType }}</span>
+                </div>
+            </div>
+            
+            <!-- Bio -->
+            {% if user.bio %}
+            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                {{ user.bio|length > 80 ? user.bio|slice(0, 80) ~ '...' : user.bio }}
+            </p>
+            {% endif %}
+            
+            <!-- Infos complémentaires -->
+            <div class="space-y-2 mb-4">
+                {% if user.villeActuelle or user.paysResidence %}
+                <p class="text-sm text-gray-500 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2 text-middo-primary"></i>
+                    {% if user.villeActuelle %}{{ user.villeActuelle }}{% endif %}
+                    {% if user.villeActuelle and user.paysResidence %}, {% endif %}
+                    {% if user.paysResidence %}{{ user.paysResidence }}{% endif %}
+                </p>
+                {% endif %}
+                
+                {% if user.domaineExpertise %}
+                <p class="text-sm text-gray-500 flex items-center">
+                    <i class="fas fa-briefcase mr-2 text-middo-primary"></i>
+                    {{ user.domaineExpertise }}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Badges -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% if user.rechercheEmploi %}
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">Recherche emploi</span>
+                {% endif %}
+                {% if user.disponiblePourMissions %}
+                    <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Disponible</span>
+                {% endif %}
+                {% if user.rechercheInvestisseurs %}
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Cherche investisseurs</span>
+                {% endif %}
+            </div>
+            
+            <!-- Bouton -->
+            <a href="{{ path('app_user_show', {id: user.id}) }}" class="btn-middo border border-middo-primary text-middo-primary hover:bg-middo-primary hover:text-white w-full text-center">
+                <i class="fas fa-eye mr-2"></i>Voir le profil
+            </a>
+        </div>
+        {% else %}
+        <div class="col-span-full">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                <i class="fas fa-info-circle text-blue-500 text-3xl mb-3"></i>
+                <p class="text-blue-700">Aucun utilisateur trouvé avec ce filtre.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+/* Limiter le texte à 2 lignes avec ellipsis */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
+{% endblock %}

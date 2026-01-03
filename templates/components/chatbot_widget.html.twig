@@ -1,0 +1,111 @@
+{# 
+  MIDDO Chatbot Widget - SESSION 33a
+  Widget flottant bottom-right avec animations premium
+#}
+<div id="middo-chatbot-widget" class="chatbot-widget" data-chatbot-widget>
+    {# Bouton flottant toggle #}
+    <button type="button" 
+            class="chatbot-toggle-btn" 
+            id="chatbot-toggle-btn"
+            aria-label="Ouvrir le chatbot MIDDO"
+            aria-expanded="false"
+            aria-controls="chatbot-window">
+        <span class="chatbot-icon">💬</span>
+        <span class="chatbot-badge" id="chatbot-badge" style="display: none;">0</span>
+    </button>
+
+    {# Fenêtre chatbot #}
+    <div class="chatbot-window" 
+         id="chatbot-window" 
+         role="dialog" 
+         aria-label="Chatbot MIDDO"
+         aria-modal="true"
+         style="display: none;">
+        
+        {# Header #}
+        <div class="chatbot-header">
+            <div class="chatbot-header-content">
+                <div class="chatbot-avatar">🤖</div>
+                <div class="chatbot-header-text">
+                    <h3 class="chatbot-title">MIDDO Assistant</h3>
+                    <p class="chatbot-status">
+                        <span class="status-indicator status-online"></span>
+                        En ligne
+                    </p>
+                </div>
+            </div>
+            <button type="button" 
+                    class="chatbot-close-btn" 
+                    id="chatbot-close-btn"
+                    aria-label="Fermer le chatbot">
+                ✕
+            </button>
+        </div>
+
+        {# Messages container #}
+        <div class="chatbot-messages" id="chatbot-messages" role="log" aria-live="polite">
+            {# Message de bienvenue initial #}
+            <div class="chatbot-message chatbot-message-bot" data-message-id="welcome">
+                <div class="chatbot-message-avatar">🤖</div>
+                <div class="chatbot-message-content">
+                    <div class="chatbot-message-bubble">
+                        <p>👋 Salut ! Je suis l'assistant MIDDO.</p>
+                        <p>Comment puis-je t'aider aujourd'hui ?</p>
+                    </div>
+                    <div class="chatbot-message-time">{{ "now"|date("H:i") }}</div>
+                </div>
+            </div>
+        </div>
+
+        {# Indicateur "typing..." #}
+        <div class="chatbot-typing" id="chatbot-typing" style="display: none;">
+            <div class="chatbot-typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="chatbot-typing-text">MIDDO est en train d'écrire...</span>
+        </div>
+
+        {# Input zone #}
+        <div class="chatbot-input-container">
+            <form id="chatbot-form" class="chatbot-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('chatbot') }}">
+                <textarea 
+                    id="chatbot-input" 
+                    class="chatbot-input" 
+                    placeholder="Tape ton message..."
+                    rows="1"
+                    maxlength="500"
+                    aria-label="Message pour le chatbot"
+                    required></textarea>
+                <button type="submit" 
+                        class="chatbot-send-btn" 
+                        id="chatbot-send-btn"
+                        aria-label="Envoyer le message">
+                    <span class="send-icon">📤</span>
+                </button>
+            </form>
+            <div class="chatbot-char-count">
+                <span id="chatbot-char-count">0</span>/500
+            </div>
+        </div>
+
+        {# Suggestions rapides (optionnel) #}
+        <div class="chatbot-quick-replies" id="chatbot-quick-replies" style="display: none;">
+            <button type="button" class="quick-reply-btn" data-reply="Comment utiliser MIDDO ?">
+                ❓ Comment utiliser MIDDO ?
+            </button>
+            <button type="button" class="quick-reply-btn" data-reply="Trouver des collaborateurs">
+                👥 Trouver des collaborateurs
+            </button>
+            <button type="button" class="quick-reply-btn" data-reply="Créer un projet">
+                🚀 Créer un projet
+            </button>
+        </div>
+    </div>
+</div>
+
+{# Styles et scripts inline pour éviter problèmes de chargement #}
+<link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
+<script src="{{ asset('js/chatbot.js') }}" defer></script>

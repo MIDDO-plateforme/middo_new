@@ -1,0 +1,444 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_project_my_projects') }}">Retour a mes projets</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- En-tete du Projet avec Badge Statut -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="h2 mb-2">{{ project.title }}</h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-calendar3"></i> {{ project.createdAt|date('d/m/Y') }}
+                <span class="badge bg-{{ project.status == 'active' ? 'success' : (project.status == 'completed' ? 'primary' : 'secondary') }} ms-2">
+                    {{ project.status }}
+                </span>
+            </p>
+        </div>
+        <div>
+            <a href="{{ path('app_project_edit', {'id': project.id}) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+            {{ include('project/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-file-text"></i> Description</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ project.description }}</p>
+        </div>
+    </div>
+
+    <!-- Proprietaire du Projet -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-person-circle"></i> Proprietaire du projet</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="avatar-circle bg-primary text-white me-3">
+                    {{ project.owner.firstName|first }}{{ project.owner.lastName|first }}
+                </div>
+                <div>
+                    <h6 class="mb-1">{{ project.owner.firstName }} {{ project.owner.lastName }}</h6>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-envelope"></i> {{ project.owner.email }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Assistant IA -->
+    <div class="card mb-4 border-info">
+        <div class="card-header bg-info bg-opacity-10 border-info">
+            <h5 class="mb-0">
+                <i class="bi bi-robot text-info"></i> Assistant IA
+                <span class="badge bg-info ms-2">NOUVEAU</span>
+            </h5>
+            <p class="text-muted mb-0 mt-2">Utilisez l'intelligence artificielle pour ameliorer votre projet !</p>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-info btn-lg" onclick="openAIChatModal({{ project.id }})">
+                            <i class="bi bi-chat-dots"></i> 💬 Assistant IA
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-success btn-lg" onclick="getAISuggestions({{ project.id }})">
+                            <i class="bi bi-lightbulb"></i> 💡 Ameliorer
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-primary btn-lg" onclick="findMatchingProfiles({{ project.id }})">
+                            <i class="bi bi-people"></i> 🎯 Trouver des Profils
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-warning btn-lg" onclick="analyzeTone({{ project.id }})">
+                            <i class="bi bi-emoji-smile"></i> 😊 Analyser le Ton
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call-to-Action Assistant IA -->
+    <div class="card mt-4 bg-light border-0">
+        <div class="card-body text-center py-4">
+            <h5 class="mb-3">💡 Besoin d'aide ?</h5>
+            <p class="text-muted mb-3">Utilisez l'assistant IA pour obtenir des suggestions personnalisees !</p>
+            <button type="button" class="btn btn-info btn-lg" onclick="openAIChatModal({{ project.id }})">
+                <i class="bi bi-robot"></i> Discuter avec l'IA
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chat IA -->
+<div class="modal fade" id="aiChatModal" tabindex="-1" aria-labelledby="aiChatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="aiChatModalLabel">
+                    <i class="bi bi-robot"></i> Assistant IA - {{ project.title }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="aiChatMessages" style="min-height: 400px;">
+            </div>
+            <div class="modal-footer">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="aiChatInput" placeholder="Posez une question sur votre projet...">
+                    <button class="btn btn-info" type="button" onclick="sendAIMessage({{ project.id }})">
+                        <i class="bi bi-send"></i> Envoyer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle me-2"></i>
+                <span id="successToastMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                <span id="errorToastMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div id="infoToast" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-info-circle me-2"></i>
+                <span id="infoToastMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<style>
+.sentiment-gauge-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.sentiment-gauge-wrapper {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+.sentiment-gauge {
+    width: 100%;
+    height: auto;
+}
+.gauge-progress {
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 2s ease-out, stroke 2s ease-out;
+}
+.gauge-score {
+    font-size: 32px;
+    font-weight: bold;
+    fill: #333;
+}
+.gauge-label {
+    font-size: 14px;
+    fill: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.gauge-progress[data-score] {
+    stroke: #dc3545;
+}
+.sentiment-emotions {
+    padding: 20px;
+}
+.emotion-bar-container {
+    margin-bottom: 15px;
+}
+.emotion-label {
+    font-weight: 500;
+    color: #333;
+    text-transform: capitalize;
+}
+.emotion-value {
+    font-weight: bold;
+    color: #667eea;
+}
+.emotion-progress {
+    transition: width 1.5s ease-out, background-color 1.5s ease-out;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+.sentiment-gauge-wrapper {
+    animation: pulse 3s ease-in-out infinite;
+}
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.toast-container {
+    z-index: 9999 !important;
+}
+.toast {
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast-body {
+    font-size: 0.95rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const gaugeProgress = document.querySelector('.gauge-progress');
+    if (gaugeProgress) {
+        const score = parseInt(gaugeProgress.dataset.score);
+        const maxDashOffset = 251.2;
+        const targetDashOffset = maxDashOffset - (maxDashOffset * score / 100);
+        let color;
+        if (score >= 60) {
+            color = '#28a745';
+        } else if (score >= 40) {
+            color = '#ffc107';
+        } else {
+            color = '#dc3545';
+        }
+        setTimeout(() => {
+            gaugeProgress.style.strokeDashoffset = targetDashOffset;
+            gaugeProgress.style.stroke = color;
+        }, 300);
+        const scoreText = document.querySelector('.gauge-score');
+        if (scoreText) {
+            let currentScore = 0;
+            const increment = score / 100;
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= score) {
+                    currentScore = score;
+                    clearInterval(timer);
+                }
+                scoreText.textContent = Math.round(currentScore);
+            }, 20);
+        }
+    }
+    const emotionBars = document.querySelectorAll('.emotion-progress');
+    emotionBars.forEach((bar, index) => {
+        const value = parseInt(bar.dataset.value);
+        const emotion = bar.dataset.emotion;
+        const emotionColors = {
+            'joie': 'linear-gradient(90deg, #f093fb 0%, #f5576c 100%)',
+            'confiance': 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)',
+            'tristesse': 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)',
+            'colere': 'linear-gradient(90deg, #fa709a 0%, #fee140 100%)',
+            'peur': 'linear-gradient(90deg, #30cfd0 0%, #330867 100%)'
+        };
+        setTimeout(() => {
+            bar.style.width = value + '%';
+            bar.style.background = emotionColors[emotion] || 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)';
+            const valueSpan = bar.closest('.emotion-bar-container').querySelector('.emotion-value');
+            if (valueSpan) {
+                let currentValue = 0;
+                const increment = value / 50;
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= value) {
+                        currentValue = value;
+                        clearInterval(timer);
+                    }
+                    valueSpan.textContent = Math.round(currentValue) + '%';
+                }, 30);
+            }
+        }, 500 + (index * 200));
+    });
+});
+function showToast(type, message) {
+    const toastId = type + 'Toast';
+    const toastMessageId = type + 'ToastMessage';
+    const toastElement = document.getElementById(toastId);
+    const toastMessage = document.getElementById(toastMessageId);
+    if (toastElement && toastMessage) {
+        toastMessage.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 5000
+        });
+        toast.show();
+    }
+}
+function openAIChatModal(projectId) {
+    const modal = new bootstrap.Modal(document.getElementById('aiChatModal'));
+    modal.show();
+    const messagesContainer = document.getElementById('aiChatMessages');
+    messagesContainer.innerHTML = `
+        <div class="alert alert-info">
+            <i class="bi bi-robot"></i> Bonjour ! Je suis votre assistant IA. 
+            Posez-moi des questions sur votre projet ou demandez-moi des suggestions !
+        </div>
+    `;
+}
+function sendAIMessage(projectId) {
+    const input = document.getElementById('aiChatInput');
+    const message = input.value.trim();
+    if (message) {
+        showToast('info', 'Envoi du message a l\'IA...');
+        input.value = '';
+        setTimeout(() => {
+            showToast('success', 'Message recu ! Reponse en cours...');
+        }, 1000);
+    }
+}
+function getAISuggestions(projectId) {
+    showToast('info', 'Generation des suggestions IA en cours...');
+    fetch(`/api/projects/${projectId}/ai/suggestions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showToast('success', 'Suggestions IA generees avec succes !');
+    })
+    .catch(error => {
+        showToast('error', 'Erreur lors de la generation des suggestions');
+        console.error('Error:', error);
+    });
+}
+function findMatchingProfiles(projectId) {
+    showToast('info', 'Recherche de profils correspondants...');
+    fetch(`/api/projects/${projectId}/ai/matching`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showToast('success', `${data.count} profils trouves !`);
+    })
+    .catch(error => {
+        showToast('error', 'Erreur lors de la recherche de profils');
+        console.error('Error:', error);
+    });
+}
+function analyzeTone(projectId) {
+    showToast('info', 'Analyse du ton en cours...');
+    fetch(`/api/projects/${projectId}/ai/tone`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showToast('success', `Ton detecte : ${data.tone}`);
+    })
+    .catch(error => {
+        showToast('error', 'Erreur lors de l\'analyse du ton');
+        console.error('Error:', error);
+    });
+}
+function analyzeSentiment(projectId) {
+    showToast('info', 'Analyse du sentiment en cours...');
+    fetch(`/api/projects/${projectId}/ai/sentiment`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showToast('success', 'Analyse terminee ! Rechargement...');
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+    })
+    .catch(error => {
+        showToast('error', 'Erreur lors de l\'analyse du sentiment');
+        console.error('Error:', error);
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    const chatInput = document.getElementById('aiChatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const projectId = {{ project.id }};
+                sendAIMessage(projectId);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
