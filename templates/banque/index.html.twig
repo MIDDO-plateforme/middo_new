@@ -1,7 +1,20 @@
 ﻿{% extends 'base.html.twig' %}
 
-{% block title %}Banque - MIDDO{% endblock %}
+{% block title %}Portefeuille - MIDDO{% endblock %}
 
 {% block body %}
-    <h1> Portefeuille</h1><div class='card'><h2>Solde</h2><p class='balance' style='font-size:48px;color:#667eea'>2 450,00 €</p></div>
+<div class="container">
+        <h1>💰 Portefeuille MIDDO</h1>
+        <div class="menu">
+            <a href="/"> Accueil</a>
+            <a href="/dashboard.html"> Dashboard</a>
+            <a href="/travail.html"> Travail</a>
+            <a href="/projets.html"> Projets</a>
+        </div>
+        <div class="card">
+            <h2 style="text-align: center; color: #333;">Solde disponible</h2>
+            <div class="balance">2 450,00 €</div>
+            <p style="text-align: center; color: #999;">Dernière mise à jour : 4 janvier 2026</p>
+        </div>
+    </div>
 {% endblock %}
