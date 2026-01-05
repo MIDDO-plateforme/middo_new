@@ -1,0 +1,8 @@
+﻿services:
+  - type: web
+    name: middo-app
+    env: docker
+    buildCommand: |
+      php bin/console cache:clear --env=prod --no-warmup
+      composer install --no-dev --optimize-autoloader
+    startCommand: php -S 0.0.0.0:8000 -t public
