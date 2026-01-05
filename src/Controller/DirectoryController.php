@@ -29,7 +29,6 @@ class DirectoryController extends AbstractController
 
     /**
      * @Route("", name="app_directory_index", methods={"GET"})
-     * @IsGranted("ROLE_USER")
      */
     public function index(): Response
     {
