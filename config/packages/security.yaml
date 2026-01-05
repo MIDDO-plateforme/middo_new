@@ -14,10 +14,9 @@
             security: false
 
         main:
-        lazy: true
-        provider: app_user_provider
-        entry_point: ~
+            lazy: true
             provider: app_user_provider
+            entry_point: ~
 
     access_control:
         - { path: ^/annuaire, roles: PUBLIC_ACCESS }
