@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Controller;
 
@@ -9,15 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/annuaire")
- */
+#[Route('/annuaire')]
 class DirectoryController extends AbstractController
 {
-    private $elasticsearchService;
-    private $userRepository;
+    private ElasticsearchService $elasticsearchService;
+    private UserRepository $userRepository;
 
     public function __construct(
         ElasticsearchService $elasticsearchService,
@@ -27,9 +25,7 @@ class DirectoryController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @Route("", name="app_directory_index", methods={"GET"})
-     */
+    #[Route('', name: 'app_directory_index', methods: ['GET'])]
     public function index(): Response
     {
         $stats = [
@@ -43,10 +39,8 @@ class DirectoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/search", name="app_directory_search", methods={"GET"})
-     * @IsGranted("ROLE_USER")
-     */
+    #[Route('/search', name: 'app_directory_search', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function search(Request $request): Response
     {
         $query = $request->query->get('q', '');
@@ -84,10 +78,8 @@ class DirectoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/profile/{id}", name="app_directory_profile", methods={"GET"})
-     * @IsGranted("ROLE_USER")
-     */
+    #[Route('/profile/{id}', name: 'app_directory_profile', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function profile(int $id): Response
     {
         $user = $this->userRepository->find($id);
@@ -129,10 +121,8 @@ class DirectoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/autocomplete", name="app_directory_autocomplete", methods={"GET"})
-     * @IsGranted("ROLE_USER")
-     */
+    #[Route('/api/autocomplete', name: 'app_directory_autocomplete', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function autocomplete(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
@@ -146,10 +136,8 @@ class DirectoryController extends AbstractController
         return $this->json($suggestions);
     }
 
-    /**
-     * @Route("/api/facets", name="app_directory_facets", methods={"GET"})
-     * @IsGranted("ROLE_USER")
-     */
+    #[Route('/api/facets', name: 'app_directory_facets', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function facets(Request $request): JsonResponse
     {
         $query = $request->query->get('q', '');
@@ -165,10 +153,8 @@ class DirectoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/filter", name="app_directory_filter", methods={"POST"})
-     * @IsGranted("ROLE_USER")
-     */
+    #[Route('/filter', name: 'app_directory_filter', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function filter(Request $request): Response
     {
         $data = $request->request->all();
