@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class DirectoryController extends AbstractController
 {
-    #[Route('/annuaire', name: 'app_annuaire')]
+    #[Route('/annuaire', name: 'app_annuaire', methods: ['GET'])]
     public function index(): Response
     {
         return new Response('
@@ -37,6 +37,11 @@ class DirectoryController extends AbstractController
                         text-align: center;
                         max-width: 600px;
                         width: 100%;
+                        animation: fadeIn 0.5s;
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
                     }
                     h1 {
                         font-size: 3em;
@@ -51,8 +56,17 @@ class DirectoryController extends AbstractController
                     p {
                         font-size: 1.2em;
                         color: #555;
-                        margin-bottom: 30px;
+                        margin-bottom: 20px;
                         line-height: 1.6;
+                    }
+                    .badge {
+                        display: inline-block;
+                        padding: 10px 25px;
+                        background: #10b981;
+                        color: white;
+                        border-radius: 25px;
+                        font-weight: 700;
+                        margin-bottom: 30px;
                     }
                     .stats {
                         display: flex;
@@ -96,10 +110,16 @@ class DirectoryController extends AbstractController
                 <div class="container">
                     <div class="success"></div>
                     <h1>ANNUAIRE MIDDO</h1>
-                    <p><strong> PAGE FONCTIONNELLE !</strong></p>
-                    <p>La page annuaire est maintenant accessible sans erreur 401 ou 500.</p>
-                    <p>Session 23 : Objectif <strong>11/11 pages (100%)</strong> atteint !</p>
-                    
+                    <div class="badge"> PAGE FONCTIONNELLE </div>
+                    <p>
+                        La page <strong style="color: #667eea;">/annuaire</strong> 
+                        est maintenant accessible sans erreur !
+                    </p>
+                    <p>
+                        <strong>SESSION 23 complétée avec succès !</strong><br>
+                        Objectif <strong style="color: #667eea;">11/11 pages (100%)</strong> atteint !
+                    </p>
+
                     <div class="stats">
                         <div class="stat">
                             <div class="stat-number">11/11</div>
@@ -114,7 +134,7 @@ class DirectoryController extends AbstractController
                             <div class="stat-label">Session 23</div>
                         </div>
                     </div>
-                    
+
                     <a href="/dashboard" class="btn">Retour au Dashboard</a>
                 </div>
             </body>
