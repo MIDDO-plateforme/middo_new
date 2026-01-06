@@ -1,0 +1,120 @@
+/* ================================================================
+   MIDDO - ACTIVE LINKS STYLES
+   Session 24 - Phase 2 - Option C
+   ================================================================ */
+
+/* ================================================================
+   SIDEBAR DESKTOP - LIENS ACTIFS
+   ================================================================ */
+
+/* Liens normaux de la sidebar */
+.sidebar a,
+aside a,
+nav a {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Lien actif - Style principal */
+.sidebar a.active,
+aside a.active,
+nav a.active {
+    background: linear-gradient(90deg, rgba(244, 162, 97, 0.15) 0%, rgba(244, 162, 97, 0.05) 100%) !important;
+    border-left: 5px solid #f4a261 !important;
+    padding-left: 20px !important;
+    color: #f4a261 !important;
+    font-weight: 700 !important;
+    box-shadow: inset 0 0 10px rgba(244, 162, 97, 0.1);
+}
+
+/* Icône du lien actif */
+.sidebar a.active i,
+.sidebar a.active svg,
+aside a.active i,
+aside a.active svg,
+nav a.active i,
+nav a.active svg {
+    color: #f4a261 !important;
+    transform: scale(1.1);
+}
+
+/* Animation au hover sur lien actif */
+.sidebar a.active:hover,
+aside a.active:hover,
+nav a.active:hover {
+    background: linear-gradient(90deg, rgba(244, 162, 97, 0.25) 0%, rgba(244, 162, 97, 0.1) 100%) !important;
+    padding-left: 25px !important;
+}
+
+/* Indicateur visuel avant le lien actif */
+.sidebar a.active::before,
+aside a.active::before,
+nav a.active::before {
+    content: '●';
+    position: absolute;
+    left: 8px;
+    color: #f4a261;
+    font-size: 10px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+/* ================================================================
+   MENU MOBILE - LIENS ACTIFS
+   ================================================================ */
+
+.mobile-sidebar-nav a.active {
+    background: linear-gradient(90deg, #fff3e6 0%, #ffffff 100%) !important;
+    border-left-color: #f4a261 !important;
+    color: #f4a261 !important;
+    font-weight: 700 !important;
+    box-shadow: inset 0 2px 8px rgba(244, 162, 97, 0.15);
+}
+
+.mobile-sidebar-nav a.active i,
+.mobile-sidebar-nav a.active svg {
+    color: #f4a261 !important;
+    transform: scale(1.15);
+}
+
+/* ================================================================
+   SOUS-MENUS ACTIFS (SI EXISTANTS)
+   ================================================================ */
+
+.sidebar .submenu a.active,
+aside .submenu a.active,
+nav .submenu a.active {
+    background: rgba(244, 162, 97, 0.1) !important;
+    border-left: 3px solid #f4a261 !important;
+    padding-left: 35px !important;
+    font-weight: 600 !important;
+}
+
+/* ================================================================
+   BREADCRUMB ACTIF (BONUS)
+   ================================================================ */
+
+.breadcrumb .active {
+    color: #f4a261 !important;
+    font-weight: 600;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 768px) {
+    .mobile-sidebar-nav a.active {
+        padding-left: 25px !important;
+    }
+}
