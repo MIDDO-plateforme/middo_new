@@ -1,7 +1,6 @@
-// Force rebuild: 20260106_111556
 // ================================================================
 // MIDDO - DARK MODE TOGGLE
-// Session 24 - Phase 2 - Fix Syntax Error
+// Session 24 - Phase 2 - With Icons
 // ================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn = document.createElement('button');
         toggleBtn.className = 'dark-mode-toggle';
         toggleBtn.setAttribute('aria-label', 'Toggle Dark Mode');
-        toggleBtn.innerHTML = '<span class="sun-icon"></span><span class="moon-icon"></span>';
+        toggleBtn.innerHTML = '<span class="sun-icon"></span><span class="moon-icon">🌙</span>';
         document.body.appendChild(toggleBtn);
     }
 
