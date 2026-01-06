@@ -1,0 +1,24 @@
+{#
+    ================================================================
+    MIDDO - SIDEBAR AVEC COMPOSANT MENU
+    Session 24 - Phase 2 - Option D
+    ================================================================
+#}
+
+<aside class="sidebar">
+    {# Header de la sidebar #}
+    <div class="sidebar-header">
+        <h1 class="sidebar-logo">MIDDO</h1>
+    </div>
+    
+    {# Menu réutilisable #}
+    {% include 'components/_menu.html.twig' %}
+    
+    {# Footer de la sidebar (optionnel) #}
+    <div class="sidebar-footer">
+        <a href="/parametres" class="sidebar-settings">
+            <span class="menu-icon"></span>
+            <span class="menu-label">Paramètres</span>
+        </a>
+    </div>
+</aside>
