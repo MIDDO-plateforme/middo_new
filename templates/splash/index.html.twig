@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIDDO - Plateforme Collaborative</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-image: url('https://www.genspark.ai/api/files/s/gJkx4Mvk?cache_control=3600');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        font-family: 'Poppins', sans-serif;
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+      }
+
+      #particles-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .splash-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .logo {
+        font-size: 120px;
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow:
+          0 0 40px rgba(244, 162, 97, 0.8),
+          0 0 80px rgba(244, 162, 97, 0.4);
+        letter-spacing: 0.2em;
+        opacity: 0;
+        animation: zoomIn 3s ease-out forwards;
+        margin-bottom: 0;
+        line-height: 1.2;
+      }
+
+      .tagline {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 20px;
+        text-align: center;
+        font-weight: 300;
+        letter-spacing: 1px;
+        opacity: 0;
+        animation: fadeIn 1.5s ease-out forwards;
+        animation-delay: 2s;
+      }
+
+      .loading-bar {
+        position: relative;
+        width: 300px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 60px;
+      }
+
+      .progress {
+        width: 0%;
+        height: 100%;
+        background-color: #f4a261;
+        box-shadow: 0 0 10px #f4a261;
+        animation: progress 7s linear forwards;
+      }
+
+      @keyframes zoomIn {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes progress {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .logo {
+          font-size: 60px;
+          text-shadow:
+            0 0 20px rgba(244, 162, 97, 0.8),
+            0 0 40px rgba(244, 162, 97, 0.4);
+        }
+        .tagline {
+          font-size: 14px;
+          padding: 0 20px;
+        }
+        .loading-bar {
+          width: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="splash-container">
+      <h1 class="logo">MIDDO</h1>
+      <p class="tagline">Collaborer. Innover. Réussir ensemble.</p>
+      <div class="loading-bar">
+        <div class="progress"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const audioUrl = 'https://www.genspark.ai/api/files/s/nMHwXL4X';
+        const audio = new Audio(audioUrl);
+        audio.volume = 0.5;
+
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then((_) => {
+              console.log('Audio playing automatically.');
+            })
+            .catch((error) => {
+              console.log('Autoplay prevented. Waiting for interaction.');
+              document.body.addEventListener(
+                'click',
+                () => {
+                  audio.play();
+                },
+                { once: true },
+              );
+            });
+        }
+      });
+
+      setTimeout(() => {
+        console.log('Redirecting to /dashboard...');
+        window.location.href = '/dashboard';
+      }, 8000);
+
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let particlesArray;
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
+      });
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = Math.random() * 1 - 0.5;
+          this.speedY = Math.random() * 1 - 0.5;
+
+          const colors = ['rgba(255, 255, 255, 0.6)', 'rgba(244, 162, 97, 0.7)'];
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+
+          if (this.x > canvas.width) this.x = 0;
+          if (this.x < 0) this.x = canvas.width;
+          if (this.y > canvas.height) this.y = 0;
+          if (this.y < 0) this.y = canvas.height;
+        }
+
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function initParticles() {
+        particlesArray = [];
+        const numberOfParticles = 30;
+        for (let i = 0; i < numberOfParticles; i++) {
+          particlesArray.push(new Particle());
+        }
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+          particlesArray[i].draw();
+        }
+        requestAnimationFrame(animateParticles);
+      }
+
+      initParticles();
+      animateParticles();
+    </script>
+  </body>
+</html>
