@@ -4,7 +4,7 @@
 // ================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(' Active Links: Initialisation...');
+    console.log('🔗 Active Links: Initialisation...');
     
     // Récupérer l'URL actuelle
     const currentPath = window.location.pathname;
@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const homeLink = document.querySelector('a[href="/"], a[href="/accueil"]');
             if (homeLink) {
                 homeLink.classList.add('active');
-                console.log('✅ Lien actif (défaut): Accueil');
+                console.log(' Lien actif (défaut): Accueil');
             }
         }
         
-        console.log('🔗 Active Links: Prêt !');
+        console.log(' Active Links: Prêt !');
     }
     
     // ================================================================

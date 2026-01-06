@@ -50,7 +50,7 @@ nav a.active:hover {
 .sidebar a.active::before,
 aside a.active::before,
 nav a.active::before {
-    content: '●';
+    content: '';
     position: absolute;
     left: 8px;
     color: #f4a261;
