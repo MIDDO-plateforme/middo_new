@@ -1,52 +1,35 @@
-// ================================================================
-// MIDDO - DARK MODE TOGGLE
-// Session 24 - Phase 2 - Enhanced with Icons
-// ================================================================
-
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(' Dark Mode: Initialisation...');
+    const THEME_KEY = 'middo-theme';
     
-    // Supprimer tout ancien bouton existant
-    const oldButtons = document.querySelectorAll('.dark-mode-toggle');
-    oldButtons.forEach(btn => btn.remove());
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem(THEME_KEY, theme);
+    }
     
-    // Récupérer le thème sauvegardé
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    console.log(' Thème actuel:', savedTheme);
+    function getTheme() {
+        return localStorage.getItem(THEME_KEY) || 'light';
+    }
     
-    // Créer le nouveau bouton
-    const toggleBtn = document.createElement('button');
-    toggleBtn.className = 'dark-mode-toggle';
-    toggleBtn.setAttribute('aria-label', 'Toggle Dark Mode');
-    toggleBtn.setAttribute('title', 'Changer le thème');
-    
-    // Créer les spans pour les icônes
-    const sunIcon = document.createElement('span');
-    sunIcon.className = 'sun-icon';
-    sunIcon.textContent = '';
-    
-    const moonIcon = document.createElement('span');
-    moonIcon.className = 'moon-icon';
-    moonIcon.textContent = '';
-    
-    toggleBtn.appendChild(sunIcon);
-    toggleBtn.appendChild(moonIcon);
-    
-    // Ajouter au body
-    document.body.appendChild(toggleBtn);
-    console.log('✅ Bouton créé et ajouté');
-    
-    // Gestion du clic
-    toggleBtn.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    function createToggleButton() {
+        let toggle = document.getElementById('dark-mode-toggle');
+        if (toggle) return;
         
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+        toggle = document.createElement('button');
+        toggle.id = 'dark-mode-toggle';
+        toggle.className = 'dark-mode-toggle';
+        toggle.innerHTML = '<span class="sun-icon"></span><span class="moon-icon"></span>';
+        toggle.setAttribute('aria-label', 'Changer de thème');
+        toggle.style.cssText = 'position:fixed;top:20px;right:80px;width:50px;height:50px;border-radius:50%;border:2px solid #f4a261;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:all 0.3s ease;';
         
-        console.log('🌙 Thème changé:', currentTheme, '→', newTheme);
-    });
+        toggle.addEventListener('click', function() {
+            const currentTheme = getTheme();
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+        
+        document.body.appendChild(toggle);
+    }
     
-    console.log('🌙 Dark Mode: Prêt !');
+    setTheme(getTheme());
+    createToggleButton();
 });
