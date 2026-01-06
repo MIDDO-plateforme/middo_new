@@ -1,6 +1,6 @@
 // ================================================================
 // MIDDO - DARK MODE TOGGLE
-// Session 24 - Phase 2
+// Session 24 - Phase 2 - Fix Syntax Error
 // ================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -15,10 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn = document.createElement('button');
         toggleBtn.className = 'dark-mode-toggle';
         toggleBtn.setAttribute('aria-label', 'Toggle Dark Mode');
-        toggleBtn.innerHTML = 
-            <span class="sun-icon"></span>
-            <span class="moon-icon"></span>
-        ;
+        toggleBtn.innerHTML = '<span class="sun-icon"></span><span class="moon-icon"></span>';
         document.body.appendChild(toggleBtn);
     }
 
@@ -30,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         
-        console.log('🌙 Theme switched to:', newTheme);
+        console.log(' Theme switched to:', newTheme);
     });
 
-    console.log('🌙 Dark Mode initialized. Current theme:', savedTheme);
+    console.log(' Dark Mode initialized. Current theme:', savedTheme);
 });
