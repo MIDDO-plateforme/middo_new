@@ -1,505 +1,133 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Projet - {{ workspace.name }} - MIDDO{% endblock %}
+{% block title %}Nouveau Projet - MIDDO{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .project-create-container {
-            max-width: 1000px;
+        .form-container {
+            max-width: 800px;
             margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .breadcrumb-nav {
             background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-wrap: wrap;
-        }
-
-        .breadcrumb-item {
-            color: #6c757d;
-        }
-
-        .breadcrumb-item a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .breadcrumb-item a:hover {
-            text-decoration: underline;
-        }
-
-        .breadcrumb-item.active {
-            color: #333;
-            font-weight: 600;
-        }
-
-        .project-create-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-        }
-
-        .project-create-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
-
-        .project-create-header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .workspace-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .project-create-body {
-            padding: 2rem;
-        }
-
-        .form-section {
-            margin-bottom: 2.5rem;
-            padding-bottom: 2rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .form-section:last-of-type {
-            border-bottom: none;
-        }
-
-        .form-section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .form-group {
             margin-bottom: 1.5rem;
         }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            display: block;
+        .form-label {
             font-weight: 600;
             margin-bottom: 0.5rem;
+            display: block;
             color: #333;
-            font-size: 0.95rem;
         }
-
         .form-control, .form-select {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e1e8ed;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
+        .form-control:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #f4a261;
+            box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.1);
         }
-
-        .dashboard-widgets-checkboxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.8rem;
-        }
-
-        .dashboard-widgets-checkboxes label {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .dashboard-widgets-checkboxes input[type="checkbox"] {
-            margin-right: 0.5rem;
-        }
-
-        .dashboard-widgets-checkboxes input[type="checkbox"]:checked + label {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .progress-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
-            outline: none;
-        }
-
-        .progress-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #667eea;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #667eea;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-display {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-top: 0.5rem;
-        }
-
-        .form-help {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 0.4rem;
-            display: block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+        .btn-submit {
+            background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
             color: white;
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
-            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        .btn-submit:hover {
+            transform: scale(1.05);
         }
-
-        .btn-secondary {
-            background: white;
-            border: 2px solid #e1e8ed;
-            color: #333;
-            padding: 0.9rem 2rem;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-right: 1rem;
             text-decoration: none;
             display: inline-block;
-        }
-
-        .btn-secondary:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .ai-feature-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .ai-feature-banner .icon {
-            font-size: 2.5rem;
-        }
-
-        .ai-feature-banner .content {
-            flex: 1;
-        }
-
-        .ai-feature-banner .title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .ai-feature-banner .description {
-            font-size: 0.9rem;
-            opacity: 0.95;
-        }
-
-        .budget-indicator {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-
-        .budget-indicator .label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .budget-indicator .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #667eea;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <div class="project-create-container">
-        <nav class="breadcrumb-nav">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('app_workspace_index') }}">📁 Workspaces</a></li>
-                <li class="breadcrumb-item"><a href="{{ path('app_workspace_show', {id: workspace.id}) }}">{{ workspace.name }}</a></li>
-                <li class="breadcrumb-item"><a href="{{ path('app_workspace_project_index', {workspaceId: workspace.id}) }}">Projets</a></li>
-                <li class="breadcrumb-item active">Nouveau projet</li>
-            </ol>
-        </nav>
+<div class="container mt-4">
+    <div class="form-container">
+        <h1> Nouveau Projet</h1>
+        <p class="text-muted mb-4">Créez un nouveau projet et invitez votre équipe</p>
 
-        <div class="project-create-card">
-            <div class="project-create-header">
-                <h1>📊 Nouveau Projet</h1>
-                <span class="workspace-badge">{{ workspace.name }}</span>
+        {{ form_start(form) }}
+        
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form_label(form.status) }}
+                    {{ form_widget(form.status) }}
+                    {{ form_errors(form.status) }}
+                </div>
             </div>
-
-            <div class="project-create-body">
-                <div class="ai-feature-banner">
-                    <div class="icon">🤖</div>
-                    <div class="content">
-                        <div class="title">Dashboard IA Intelligent</div>
-                        <div class="description">Prédictions de complétion, détection de risques, recommandations automatiques et métriques d'efficacité d'équipe</div>
-                    </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form_label(form.budget) }}
+                    {{ form_widget(form.budget) }}
+                    {{ form_errors(form.budget) }}
                 </div>
-
-                {{ form_start(form) }}
-
-                <!-- Section: Informations générales -->
-                <div class="form-section">
-                    <h2 class="form-section-title">📝 Informations générales</h2>
-
-                    <div class="form-group full-width">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
-                    </div>
-
-                    <div class="form-group full-width">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description) }}
-                        {{ form_errors(form.description) }}
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            {{ form_label(form.status) }}
-                            {{ form_widget(form.status) }}
-                            {{ form_errors(form.status) }}
-                        </div>
-
-                        <div class="form-group">
-                            {{ form_label(form.priority) }}
-                            {{ form_widget(form.priority) }}
-                            {{ form_errors(form.priority) }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section: Planning et progression -->
-                <div class="form-section">
-                    <h2 class="form-section-title">📅 Planning et progression</h2>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            {{ form_label(form.startDate) }}
-                            {{ form_widget(form.startDate) }}
-                            {{ form_errors(form.startDate) }}
-                        </div>
-
-                        <div class="form-group">
-                            {{ form_label(form.deadline) }}
-                            {{ form_widget(form.deadline) }}
-                            {{ form_errors(form.deadline) }}
-                            <small class="form-help">{{ form_help(form.deadline) }}</small>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        {{ form_label(form.progress) }}
-                        {{ form_widget(form.progress, {'attr': {'class': 'progress-slider', 'id': 'progressSlider'}}) }}
-                        <div class="progress-display" id="progressDisplay">0%</div>
-                        {{ form_errors(form.progress) }}
-                        <small class="form-help">{{ form_help(form.progress) }}</small>
-                    </div>
-                </div>
-
-                <!-- Section: Budget -->
-                <div class="form-section">
-                    <h2 class="form-section-title">💰 Budget</h2>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            {{ form_label(form.budget) }}
-                            {{ form_widget(form.budget, {'attr': {'id': 'budgetInput'}}) }}
-                            {{ form_errors(form.budget) }}
-                            <small class="form-help">{{ form_help(form.budget) }}</small>
-                        </div>
-
-                        <div class="form-group">
-                            {{ form_label(form.spent) }}
-                            {{ form_widget(form.spent, {'attr': {'id': 'spentInput'}}) }}
-                            {{ form_errors(form.spent) }}
-                            <small class="form-help">{{ form_help(form.spent) }}</small>
-                        </div>
-                    </div>
-
-                    <div class="budget-indicator">
-                        <span class="label">Budget restant:</span>
-                        <span class="value" id="budgetRemaining">0.00 €</span>
-                    </div>
-                </div>
-
-                <!-- Section: Dashboard personnalisé -->
-                <div class="form-section">
-                    <h2 class="form-section-title">🎨 Dashboard personnalisé</h2>
-
-                    <div class="form-group">
-                        {{ form_label(form.dashboardWidgets) }}
-                        <div class="dashboard-widgets-checkboxes">
-                            {{ form_widget(form.dashboardWidgets) }}
-                        </div>
-                        {{ form_errors(form.dashboardWidgets) }}
-                        <small class="form-help">{{ form_help(form.dashboardWidgets) }}</small>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">
-                        🚀 Créer le projet
-                    </button>
-                    <a href="{{ path('app_workspace_project_index', {workspaceId: workspace.id}) }}" class="btn-secondary">
-                        ← Annuler
-                    </a>
-                </div>
-
-                {{ form_end(form) }}
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form_label(form.startDate) }}
+                    {{ form_widget(form.startDate) }}
+                    {{ form_errors(form.startDate) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form_label(form.endDate) }}
+                    {{ form_widget(form.endDate) }}
+                    {{ form_errors(form.endDate) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.members) }}
+            {{ form_widget(form.members) }}
+            {{ form_errors(form.members) }}
+            <small class="text-muted">Sélectionnez les membres de votre équipe</small>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_project_index') }}" class="btn-cancel">Annuler</a>
+            <button type="submit" class="btn-submit">Créer le projet</button>
+        </div>
+
+        {{ form_end(form) }}
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Progress slider
-            const progressSlider = document.getElementById('progressSlider');
-            const progressDisplay = document.getElementById('progressDisplay');
-
-            if (progressSlider && progressDisplay) {
-                progressSlider.addEventListener('input', function() {
-                    progressDisplay.textContent = this.value + '%';
-                });
-                // Initial display
-                progressDisplay.textContent = progressSlider.value + '%';
-            }
-
-            // Budget calculation
-            const budgetInput = document.getElementById('budgetInput');
-            const spentInput = document.getElementById('spentInput');
-            const budgetRemaining = document.getElementById('budgetRemaining');
-
-            function updateBudgetRemaining() {
-                const budget = parseFloat(budgetInput.value) || 0;
-                const spent = parseFloat(spentInput.value) || 0;
-                const remaining = budget - spent;
-                budgetRemaining.textContent = remaining.toFixed(2) + ' €';
-                budgetRemaining.style.color = remaining < 0 ? '#dc3545' : (remaining < budget * 0.2 ? '#ffc107' : '#28a745');
-            }
-
-            if (budgetInput && spentInput) {
-                budgetInput.addEventListener('input', updateBudgetRemaining);
-                spentInput.addEventListener('input', updateBudgetRemaining);
-                updateBudgetRemaining();
-            }
-
-            // Form submission
-            const form = document.querySelector('.workspace-project-form');
-            if (form) {
-                form.addEventListener('submit', function() {
-                    const submitBtn = form.querySelector('.btn-primary');
-                    submitBtn.innerHTML = '⏳ Création en cours...';
-                    submitBtn.disabled = true;
-                });
-            }
-        });
-    </script>
+</div>
 {% endblock %}

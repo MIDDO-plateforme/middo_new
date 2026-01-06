@@ -3,16 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Project;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Project>
- *
- * @method Project|null find($id, $lockMode = null, $lockVersion = null)
- * @method Project|null findOneBy(array $criteria, array $orderBy = null)
- * @method Project[]    findAll()
- * @method Project[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProjectRepository extends ServiceEntityRepository
 {
@@ -21,28 +17,50 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
-//    /**
-//     * @return Project[] Returns an array of Project objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Trouve tous les projets d'un utilisateur (créateur ou membre)
+     */
+    public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.members', 'm')
+            ->where('p.creator = :user')
+            ->orWhere('m = :user')
+            ->setParameter('user', $user)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Project
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Recherche par nom
+     */
+    public function searchByName(string $query, User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.members', 'm')
+            ->where('p.name LIKE :query')
+            ->andWhere('p.creator = :user OR m = :user')
+            ->setParameter('query', '%' . $query . '%')
+            ->setParameter('user', $user)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Filtre par statut
+     */
+    public function findByStatus(string $status, User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.members', 'm')
+            ->where('p.status = :status')
+            ->andWhere('p.creator = :user OR m = :user')
+            ->setParameter('status', $status)
+            ->setParameter('user', $user)
+            ->orderBy('p.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

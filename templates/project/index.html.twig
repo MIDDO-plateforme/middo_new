@@ -1,20 +1,183 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProjectController!{% endblock %}
+{% block title %}Mes Projets - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #f4a261;
+            background: white;
+            color: #f4a261;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: #f4a261;
+            color: white;
+        }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(244, 162, 97, 0.3);
+        }
+        .project-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-draft { background: #e9ecef; color: #495057; }
+        .status-in_progress { background: #cfe2ff; color: #084298; }
+        .status-completed { background: #d1e7dd; color: #0f5132; }
+        .status-archived { background: #f8d7da; color: #842029; }
+        .project-members {
+            display: flex;
+            margin-top: 1rem;
+        }
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f4a261;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            margin-right: -8px;
+            border: 2px solid white;
+        }
+        .btn-new-project {
+            background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        .btn-new-project:hover {
+            transform: scale(1.05);
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container mt-4">
+    <div class="projects-header">
+        <h1>Mes Projets</h1>
+        <a href="{{ path('app_project_new') }}" class="btn-new-project">
+             Nouveau Projet
+        </a>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <!-- Barre de recherche -->
+    <form action="{{ path('app_project_search') }}" method="get" class="search-bar">
+        <input type="text" name="q" class="search-input" placeholder=" Rechercher un projet..." value="{{ query|default('') }}">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/MBANE LOKOTA/middo_new/src/Controller/ProjectController.php</code></li>
-        <li>Your template at <code>C:/Users/MBANE LOKOTA/middo_new/templates/project/index.html.twig</code></li>
-    </ul>
+    <!-- Filtres -->
+    <div class="filters">
+        <a href="{{ path('app_project_index') }}" class="filter-btn {{ current_filter is not defined ? 'active' : '' }}">
+            Tous
+        </a>
+        <a href="{{ path('app_project_filter', {status: 'draft'}) }}" class="filter-btn {{ current_filter == 'draft' ? 'active' : '' }}">
+            Brouillons
+        </a>
+        <a href="{{ path('app_project_filter', {status: 'in_progress'}) }}" class="filter-btn {{ current_filter == 'in_progress' ? 'active' : '' }}">
+            En cours
+        </a>
+        <a href="{{ path('app_project_filter', {status: 'completed'}) }}" class="filter-btn {{ current_filter == 'completed' ? 'active' : '' }}">
+            Terminés
+        </a>
+    </div>
+
+    <!-- Messages flash -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <!-- Grille de projets -->
+    <div class="projects-grid">
+        {% for project in projects %}
+            <div class="project-card" onclick="window.location='{{ path('app_project_show', {id: project.id}) }}'">
+                <h3>{{ project.name }}</h3>
+                <span class="project-status status-{{ project.status }}">
+                    {% if project.status == 'draft' %}Brouillon
+                    {% elseif project.status == 'in_progress' %}En cours
+                    {% elseif project.status == 'completed' %}Terminé
+                    {% else %}Archivé{% endif %}
+                </span>
+                <p class="mt-2 text-muted">
+                    {{ project.description|length > 100 ? project.description|slice(0, 100) ~ '...' : project.description }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted">
+                         {{ project.createdAt|date('d/m/Y') }}
+                    </small>
+                    {% if project.budget %}
+                        <small class="text-muted"> {{ project.budget }}€</small>
+                    {% endif %}
+                </div>
+                {% if project.members|length > 0 %}
+                    <div class="project-members">
+                        {% for member in project.members|slice(0, 3) %}
+                            <div class="member-avatar" title="{{ member.email }}">
+                                {{ member.email|first|upper }}
+                            </div>
+                        {% endfor %}
+                        {% if project.members|length > 3 %}
+                            <div class="member-avatar">+{{ project.members|length - 3 }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <h3 class="text-muted">Aucun projet trouvé</h3>
+                <p>Créez votre premier projet pour commencer !</p>
+                <a href="{{ path('app_project_new') }}" class="btn-new-project">Créer un projet</a>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

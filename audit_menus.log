@@ -1,0 +1,26 @@
+[10:13:33] ?? Démarrage de l'audit...
+[10:13:33] ?? Projet: C:\Users\MBANE LOKOTA\middo_new
+[10:13:35]  Projet trouvé
+[10:13:36]  Analyse des templates Twig...
+[10:13:37]     79 fichiers Twig trouvés
+[10:13:39]    ?? 8 fichiers de menus détectés
+[10:13:39]    ?? 19 fichiers de navigation détectés
+[10:13:41]  Analyse des fichiers CSS...
+[10:13:42]     14 fichiers CSS dans public/css
+[10:13:43]     2 fichiers CSS dans assets/styles
+[10:13:43]     Total: 16 fichiers CSS
+[10:13:45]      animations CSS détectées
+[10:13:45]     66 classes CSS liées aux menus/navigation
+[10:13:45] ???  Analyse des routes Symfony...
+[10:13:46]     55 contrôleurs trouvés
+[10:13:49]      219 routes détectées
+[10:13:50] ?? Génération du rapport HTML...
+[10:13:55]  Rapport HTML généré: C:\Users\MBANE LOKOTA\middo_new\audit_menus_report.html
+[10:13:55] ?? RÉSUMÉ:
+[10:13:55]    • Templates Twig: 79
+[10:13:55]    • Fichiers CSS: 16
+[10:13:56]    • Animations CSS: 
+[10:13:56]     Routes Symfony: 219
+[10:13:56]  RAPPORT HTML: C:\Users\MBANE LOKOTA\middo_new\audit_menus_report.html
+[10:13:56]  LOG DÉTAILLÉ: C:\Users\MBANE LOKOTA\middo_new\audit_menus.log
+[10:13:56]  Ouverture du rapport dans le navigateur...
