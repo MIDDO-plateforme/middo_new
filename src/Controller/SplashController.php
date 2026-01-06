@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SplashController extends AbstractController
 {
-    #[Route('/', name: 'app_splash')]
+    #[Route('/', name: 'app_splash', priority: 10)]
     public function index(): Response
     {
         return $this->render('splash/index.html.twig');
