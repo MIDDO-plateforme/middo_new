@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -192,7 +192,8 @@
     </style>
     
     {% block stylesheets %}{% endblock %}
-</head>
+<link rel="stylesheet" href="{{ asset('css/dark-mode.css') }}">
+    </head>
 <body>
     <div class="sidebar">
         <div class="logo">MIDDO</div>
@@ -227,5 +228,6 @@
     </div>
     
     {% block javascripts %}{% endblock %}
+<script src="{{ asset('js/dark-mode.js') }}"></script>
 </body>
 </html>
