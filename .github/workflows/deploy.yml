@@ -1,0 +1,191 @@
+name: Deploy MIDDO to Render
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PHP_VERSION: '8.3'
+  NODE_VERSION: '18'
+  PROD_URL: 'https://middo-app.onrender.com'
+
+jobs:
+  validate:
+    name: Validate Code
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: pdo, pdo_pgsql, intl, zip
+        coverage: none
+        
+    - name: Get Composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+        
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction
+      
+    - name: Validate composer.json
+      run: composer validate --strict
+      
+    - name: Check Symfony requirements
+      run: php bin/console about
+      
+    - name: Lint Twig templates
+      run: php bin/console lint:twig templates/
+      
+    - name: Lint YAML files
+      run: php bin/console lint:yaml config/
+      
+    - name: Validate Doctrine schema
+      run: php bin/console doctrine:schema:validate --skip-sync
+
+  deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create deployment marker
+      run: |
+        mkdir -p var
+        echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') - GitHub Actions Deploy - Commit: ${{ github.sha }}" > var/.deployment
+        
+    - name: Trigger Render deployment
+      run: |
+        echo "Deploiement declenche sur Render..."
+        echo "Commit: ${{ github.sha }}"
+        echo "Auteur: ${{ github.actor }}"
+        echo "Message: ${{ github.event.head_commit.message }}"
+
+  test:
+    name: Test Deployment
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Wait for Render deployment (5 minutes)
+      run: |
+        echo "Attente du deploiement Render (5 minutes)..."
+        for i in {1..300}; do
+          if [ $((i % 30)) -eq 0 ]; then
+            echo "Progression: $i/300 secondes"
+          fi
+          sleep 1
+        done
+        
+    - name: Test health endpoint
+      run: |
+        echo "Test de l'endpoint /health..."
+        RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" "${{ env.PROD_URL }}/health" || echo "ERROR")
+        
+        if [[ $RESPONSE == *"HTTP_CODE:200"* ]]; then
+          echo "SUCCESS: Health check passed!"
+          echo "$RESPONSE" | sed 's/HTTP_CODE:200//'
+        else
+          echo "ERROR: Health check failed!"
+          echo "Response: $RESPONSE"
+          exit 1
+        fi
+        
+    - name: Test projects page
+      run: |
+        echo "Test de la page projets..."
+        RESPONSE=$(curl -s -w "HTTP_CODE:%{http_code}" "${{ env.PROD_URL }}/projets" || echo "ERROR")
+        
+        if [[ $RESPONSE == *"HTTP_CODE:200"* ]]; then
+          echo "SUCCESS: Page projets accessible!"
+          
+          # Check for premium CSS
+          if echo "$RESPONSE" | grep -q "middo-orange.*#f4a261"; then
+            echo "SUCCESS: CSS Premium detected!"
+          else
+            echo "WARNING: CSS Premium not found"
+          fi
+          
+          # Check for key elements
+          if echo "$RESPONSE" | grep -q "projects-grid"; then
+            echo "SUCCESS: Projects grid found"
+          fi
+          
+        else
+          echo "ERROR: Page projets inaccessible!"
+          echo "Response: $RESPONSE"
+          exit 1
+        fi
+
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [validate, deploy, test]
+    if: always()
+    
+    steps:
+    - name: Generate report
+      run: |
+        echo "========================================" 
+        echo "MIDDO DEPLOYMENT REPORT"
+        echo "========================================"
+        echo ""
+        echo "Date: $(date -u)"
+        echo "Commit: ${{ github.sha }}"
+        echo "Author: ${{ github.actor }}"
+        echo "Message: ${{ github.event.head_commit.message }}"
+        echo ""
+        echo "Results:"
+        echo "--------"
+        
+        if [[ "${{ needs.validate.result }}" == "success" ]]; then
+          echo "Validation: SUCCESS"
+        else
+          echo "Validation: FAILED"
+        fi
+        
+        if [[ "${{ needs.deploy.result }}" == "success" ]]; then
+          echo "Deployment: SUCCESS"
+        else
+          echo "Deployment: FAILED"
+        fi
+        
+        if [[ "${{ needs.test.result }}" == "success" ]]; then
+          echo "Tests: SUCCESS"
+        else
+          echo "Tests: FAILED"
+        fi
+        
+        echo ""
+        echo "Production URL: ${{ env.PROD_URL }}/projets"
+        echo "========================================"
+        
+    - name: Final summary
+      run: |
+        if [[ "${{ needs.validate.result }}" == "success" && "${{ needs.deploy.result }}" == "success" && "${{ needs.test.result }}" == "success" ]]; then
+          echo "SUCCESS: MIDDO DEPLOYMENT COMPLETE!"
+          echo "All steps completed successfully"
+          echo "Application available at: ${{ env.PROD_URL }}/projets"
+        else
+          echo "ERROR: MIDDO DEPLOYMENT FAILED!"
+          echo "Check logs above for details"
+          exit 1
+        fi
