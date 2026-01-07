@@ -1,16 +1,16 @@
 ﻿#!/usr/bin/env bash
 set -o errexit
 
-echo "Installing Composer dependencies..."
+echo " Installation des dependances Composer..."
 composer install --no-dev --optimize-autoloader
 
-echo "Clearing Symfony cache..."
+echo " Nettoyage du cache Symfony..."
 php bin/console cache:clear --env=prod --no-debug
 
-echo "Clearing Doctrine metadata cache..."
+echo " Nettoyage du cache Doctrine..."
 php bin/console doctrine:cache:clear-metadata --env=prod || true
 
-echo "Warming up cache..."
+echo " Warmup du cache..."
 php bin/console cache:warmup --env=prod
 
-echo "Build complete!"
+echo " Build termine avec succes!"
