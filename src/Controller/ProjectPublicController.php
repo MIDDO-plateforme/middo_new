@@ -11,7 +11,29 @@ class ProjectPublicController extends AbstractController
     #[Route('/projets-public', name: 'app_project_public', methods: ['GET'])]
     public function index(): Response
     {
-        // Version de test simple - juste afficher du HTML brut
-        return new Response('<h1 style="color: #f4a261; font-family: Poppins;"> TEST MIDDO - Route fonctionne !</h1>');
+        $fakeProjects = [
+            [
+                'id' => 1,
+                'title' => 'Test MIDDO Design Premium',
+                'description' => 'Validation of MIDDO design system with signature color #f4a261',
+                'createdAt' => new \DateTime(),
+            ],
+            [
+                'id' => 2,
+                'title' => 'Template Premium Animations',
+                'description' => 'Verification of 11 premium CSS animations integrated',
+                'createdAt' => new \DateTime(),
+            ],
+            [
+                'id' => 3,
+                'title' => 'Design System MIDDO',
+                'description' => 'Complete UI test with sentiment gauges',
+                'createdAt' => new \DateTime(),
+            ],
+        ];
+
+        return $this->render('project/index.html.twig', [
+            'projects' => $fakeProjects,
+        ]);
     }
 }

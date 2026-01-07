@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.name }} - MIDDO{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .project-header {
+            background: linear-gradient(135deg, #f4a261 0%, #e76f51 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .project-details {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .detail-row {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .detail-label {
+            font-weight: 600;
+            width: 200px;
+            color: #666;
+        }
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .status-draft { background: #e9ecef; color: #495057; }
+        .status-in_progress { background: #cfe2ff; color: #084298; }
+        .status-completed { background: #d1e7dd; color: #0f5132; }
+        .status-archived { background: #f8d7da; color: #842029; }
+        .members-list {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 20px;
+        }
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f4a261;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn-edit {
+            background: #0d6efd;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <!-- Header du projet -->
+    <div class="project-header">
+        <h1>{{ project.name }}</h1>
+        <p class="mb-0">Créé le {{ project.createdAt|date('d/m/Y') }} par {{ project.creator.email }}</p>
+    </div>
+
+    <!-- Messages flash -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <!-- Détails du projet -->
+    <div class="project-details">
+        <h2 class="mb-3"> Informations du projet</h2>
+
+        <div class="detail-row">
+            <div class="detail-label">Statut</div>
+            <div class="detail-value">
+                <span class="status-badge status-{{ project.status }}">
+                    {% if project.status == 'draft' %}Brouillon
+                    {% elseif project.status == 'in_progress' %}En cours
+                    {% elseif project.status == 'completed' %}Terminé
+                    {% else %}Archivé{% endif %}
+                </span>
+            </div>
+        </div>
+
+        {% if project.description %}
+        <div class="detail-row">
+            <div class="detail-label">Description</div>
+            <div class="detail-value">{{ project.description }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.budget %}
+        <div class="detail-row">
+            <div class="detail-label">Budget</div>
+            <div class="detail-value"> {{ project.budget }}€</div>
+        </div>
+        {% endif %}
+
+        {% if project.startDate %}
+        <div class="detail-row">
+            <div class="detail-label">Date de début</div>
+            <div class="detail-value"> {{ project.startDate|date('d/m/Y') }}</div>
+        </div>
+        {% endif %}
+
+        {% if project.endDate %}
+        <div class="detail-row">
+            <div class="detail-label">Date de fin</div>
+            <div class="detail-value">📅 {{ project.endDate|date('d/m/Y') }}</div>
+        </div>
+        {% endif %}
+
+        <div class="detail-row">
+            <div class="detail-label">Dernière mise à jour</div>
+            <div class="detail-value">{{ project.updatedAt|date('d/m/Y à H:i') }}</div>
+        </div>
+    </div>
+
+    <!-- Membres de l'équipe -->
+    {% if project.members|length > 0 %}
+    <div class="project-details">
+        <h2 class="mb-3">👥 Équipe ({{ project.members|length }})</h2>
+        <div class="members-list">
+            {% for member in project.members %}
+                <div class="member-card">
+                    <div class="member-avatar">{{ member.email|first|upper }}</div>
+                    <span>{{ member.email }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <a href="{{ path('app_project_index') }}" class="btn-back">← Retour</a>
+        {% if is_granted('edit', project) %}
+            <a href="{{ path('app_project_edit', {id: project.id}) }}" class="btn-edit">✏️ Modifier</a>
+        {% endif %}
+        {% if is_granted('delete', project) %}
+            <form method="post" action="{{ path('app_project_delete', {id: project.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ project.id) }}">
+                <button type="submit" class="btn-delete">🗑️ Supprimer</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

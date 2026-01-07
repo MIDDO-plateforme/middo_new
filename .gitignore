@@ -8,3 +8,14 @@ test_new_key.php
 /vendor/
 /public/bundles/
 /node_modules/
+*.backup*
+*.php.txt
+*.twig.txt
+*_fix*
+*_corrupt*
+# Backup files - prevent duplicates
+*.backup*
+*.php.txt
+*.twig.txt
+*_fix*
+*_corrupt*
