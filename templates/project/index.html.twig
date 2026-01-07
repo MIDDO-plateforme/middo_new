@@ -1,4 +1,5 @@
-﻿{% extends 'base.html.twig' %}
+{# SESSION 25 - Premium MIDDO Design #}
+{% extends 'base.html.twig' %}
 
 {% block title %}Projets - MIDDO{% endblock %}
 
@@ -389,7 +390,7 @@
     <!-- HEADER -->
     <div class="projects-header">
         <h1 class="page-title">
-            <span>Ã°Å¸â€œÅ </span> Mes Projets
+            <span>ðŸ“Š</span> Mes Projets
         </h1>
         <a href="{{ path('app_project_new') }}" class="btn-create">
             <span>+</span> Nouveau Projet
@@ -399,7 +400,7 @@
     <!-- SEARCH & FILTERS -->
     <div class="controls-section">
         <div class="search-wrapper">
-            <span class="search-icon">Ã°Å¸â€Â</span>
+            <span class="search-icon">ðŸ”</span>
             <input 
                 type="text" 
                 class="search-input" 
@@ -411,8 +412,8 @@
             <button class="filter-btn active" data-filter="all">Tous</button>
             <button class="filter-btn" data-filter="in_progress">En cours</button>
             <button class="filter-btn" data-filter="draft">Brouillons</button>
-            <button class="filter-btn" data-filter="completed">TerminÃƒÂ©s</button>
-            <button class="filter-btn" data-filter="archived">ArchivÃƒÂ©s</button>
+            <button class="filter-btn" data-filter="completed">TerminÃ©s</button>
+            <button class="filter-btn" data-filter="archived">ArchivÃ©s</button>
         </div>
     </div>
 
@@ -430,8 +431,8 @@
                 <span class="status-badge status-{{ project.status }}">
                     {% if project.status == 'draft' %}Brouillon
                     {% elseif project.status == 'in_progress' %}En cours
-                    {% elseif project.status == 'completed' %}TerminÃƒÂ©
-                    {% elseif project.status == 'archived' %}ArchivÃƒÂ©
+                    {% elseif project.status == 'completed' %}TerminÃ©
+                    {% elseif project.status == 'archived' %}ArchivÃ©
                     {% else %}{{ project.status }}
                     {% endif %}
                 </span>
@@ -443,28 +444,28 @@
 
             <div class="project-meta">
                 <div class="meta-item">
-                    <span>Ã°Å¸â€™Â°</span>
+                    <span>ðŸ’°</span>
                     <span>
                         {% if project.budget %}
-                            {{ project.budget|number_format(0, ',', ' ') }} Ã¢â€šÂ¬
+                            {{ project.budget|number_format(0, ',', ' ') }} â‚¬
                         {% else %}
-                            Non dÃƒÂ©fini
+                            Non dÃ©fini
                         {% endif %}
                     </span>
                 </div>
                 <div class="meta-item">
-                    <span>Ã°Å¸â€œâ€¦</span>
+                    <span>ðŸ“…</span>
                     <span>{{ project.startDate|date('d/m/Y') }} - {{ project.endDate|date('d/m/Y') }}</span>
                 </div>
                 <div class="meta-item">
-                    <span>Ã°Å¸â€˜Â¤</span>
+                    <span>ðŸ‘¤</span>
                     <span>Par {{ project.creator.email }}</span>
                 </div>
             </div>
 
             <div class="project-footer">
                 <div class="creator-info">
-                    CrÃƒÂ©ateur: {{ project.creator.email }}
+                    CrÃ©ateur: {{ project.creator.email }}
                 </div>
                 <div class="members-avatars">
                     {% for member in project.members|slice(0, 3) %}
@@ -482,16 +483,16 @@
                     {% endif %}
                 </div>
                 <a href="{{ path('app_project_show', {'id': project.id}) }}" class="view-link">
-                    Voir dÃƒÂ©tails Ã¢â€ â€™
+                    Voir dÃ©tails â†’
                 </a>
             </div>
         </div>
         {% else %}
         <div class="empty-state">
-            <div class="empty-icon">Ã°Å¸â€œÂ</div>
-            <div class="empty-message">Aucun projet trouvÃƒÂ© pour le moment</div>
+            <div class="empty-icon">ðŸ“</div>
+            <div class="empty-message">Aucun projet trouvÃ© pour le moment</div>
             <a href="{{ path('app_project_new') }}" class="btn-create">
-                CrÃƒÂ©er mon premier projet
+                CrÃ©er mon premier projet
             </a>
         </div>
         {% endfor %}
