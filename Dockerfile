@@ -28,7 +28,7 @@ RUN composer install --no-dev --optimize-autoloader
 # === NOUVELLE SECTION : WARMUP DOCTRINE ===
 # Nettoyage et warmup du cache Symfony + Doctrine
 RUN php bin/console cache:clear --env=prod --no-debug || true
-RUN php bin/console doctrine:cache:clear-metadata --env=prod || true
+RUN php bin/console doctrine:cache:clear-metadata --flush --env=prod || true
 RUN php bin/console cache:warmup --env=prod || true
 
 # Permissions
