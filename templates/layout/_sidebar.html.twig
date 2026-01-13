@@ -1,0 +1,97 @@
+{% set current_route = app.request.attributes.get('_route') %}
+
+<aside class="d-flex flex-column"
+       style="width: 240px; background: #050816; color: #f9fafb;">
+
+    <div class="px-3 py-3 border-bottom border-secondary d-flex align-items-center justify-content-between">
+        <div>
+            <div class="fw-bold">MIDDO</div>
+            <div class="small text-muted">Plateforme collaborative</div>
+        </div>
+        <div class="text-end">
+            <div class="small">Baudouin</div>
+            <div class="small text-success">● En ligne</div>
+        </div>
+    </div>
+
+    <nav class="flex-grow-1 py-3">
+        <ul class="nav flex-column small">
+
+            <li class="nav-item">
+                <a href="{{ path('dashboard_view') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'dashboard_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">🏠</span>
+                    <span>Accueil</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('directory_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'directory_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">👥</span>
+                    <span>Annuaire</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('bank_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'bank_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">🏦</span>
+                    <span>Banque</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('project_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'project_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">📁</span>
+                    <span>Projets</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('messages_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'messages_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">💬</span>
+                    <span>Messages</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('visio_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'visio_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">🎥</span>
+                    <span>Visio</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('analytics_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'analytics_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">📊</span>
+                    <span>Analytics</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{{ path('workspace_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'workspace_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">🧩</span>
+                    <span>Espace de travail</span>
+                </a>
+            </li>
+
+            <li class="nav-item mt-2 border-top border-secondary pt-2">
+                <a href="{{ path('settings_index') }}"
+                   class="nav-link d-flex align-items-center px-3 py-2 {{ current_route starts with 'settings_' ? 'active text-white' : 'text-muted' }}">
+                    <span class="me-2">⚙️</span>
+                    <span>Paramètres</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="px-3 py-3 border-top border-secondary small text-muted">
+        MIDDO · v0.1 · Session 58
+    </div>
+</aside>

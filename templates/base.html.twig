@@ -3,11 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MIDDO{% endblock %}</title>
+    <title>{% block title %}MIDDO - Plateforme Collaborative avec IA{% endblock %}</title>
+    
+    {# Favicon #}
+    <link rel="icon" href="/favicon.ico">
+    
+    {# CSS Variables MIDDO #}
+    <style>
+        :root {
+            /* Couleurs principales */
+            --middo-violet: #8b5cf6;
+            --middo-bleu: #3b82f6;
+            --middo-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            
+            /* Couleurs fonctionnelles */
+            --middo-success: #10b981;
+            --middo-warning: #f59e0b;
+            --middo-error: #ef4444;
+            --middo-info: #3b82f6;
+            
+            /* Neutres Light */
+            --middo-bg-light: #f8fafc;
+            --middo-card-light: #ffffff;
+            --middo-text-light: #0f172a;
+            --middo-border-light: #e2e8f0;
+            
+            /* Neutres Dark */
+            --middo-bg-dark: #0f172a;
+            --middo-card-dark: #1e293b;
+            --middo-text-dark: #f1f5f9;
+            --middo-border-dark: #334155;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--middo-bg-light);
+            color: var(--middo-text-light);
+            line-height: 1.6;
+        }
+    </style>
+    
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-    {% block body %}{% endblock %}
+    {# Navigation principale #}
+    {% include 'components/_navbar.html.twig' %}
+    
+    {# Contenu principal #}
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+    
+    {# Footer #}
+    {% include 'components/_footer.html.twig' %}
+    
     {% block javascripts %}{% endblock %}
 </body>
 </html>

@@ -1,14 +1,8 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Analytics - MIDDO{% endblock %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block page_title %}Analytics{% endblock %}
+{% block page_subtitle %}Suivez vos indicateurs clés.{% endblock %}
 
-{% block body %}
-<div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Revenus (Mois)</div>
-                    <div class="stat-value">3,240â‚¬</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> +23% vs mois dernier
+{% block page_content %}
+<p class="text-muted">Page Analytics  base fonctionnelle.</p>
 {% endblock %}

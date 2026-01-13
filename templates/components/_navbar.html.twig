@@ -1,0 +1,22 @@
+﻿{# Navigation principale MIDDO #}
+<nav style="background: var(--middo-gradient); padding: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
+        
+        {# Logo #}
+        <a href="{{ path('app_home') }}" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">
+            🚀 MIDDO
+        </a>
+        
+        {# Menu principal #}
+        <ul style="display: flex; gap: 2rem; list-style: none; margin: 0;">
+            <li><a href="{{ path('app_dashboard') }}" style="color: white; text-decoration: none;">📊 Dashboard</a></li>
+            <li><a href="{{ path('app_projets') }}" style="color: white; text-decoration: none;">💼 Projets</a></li>
+            <li><a href="{{ path('app_messages') }}" style="color: white; text-decoration: none;">💬 Messages</a></li>
+        </ul>
+        
+        {# User menu #}
+        <div style="color: white;">
+            👤 Mon Compte
+        </div>
+    </div>
+</nav>

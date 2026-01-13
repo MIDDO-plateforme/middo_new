@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('build/intro.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const screen = document.getElementById("intro-screen");
+            setTimeout(() => {
+                screen.style.opacity = "0";
+                screen.style.transition = "opacity 0.5s ease";
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 500);
+            }, 1000);
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+<div id="intro-screen">
+    <div class="world-map"></div>
+    <div class="connections"></div>
+    <div class="middo-logo">MIDDO</div>
+</div>
+{% endblock %}
