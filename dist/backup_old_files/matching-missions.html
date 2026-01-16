@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Missions - MIDDO</title>
+    <link rel="stylesheet" href="css/matching-interface.css">
+    <link rel="stylesheet" href="css/notifications-advanced.css">
+</head>
+<body>
+    <div class="matching-container">
+        <!-- Header -->
+        <div class="matching-header">
+            <h1> Matching Missions IA</h1>
+            <p class="matching-subtitle">SESSION 67 - Trouvez les missions parfaites pour vos compétences</p>
+            
+            <div class="matching-stats">
+                <div class="stat-item">
+                    <div class="stat-icon"></div>
+                    <div>
+                        <div class="stat-value" id="total-missions">0</div>
+                        <div class="stat-label">Missions</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"></div>
+                    <div>
+                        <div class="stat-value" id="avg-score">0%</div>
+                        <div class="stat-label">Score moyen</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">💰</div>
+                    <div>
+                        <div class="stat-value" id="total-budget">0€</div>
+                        <div class="stat-label">Budget total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="filters-bar">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label"> Recherche</label>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="filter-input" 
+                        placeholder="Symfony, React, API..."
+                    >
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label"> Localisation</label>
+                    <select id="location-filter" class="filter-select">
+                        <option value="all">Toutes les localisations</option>
+                        <option value="remote">Remote</option>
+                        <option value="paris">Paris</option>
+                        <option value="lyon">Lyon</option>
+                        <option value="marseille">Marseille</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">💼 Compétences</label>
+                    <div class="skills-checkboxes">
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="Symfony">
+                            Symfony
+                        </label>
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="React">
+                            React
+                        </label>
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="PHP">
+                            PHP
+                        </label>
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="JavaScript">
+                            JavaScript
+                        </label>
+                        <label class="skill-checkbox">
+                            <input type="checkbox" value="Docker">
+                            Docker
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-actions">
+                <button class="btn btn-secondary" id="reset-filters">🔄 Réinitialiser</button>
+                <button class="btn btn-primary" onclick="matchingInterface.applyFilters()">🔍 Rechercher</button>
+            </div>
+        </div>
+
+        <!-- Sort Bar -->
+        <div class="sort-bar">
+            <div class="sort-left">
+                <span id="result-count">0 missions trouvées</span>
+            </div>
+            <div class="sort-right">
+                <label class="sort-label">Trier par:</label>
+                <select id="sort-select" class="sort-select">
+                    <option value="score-desc">Score ( Élevé)</option>
+                    <option value="score-asc">Score ( Faible)</option>
+                    <option value="date-desc">Date (Récent)</option>
+                    <option value="date-asc">Date (Ancien)</option>
+                    <option value="budget-desc">Budget ( Élevé)</option>
+                    <option value="budget-asc">Budget ( Faible)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Missions Grid -->
+        <div class="missions-grid" id="missions-grid">
+            <!-- Cartes missions insérées ici par JavaScript -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination insérée ici par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal Détail Mission -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content" id="modal-content-dynamic">
+            <!-- Contenu dynamique inséré par JavaScript -->
+        </div>
+    </div>
+
+    <script src="js/notifications-advanced.js"></script>
+    <script src="js/matching-interface.js"></script>
+
+    <script>
+        // Update stats after data loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (matchingInterface && matchingInterface.missions) {
+                    const missions = matchingInterface.missions;
+                    document.getElementById('total-missions').textContent = missions.length;
+                    
+                    const avgScore = Math.round(missions.reduce((acc, m) => acc + m.score, 0) / missions.length);
+                    document.getElementById('avg-score').textContent = avgScore + '%';
+                    
+                    const totalBudget = missions.reduce((acc, m) => acc + m.budget, 0);
+                    document.getElementById('total-budget').textContent = totalBudget.toLocaleString() + '€';
+                }
+            }, 500);
+        });
+    </script>
+  <script src="js/universal-dark-mode.js"></script>
+</body>
+</html>

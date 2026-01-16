@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MIDDO - Démo Jauge Sentiment</title>
+    <link rel="stylesheet" href="css/sentiment-gauge-animation.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; }
+        .demo-container { max-width: 800px; margin: 0 auto; }
+        .demo-card { background: white; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        h1 { color: white; text-align: center; margin-bottom: 2rem; }
+        h2 { color: #1f2937; margin-bottom: 1rem; }
+        .gauge-wrapper { margin: 1.5rem 0; }
+        .gauge-label { font-weight: 600; color: #4b5563; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎨 Démo Animation Jauge Sentiment</h1>
+        
+        <div class="demo-card">
+            <h2>Exemple 1 : Sentiment Positif (85%)</h2>
+            <div class="gauge-wrapper">
+                <div class="gauge-label">Score de sentiment</div>
+                <div class="sentiment-gauge-container" data-score="85">
+                    <div class="sentiment-gauge-bar">
+                        <span class="sentiment-score-text">0%</span>
+                    </div>
+                </div>
+                <span class="sentiment-label positive">😊 Très positif <span class="sentiment-icon">✨</span></span>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>Exemple 2 : Sentiment Neutre (50%)</h2>
+            <div class="gauge-wrapper">
+                <div class="gauge-label">Score de sentiment</div>
+                <div class="sentiment-gauge-container" data-score="50">
+                    <div class="sentiment-gauge-bar">
+                        <span class="sentiment-score-text">0%</span>
+                    </div>
+                </div>
+                <span class="sentiment-label neutral">😐 Neutre <span class="sentiment-icon">💭</span></span>
+            </div>
+        </div>
+        
+        <div class="demo-card">
+            <h2>Exemple 3 : Sentiment Négatif (25%)</h2>
+            <div class="gauge-wrapper">
+                <div class="gauge-label">Score de sentiment</div>
+                <div class="sentiment-gauge-container" data-score="25">
+                    <div class="sentiment-gauge-bar">
+                        <span class="sentiment-score-text">0%</span>
+                    </div>
+                </div>
+                <span class="sentiment-label negative">😟 Négatif <span class="sentiment-icon">⚠️</span></span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/sentiment-gauge-animation.js"></script>
+</body>
+</html>

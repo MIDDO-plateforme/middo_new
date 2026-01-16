@@ -1,0 +1,200 @@
+/**
+ * MIDDO - Animation Jauge Sentiment
+ * SESSION 18 - BLOC 4
+ */
+
+/* Animation de remplissage de la jauge */
+@keyframes fillSentimentGauge {
+    0% {
+        width: 0%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        width: var(--target-width);
+    }
+    95% {
+        width: calc(var(--target-width) + 5%);
+    }
+    100% {
+        width: var(--target-width);
+    }
+}
+
+/* Animation de pulsation du texte de score */
+@keyframes pulseScore {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Container de la jauge */
+.sentiment-gauge-container {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background: #e5e7eb;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Barre de progression */
+.sentiment-gauge-bar {
+    height: 100%;
+    border-radius: 15px;
+    position: relative;
+    transition: background-color 0.5s ease;
+    
+    /* Animation appliquée via JavaScript */
+    animation: fillSentimentGauge 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 300ms forwards;
+    
+    /* Gradient lumineux */
+    background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+}
+
+/* Animation du gradient lumineux */
+@keyframes shineEffect {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.sentiment-gauge-bar.animating {
+    animation: 
+        fillSentimentGauge 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 300ms forwards,
+        shineEffect 3s ease-in-out 2.5s infinite;
+}
+
+/* Couleurs selon le score */
+.sentiment-gauge-bar.negative {
+    background-color: #ef4444;
+}
+
+.sentiment-gauge-bar.neutral {
+    background-color: #f59e0b;
+}
+
+.sentiment-gauge-bar.positive {
+    background-color: #10b981;
+}
+
+/* Texte du score */
+.sentiment-score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1f2937;
+    z-index: 10;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    
+    /* Animation du texte */
+    animation: pulseScore 0.8s ease-in-out 2.3s 2;
+}
+
+/* Label de sentiment */
+.sentiment-label {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    
+    /* Animation d'apparition */
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out 2.5s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sentiment-label.negative {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.sentiment-label.neutral {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.sentiment-label.positive {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Icône de sentiment */
+.sentiment-icon {
+    display: inline-block;
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    
+    /* Animation de rotation */
+    opacity: 0;
+    animation: rotateIn 0.6s ease-out 2.8s forwards;
+}
+
+@keyframes rotateIn {
+    from {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sentiment-gauge-container {
+        height: 25px;
+    }
+    
+    .sentiment-score-text {
+        font-size: 0.8rem;
+    }
+    
+    .sentiment-label {
+        font-size: 0.75rem;
+    }
+}
+
+/* Support prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .sentiment-gauge-bar,
+    .sentiment-score-text,
+    .sentiment-label,
+    .sentiment-icon {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

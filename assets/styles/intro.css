@@ -1,0 +1,65 @@
+#intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    animation: fadeOut 1.5s ease forwards;
+    animation-delay: 1.4s;
+}
+
+.world-map {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: url('/images/world-map-lines.png') center/contain no-repeat;
+    opacity: 0;
+    animation: drawMap 0.6s ease forwards;
+    animation-delay: 0.2s;
+    filter: drop-shadow(0 0 10px #4f8cff);
+}
+
+.connections {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: url('/images/world-connections.png') center/contain no-repeat;
+    opacity: 0;
+    animation: showConnections 0.5s ease forwards;
+    animation-delay: 0.6s;
+}
+
+.middo-logo {
+    position: absolute;
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    opacity: 0;
+    animation: showLogo 0.5s ease forwards;
+    animation-delay: 0.9s;
+    text-shadow: 0 0 20px #4f8cff;
+}
+
+@keyframes drawMap {
+    from { opacity: 0; transform: scale(1.1); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes showConnections {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes showLogo {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}

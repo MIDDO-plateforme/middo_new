@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MIDDO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .menu { display: flex; gap: 15px; margin-bottom: 30px; }
+        .menu a { padding: 10px 20px; background: white; color: #667eea; border-radius: 10px; text-decoration: none; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        h1 { color: white; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Dashboard MIDDO</h1>
+        <div class="menu">
+            <a href="/"> Accueil</a>
+            <a href="/banque.html"> Banque</a>
+            <a href="/travail.html"> Travail</a>
+            <a href="/projets.html"> Projets</a>
+        </div>
+        <div class="grid">
+            <div class="card" onclick="location.href='/banque.html'">
+                <h2> Portefeuille</h2>
+                <p>2 450,00 €</p>
+            </div>
+            <div class="card" onclick="location.href='/travail.html'">
+                <h2> Travail</h2>
+                <p>8 outils disponibles</p>
+            </div>
+            <div class="card" onclick="location.href='/projets.html'">
+                <h2> Projets</h2>
+                <p>8 projets actifs</p>
+            </div>
+            <div class="card" onclick="location.href='/messages.html'">
+                <h2> Messages</h2>
+                <p>12 conversations</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
