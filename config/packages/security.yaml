@@ -1,24 +1,42 @@
 security:
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    providers:
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
 
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+  firewalls:
+    dev:
+      pattern: ^/(\_profiler|wdt|css|images|js)/
+      security: false
 
-        main:
-            lazy: true
-            provider: app_user_provider
-            entry_point: ~
+    # API JWT (stateless)
+    api:
+      pattern: ^/api
+      stateless: true
+      provider: app_user_provider
 
-    access_control:
-        - { path: ^/annuaire, roles: PUBLIC_ACCESS }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+      # Login JSON qui retourne un JWT
+      json_login:
+        check_path: /api/login_check
+        username_path: email
+        password_path: password
+
+      # Auth via token JWT sur les autres routes /api
+      jwt: ~
+
+    # Optionnel si tu as un front Twig (sinon tu peux l’enlever)
+    main:
+      lazy: true
+      provider: app_user_provider
+
+  access_control:
+    # Autoriser register + login
+    - { path: ^/api/register$, roles: PUBLIC_ACCESS }
+    - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+
+    # Protéger le reste de /api (dont /api/me)
+    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
