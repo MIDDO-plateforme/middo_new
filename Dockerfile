@@ -62,4 +62,4 @@ RUN chown -R www-data:www-data /var/www/html/var
 EXPOSE 8000
 
 # Démarrage
-CMD ["php","-S","0.0.0.0:8000","-t","public","public/index.php"]
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "public/router.php"]
