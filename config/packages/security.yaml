@@ -10,7 +10,7 @@ security:
 
   firewalls:
     dev:
-      pattern: ^/(\_profiler|wdt|css|images|js)/
+      pattern: ^/(_profiler|wdt|css|images|js)/
       security: false
 
     api:
@@ -18,11 +18,13 @@ security:
       stateless: true
       provider: app_user_provider
 
+      # LOGIN PUBLIC -> renvoie un JWT (Lexik)
       json_login:
-        check_path: /api/login_check
+        check_path: /api/auth/login
         username_path: email
         password_path: password
 
+      # JWT sur le reste des routes protégées
       jwt: ~
 
     main:
@@ -31,5 +33,6 @@ security:
 
   access_control:
     - { path: ^/api/register$, roles: PUBLIC_ACCESS }
-    - { path: ^/api/login_check$, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/login$, roles: PUBLIC_ACCESS }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
