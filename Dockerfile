@@ -63,3 +63,4 @@ EXPOSE 8000
 
 # Démarrage
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "public/router.php"]
+RUN usermod -a -G 1000 www-data
