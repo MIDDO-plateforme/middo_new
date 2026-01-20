@@ -18,7 +18,7 @@ RUN php bin/console cache:clear --env=prod --no-debug
 RUN php bin/console cache:warmup --env=prod
 
 RUN chown -R www-data:www-data /var/www/html/var
-RUN usermod -a -G 1000 www-data
+RUN groupadd -f -g 1000 rendergroup && usermod -a -G 1000 www-data || true
 
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
