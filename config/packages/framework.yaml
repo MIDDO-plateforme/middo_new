@@ -1,6 +1,6 @@
 framework:
     secret: '%env(APP_SECRET)%'
-    trusted_hosts: ['^middo-app\.onrender\.com$', '^localhost$', '^127\.0\.0\.1$']
+    #trusted_hosts: []
     
     session:
         handler_id: null
