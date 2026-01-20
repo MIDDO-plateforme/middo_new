@@ -18,9 +18,10 @@ COPY . /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 RUN composer dump-autoload --optimize --classmap-authoritative
 
-# FIX DOCTRINE: clear metadata cache prod
+# FIX DOCTRINE: FORCE DELETE CACHE + clear metadata
+RUN rm -rf var/cache/prod/*
 RUN php bin/console doctrine:cache:clear-metadata --env=prod || true
-RUN php bin/console cache:clear --env=prod --no-debug
+RUN php bin/console cache:clear --env=prod --no-debug --no-warmup
 RUN php bin/console cache:warmup --env=prod
 
 # Permissions + groupe 1000 Render secrets
