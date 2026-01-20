@@ -1,4 +1,5 @@
-﻿FROM php:8.3-cli
+FROM php:8.3-cli
+ENV CACHE_BUST=2026-01-20-19-30
 
 RUN apt-get update && apt-get install -y \
     libpq-dev libzip-dev \
