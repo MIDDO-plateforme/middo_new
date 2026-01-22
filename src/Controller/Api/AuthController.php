@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Controller\Api;
 
@@ -43,7 +43,7 @@ class AuthController extends AbstractController
         // Créer un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
-        $user->setNom($data['name']); // Utiliser setNom si c'est le champ dans User.php
+        $user->setNom($data['name']);
         $user->setRoles(['ROLE_USER']);
 
         // Hasher le mot de passe
@@ -68,7 +68,6 @@ class AuthController extends AbstractController
      * POST /api/login
      * Connexion utilisateur
      * Note: Ce endpoint est géré par lexik/jwt-authentication-bundle via /api/login_check
-     * Ce controller n'est utilisé que pour la documentation
      */
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
