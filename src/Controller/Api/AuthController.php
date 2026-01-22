@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Controller\Api;
 
@@ -15,7 +15,7 @@ class AuthController extends AbstractController
 {
     /**
      * POST /api/register
-     * Créer un nouveau compte utilisateur
+     * CrÃ©er un nouveau compte utilisateur
      */
     #[Route('/register', name: 'api_register', methods: ['POST'])]
     public function register(
@@ -32,7 +32,7 @@ class AuthController extends AbstractController
             ], 400);
         }
 
-        // Vérifier si l'utilisateur existe déjà
+        // VÃ©rifier si l'utilisateur existe dÃ©jÃ 
         $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return new JsonResponse([
@@ -40,17 +40,17 @@ class AuthController extends AbstractController
             ], 409);
         }
 
-        // Créer un nouvel utilisateur
+        // CrÃ©er un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
-        $user->setNom($data['name']);
+        $user->setName($data['name']);
         $user->setRoles(['ROLE_USER']);
 
         // Hasher le mot de passe
         $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($hashedPassword);
 
-        // Persister dans la base de données
+        // Persister dans la base de donnÃ©es
         $entityManager->persist($user);
         $entityManager->flush();
 
@@ -67,7 +67,7 @@ class AuthController extends AbstractController
     /**
      * POST /api/login
      * Connexion utilisateur
-     * Note: Ce endpoint est géré par lexik/jwt-authentication-bundle via /api/login_check
+     * Note: Ce endpoint est gÃ©rÃ© par lexik/jwt-authentication-bundle via /api/login_check
      */
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
