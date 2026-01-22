@@ -1,10 +1,13 @@
-<?php
+﻿<?php
 
 namespace App\Controller\Api;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api')]
@@ -15,8 +18,11 @@ class AuthController extends AbstractController
      * Créer un nouveau compte utilisateur
      */
     #[Route('/register', name: 'api_register', methods: ['POST'])]
-    public function register(Request $request): JsonResponse
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
         // Validation simple
@@ -26,55 +32,49 @@ class AuthController extends AbstractController
             ], 400);
         }
 
-        // MODE MOCK : Retourner des données fictives (pas de BDD)
-        $mockUser = [
-            'id' => rand(1000, 9999),
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'role' => $data['role'] ?? 'freelance',
-            'createdAt' => (new \DateTime())->format('Y-m-d\TH:i:s\Z')
-        ];
+        // Vérifier si l'utilisateur existe déjà
+        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        if ($existingUser) {
+            return new JsonResponse([
+                'error' => 'User with this email already exists'
+            ], 409);
+        }
 
-        // Token fictif (base64 encode)
-        $token = base64_encode($mockUser['email'] . ':' . time());
+        // Créer un nouvel utilisateur
+        $user = new User();
+        $user->setEmail($data['email']);
+        $user->setNom($data['name']); // Utiliser setNom si c'est le champ dans User.php
+        $user->setRoles(['ROLE_USER']);
+
+        // Hasher le mot de passe
+        $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
+        $user->setPassword($hashedPassword);
+
+        // Persister dans la base de données
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return new JsonResponse([
-            'token' => $token,
-            'user' => $mockUser
+            'message' => 'User created successfully',
+            'user' => [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'name' => $user->getNom()
+            ]
         ], 201);
     }
 
     /**
      * POST /api/login
      * Connexion utilisateur
+     * Note: Ce endpoint est géré par lexik/jwt-authentication-bundle via /api/login_check
+     * Ce controller n'est utilisé que pour la documentation
      */
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-
-        // Validation
-        if (!isset($data['email']) || !isset($data['password'])) {
-            return new JsonResponse([
-                'error' => 'Missing email or password'
-            ], 400);
-        }
-
-        // MODE MOCK : Accepter n'importe quel email/password
-        $mockUser = [
-            'id' => 1,
-            'name' => 'Baudouin MBANE LOKOTA',
-            'email' => $data['email'],
-            'role' => 'freelance',
-            'createdAt' => '2026-01-01T10:00:00Z'
-        ];
-
-        // Token fictif
-        $token = base64_encode($mockUser['email'] . ':' . time());
-
         return new JsonResponse([
-            'token' => $token,
-            'user' => $mockUser
+            'message' => 'Use /api/login_check for authentication'
         ], 200);
     }
 }
