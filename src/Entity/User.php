@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -13,46 +14,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'json')]
-    private array $roles = [];
+    #[ORM\Column(type: Types::JSON)]
+    private array $roles = ['ROLE_USER'];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'json', nullable: true)]
-    private ?array $skills = [];
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $skills = null;
 
-    #[ORM\Column(type: 'float', options: ['default' => 0])]
+    #[ORM\Column]
     private float $wallet = 0;
 
-    #[ORM\Column(type: 'float', nullable: true)]
+    #[ORM\Column(nullable: true)]
     private ?float $rating = null;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column]
     private int $projects = 0;
 
-    #[ORM\Column(type: 'string', length: 10, options: ['default' => 'fr'])]
+    #[ORM\Column(length: 10)]
     private string $locale = 'fr';
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastLoginAt = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-        $this->roles = ['ROLE_USER'];
     }
 
     public function getId(): ?int
@@ -78,9 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): self
