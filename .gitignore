@@ -1,21 +1,43 @@
+# ============================
+# MIDDO - Git Ignore
+# ============================
+
 # Secrets
+.env
 .env.*
 !.env.example
 test_new_key.php
 
-# Dossiers
+# Symfony / PHP
 /var/
 /vendor/
 /public/bundles/
 /node_modules/
+
+# Backup & temp files
 *.backup*
 *.php.txt
 *.twig.txt
 *_fix*
 *_corrupt*
-# Backup files - prevent duplicates
-*.backup*
-*.php.txt
-*.twig.txt
-*_fix*
-*_corrupt*
+
+# IDE / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+/logs/
+/*.log
+
+# Composer
+composer.lock
+
+# Cache
+/cache/
+/var/cache/
+
+# Tests
+/phpunit.xml
+/phpunit.xml.dist
