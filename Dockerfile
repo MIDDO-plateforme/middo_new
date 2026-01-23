@@ -1,26 +1,36 @@
-FROM php:8.3-cli
+FROM php:8.3-fpm
+
 ENV CACHE_BUST=2026-01-20-19-30
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpq-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip opcache
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libicu-dev \
+    zip
 
+# Install PHP extensions
+RUN docker-php-ext-install intl pdo pdo_pgsql zip opcache
+
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
-COPY . /var/www/html
+COPY . .
 
-RUN docker-php-ext-install pdo pdo_pgsql
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN composer dump-autoload --optimize --classmap-authoritative
 
-# CLEAR DOCTRINE METADATA
-RUN php bin/console doctrine:cache:clear-metadata --env=prod || true
-RUN php bin/console cache:clear --env=prod --no-debug
-RUN php bin/console cache:warmup --env=prod
+# Clear and warmup Symfony cache
+RUN php bin/console cache:clear --env=prod --no-debug || true
+RUN php bin/console cache:warmup --env=prod || true
 
+# Permissions
 RUN chown -R www-data:www-data /var/www/html/var
-RUN groupadd -f -g 1000 rendergroup && usermod -a -G 1000 www-data || true
 
 EXPOSE 8000
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+
+CMD ["php-fpm"]
