@@ -1,36 +1,22 @@
 FROM php:8.3-fpm
 
-ENV CACHE_BUST=2026-01-20-19-30
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libpq-dev \
-    libzip-dev \
-    libicu-dev \
-    zip
-
-# Install PHP extensions
+# Extensions PHP
+RUN apt-get update && apt-get install -y git unzip libpq-dev libzip-dev libicu-dev zip nginx
 RUN docker-php-ext-install intl pdo pdo_pgsql zip opcache
 
-# Install Composer
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-RUN composer dump-autoload --optimize --classmap-authoritative
+RUN composer install --no-dev --optimize-autoloader
+RUN php bin/console cache:clear --env=prod || true
 
-# Clear and warmup Symfony cache
-RUN php bin/console cache:clear --env=prod --no-debug || true
-RUN php bin/console cache:warmup --env=prod || true
+# Config Nginx
+RUN echo 'server { listen 80; root /var/www/html/public; location / { try_files $uri /index.php$is_args$args; } location ~ ^/index\.php(/|$) { fastcgi_pass 127.0.0.1:9000; fastcgi_split_path_info ^(.+\.php)(/.*)$; include fastcgi_params; fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; } }' > /etc/nginx/sites-available/default
 
-# Permissions
 RUN chown -R www-data:www-data /var/www/html/var
 
-EXPOSE 8000
-
-CMD ["php-fpm"]
+# Démarrer Nginx + PHP-FPM
+CMD service nginx start && php-fpm
