@@ -41,3 +41,4 @@ composer.lock
 # Tests
 /phpunit.xml
 /phpunit.xml.dist
+node_modules
