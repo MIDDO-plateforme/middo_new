@@ -33,4 +33,5 @@ security:
     access_control:
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        - { path: ^/api/workspaces, roles: PUBLIC_ACCESS }  # ← AJOUT VALIDÉ
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

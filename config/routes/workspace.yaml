@@ -1,0 +1,3 @@
+api_workspaces:
+  resource: '../../src/Controller/WorkspaceController.php'
+  type: attribute
