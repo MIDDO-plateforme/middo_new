@@ -32,11 +32,16 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
+    role_hierarchy:
+        ROLE_MANAGER: ROLE_USER
+        ROLE_ADMIN: ROLE_MANAGER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
     access_control:
         - { path: ^/api/test, roles: PUBLIC_ACCESS }
-        - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-        - { path: ^/api/projects, roles: PUBLIC_ACCESS }
-        - { path: ^/api/workspaces, roles: PUBLIC_ACCESS }
+        - { path: ^/api/projects/public, roles: PUBLIC_ACCESS }
+        - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
