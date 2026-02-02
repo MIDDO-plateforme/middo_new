@@ -1,0 +1,18 @@
+{# templates/menu/main.html.twig #}
+<nav class="main-menu">
+    {% for key, item in menu %}
+        <div class="menu-item">
+            <a href="{{ path(item.route) }}" class="menu-link">
+                <i class="material-icons">{{ item.icon }}</i>
+                <span>{{ item.label }}</span>
+            </a>
+            {% if item.children is defined %}
+                <ul class="submenu">
+                    {% for child in item.children %}
+                        <li><a href="{{ path(child.route) }}">{{ child.label }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
+</nav>
