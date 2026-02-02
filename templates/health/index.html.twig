@@ -1,0 +1,533 @@
+{# templates/health/index.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MIDDO – Statut du système</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --bg: #050816;
+            --bg-alt: #0b1020;
+            --card: #111827;
+            --accent: #22c55e;
+            --accent-warn: #f97316;
+            --accent-error: #ef4444;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --border: #1f2937;
+            --shadow: 0 18px 45px rgba(0,0,0,0.55);
+            --radius: 18px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            padding: 32px 20px 40px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: conic-gradient(from 210deg, #22c55e, #0ea5e9, #a855f7, #22c55e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(34,197,94,0.45);
+        }
+
+        .brand-logo span {
+            font-weight: 800;
+            font-size: 18px;
+            color: #020617;
+        }
+
+        .brand-text-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .brand-text-sub {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .status-pill {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+        }
+
+        .status-ok { background: var(--accent); }
+        .status-degraded { background: var(--accent-warn); }
+        .status-error { background: var(--accent-error); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .card {
+            background: radial-gradient(circle at top left, #1f2937 0, #020617 55%);
+            border-radius: var(--radius);
+            border: 1px solid rgba(31,41,55,0.9);
+            box-shadow: var(--shadow);
+            padding: 18px 18px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(56,189,248,0.12), transparent 55%);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .meta-label {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .meta-value {
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            border: 1px solid rgba(55,65,81,0.9);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+        }
+
+        .badge-ok { background: rgba(22,163,74,0.18); border-color: rgba(34,197,94,0.6); }
+        .badge-warn { background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.6); }
+        .badge-error { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.6); }
+
+        .badge-dot-ok { background: var(--accent); }
+        .badge-dot-warn { background: var(--accent-warn); }
+        .badge-dot-error { background: var(--accent-error); }
+
+        .section {
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+
+        .kv-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px 12px;
+            font-size: 12px;
+        }
+
+        .kv-label {
+            color: var(--muted);
+        }
+
+        .kv-value {
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            border: 1px solid rgba(55,65,81,0.9);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .pill-key {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 11px;
+        }
+
+        .pill-ok { color: #bbf7d0; border-color: rgba(34,197,94,0.6); }
+        .pill-missing { color: #fecaca; border-color: rgba(239,68,68,0.6); }
+
+        .footer {
+            margin-top: 18px;
+            font-size: 11px;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .json-raw {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 11px;
+            background: rgba(15,23,42,0.95);
+            border-radius: 12px;
+            padding: 10px 12px;
+            border: 1px solid rgba(31,41,55,0.9);
+            color: #e5e7eb;
+            max-height: 260px;
+            overflow: auto;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header>
+        <div class="brand">
+            <div class="brand-logo">
+                <span>M</span>
+            </div>
+            <div>
+                <div class="brand-text-title">MIDDO System Status</div>
+                <div class="brand-text-sub">
+                    Vue temps réel de la santé de la plateforme
+                </div>
+            </div>
+        </div>
+
+        <div>
+            {% set globalStatus = data.status ?? 'UNKNOWN' %}
+            {% set pillClass = globalStatus == 'OK' ? 'status-ok' : (globalStatus == 'DEGRADED' ? 'status-degraded' : 'status-error') %}
+            <div class="status-pill">
+                <span class="status-dot {{ pillClass }}"></span>
+                <span>{{ globalStatus }}</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Résumé système</div>
+                    <div class="card-sub">Synthèse des indicateurs critiques</div>
+                </div>
+                <div class="badge badge-ok">
+                    <span class="badge-dot badge-dot-ok"></span>
+                    <span>Temps réel</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="meta-row">
+                    <div class="meta-item">
+                        <div class="meta-label">Version</div>
+                        <div class="meta-value">
+                            {{ data.version ?? 'N/A' }}
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">PHP</div>
+                        <div class="meta-value">
+                            {{ data.php_version ?? 'N/A' }}
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Uptime</div>
+                        <div class="meta-value">
+                            {{ data.uptime_seconds ?? 0 }} s
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Dernier check</div>
+                        <div class="meta-value">
+                            {{ data.checked_at ?? 'N/A' }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Environnement & services</div>
+                    <div class="kv-list">
+                        {% set env = data.details.environment ?? {} %}
+                        {% set db = data.details.database ?? {} %}
+                        {% set redis = data.details.redis ?? {} %}
+                        {% set mercure = data.details.mercure ?? {} %}
+
+                        <div>
+                            <div class="kv-label">Environnement</div>
+                            <div class="kv-value">
+                                {% set s = env.status ?? 'UNKNOWN' %}
+                                {% set cls = s == 'OK' ? 'badge-ok' : (s == 'ERROR' ? 'badge-error' : 'badge-warn') %}
+                                <span class="badge {{ cls }}">
+                                    <span class="badge-dot {{ s == 'OK' ? 'badge-dot-ok' : (s == 'ERROR' ? 'badge-dot-error' : 'badge-dot-warn') }}"></span>
+                                    <span>{{ s }}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="kv-label">Base de données</div>
+                            <div class="kv-value">
+                                {% set s = db.status ?? 'UNKNOWN' %}
+                                {% set cls = s == 'OK' ? 'badge-ok' : (s == 'ERROR' ? 'badge-error' : 'badge-warn') %}
+                                <span class="badge {{ cls }}">
+                                    <span class="badge-dot {{ s == 'OK' ? 'badge-dot-ok' : (s == 'ERROR' ? 'badge-dot-error' : 'badge-dot-warn') }}"></span>
+                                    <span>{{ s }}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="kv-label">Redis</div>
+                            <div class="kv-value">
+                                {% set s = redis.status ?? 'SKIPPED' %}
+                                {% set cls = s == 'OK' ? 'badge-ok' : (s == 'ERROR' ? 'badge-error' : 'badge-warn') %}
+                                <span class="badge {{ cls }}">
+                                    <span class="badge-dot {{ s == 'OK' ? 'badge-dot-ok' : (s == 'ERROR' ? 'badge-dot-error' : 'badge-dot-warn') }}"></span>
+                                    <span>{{ s }}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="kv-label">Mercure</div>
+                            <div class="kv-value">
+                                {% set s = mercure.status ?? 'SKIPPED' %}
+                                {% set cls = s == 'OK' ? 'badge-ok' : (s == 'ERROR' ? 'badge-error' : 'badge-warn') %}
+                                <span class="badge {{ cls }}">
+                                    <span class="badge-dot {{ s == 'OK' ? 'badge-dot-ok' : (s == 'ERROR' ? 'badge-dot-error' : 'badge-dot-warn') }}"></span>
+                                    <span>{{ s }}</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% set system = data.details.system ?? {} %}
+                {% set latency = data.details.latency ?? {} %}
+
+                <div class="section">
+                    <div class="section-title">Ressources système</div>
+                    <div class="kv-list">
+                        <div>
+                            <div class="kv-label">Charge CPU</div>
+                            <div class="kv-value">
+                                {{ system.cpu_load is defined and system.cpu_load is not null ? system.cpu_load ~ ' (1 min)' : 'N/A' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="kv-label">Mémoire utilisée</div>
+                            <div class="kv-value">
+                                {{ system.memory_usage_mb is defined ? system.memory_usage_mb ~ ' Mo' : 'N/A' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="kv-label">Espace disque libre</div>
+                            <div class="kv-value">
+                                {{ system.disk_free_mb is defined ? system.disk_free_mb ~ ' Mo' : 'N/A' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="kv-label">Latence interne</div>
+                            <div class="kv-value">
+                                {{ latency.latency_ms is defined ? latency.latency_ms ~ ' ms' : 'N/A' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer">
+                <div>© {{ "now"|date("Y") }} MIDDO · Statut interne</div>
+                <div>
+                    <a href="/api/workspaces/health" target="_blank">Voir le JSON brut</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Clés API & intégrations</div>
+                    <div class="card-sub">Vue synthétique des fournisseurs critiques</div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                {% set api = data.details.api_keys ?? {} %}
+                {% set providers = api.providers ?? {} %}
+
+                <div class="section">
+                    <div class="section-title">Fournisseurs</div>
+                    <div class="kv-list">
+                        {% for name, status in providers %}
+                            {% set cls = status == 'OK' ? 'pill-ok' : 'pill-missing' %}
+                            <div>
+                                <div class="kv-label">{{ name|capitalize }}</div>
+                                <div class="kv-value">
+                                    <span class="pill {{ cls }}">
+                                        <span class="pill-key">{{ name }}</span>
+                                        <span>· {{ status }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div>
+                                <div class="kv-label">Aucun fournisseur détecté</div>
+                                <div class="kv-value">Vérifier la configuration des clés API.</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Variables manquantes</div>
+                    {% set env = data.details.environment ?? {} %}
+                    {% set missing = env.missing ?? [] %}
+
+                    {% if missing is not empty %}
+                        <div class="kv-list">
+                            {% for key in missing %}
+                                <div>
+                                    <div class="kv-label">{{ key }}</div>
+                                    <div class="kv-value">
+                                        <span class="pill pill-missing">
+                                            <span class="pill-key">{{ key }}</span>
+                                            <span>· manquante</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="kv-value" style="font-size: 12px; color: #a7f3d0;">
+                            Toutes les variables critiques sont présentes.
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">JSON brut</div>
+                    <div class="json-raw">
+                        {{ data|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

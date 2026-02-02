@@ -25,6 +25,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
 
     /**
      * @var Collection<int, Notification>

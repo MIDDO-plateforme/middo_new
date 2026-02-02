@@ -15,7 +15,7 @@ class AuthController extends AbstractController
 {
     /**
      * POST /api/register
-     * CrÃ©er un nouveau compte utilisateur
+     * Créer un nouveau compte utilisateur
      */
     #[Route('/register', name: 'api_register', methods: ['POST'])]
     public function register(
@@ -26,13 +26,11 @@ class AuthController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         // Validation simple
-        if (!isset($data['name']) || !isset($data['email']) || !isset($data['password'])) {
-            return new JsonResponse([
-                'error' => 'Missing required fields: name, email, password'
-            ], 400);
+        if (!isset($data['email'], $data['password'])) {
+            return $this->json(['error' => 'Missing required fields: email, password'], 400);
         }
 
-        // VÃ©rifier si l'utilisateur existe dÃ©jÃ 
+        // Vérifier si l'utilisateur existe déjà
         $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return new JsonResponse([
@@ -40,17 +38,23 @@ class AuthController extends AbstractController
             ], 409);
         }
 
-        // CrÃ©er un nouvel utilisateur
+        // Créer un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
-        $user->setName($data['name']);
+        
+        // Définir le nom si fourni (optionnel)
+        if (isset($data['name'])) {
+            $user->setName($data['name']);
+        }
+        
+        // Définir le rôle par défaut
         $user->setRoles(['ROLE_USER']);
 
         // Hasher le mot de passe
         $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($hashedPassword);
 
-        // Persister dans la base de donnÃ©es
+        // Persister dans la base de données
         $entityManager->persist($user);
         $entityManager->flush();
 
@@ -59,7 +63,7 @@ class AuthController extends AbstractController
             'user' => [
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
-                'name' => $user->getNom()
+                'name' => $user->getName()
             ]
         ], 201);
     }
@@ -67,7 +71,7 @@ class AuthController extends AbstractController
     /**
      * POST /api/login
      * Connexion utilisateur
-     * Note: Ce endpoint est gÃ©rÃ© par lexik/jwt-authentication-bundle via /api/login_check
+     * Note: Ce endpoint est géré par lexik/jwt-authentication-bundle via /api/login_check
      */
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse

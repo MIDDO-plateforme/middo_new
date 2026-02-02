@@ -14,24 +14,29 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        
-        login:
-            pattern: ^/api/login_check
+
+        public_api:
+            pattern: ^/api/(test|register|projects|workspaces/health)(/|$)
             stateless: true
-            json_login:
-                check_path: api_login_check
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-                username_path: email
-                password_path: password
-        
+            security: false
+
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /api/login_check
+                username_path: username
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
     access_control:
+        - { path: ^/api/test, roles: PUBLIC_ACCESS }
+        - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-        - { path: ^/api/workspaces, roles: PUBLIC_ACCESS }  # ← AJOUT VALIDÉ
+        - { path: ^/api/projects, roles: PUBLIC_ACCESS }
+        - { path: ^/api/workspaces, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

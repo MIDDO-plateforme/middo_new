@@ -1,58 +1,55 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
+#[ORM\Table(name: 'projects')]
 class Project
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(type: 'string', length: 150)]
+    #[Assert\NotBlank(message: 'Le nom du projet est obligatoire.')]
+    #[Assert\Length(max: 150)]
+    private string $name;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $status = 'draft'; // draft, in_progress, completed, archived
+    #[ORM\Column(type: 'string', length: 20)]
+    #[Assert\Choice(choices: ['draft', 'active', 'archived'])]
+    private string $status = 'draft';
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
-    private ?string $budget = null;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $startDate = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $endDate = null;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTime $updatedAt;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $creator = null;
+    private User $owner;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'project_members')]
     private Collection $members;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
-
     public function __construct()
     {
-        $this->members = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,12 +57,12 @@ class Project
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -76,64 +73,47 @@ class Project
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(string $status): self
     {
         $this->status = $status;
         return $this;
     }
 
-    public function getBudget(): ?string
+    public function getCreatedAt(): \DateTimeImmutable
     {
-        return $this->budget;
+        return $this->createdAt;
     }
 
-    public function setBudget(?string $budget): static
+    public function getUpdatedAt(): \DateTime
     {
-        $this->budget = $budget;
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(): self
+    {
+        $this->updatedAt = new \DateTime();
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getOwner(): User
     {
-        return $this->startDate;
+        return $this->owner;
     }
 
-    public function setStartDate(?\DateTimeInterface $startDate): static
+    public function setOwner(User $owner): self
     {
-        $this->startDate = $startDate;
-        return $this;
-    }
-
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(?\DateTimeInterface $endDate): static
-    {
-        $this->endDate = $endDate;
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setCreator(?User $creator): static
-    {
-        $this->creator = $creator;
+        $this->owner = $owner;
         return $this;
     }
 
@@ -145,39 +125,17 @@ class Project
         return $this->members;
     }
 
-    public function addMember(User $member): static
+    public function addMember(User $user): self
     {
-        if (!$this->members->contains($member)) {
-            $this->members->add($member);
+        if (!$this->members->contains($user)) {
+            $this->members->add($user);
         }
         return $this;
     }
 
-    public function removeMember(User $member): static
+    public function removeMember(User $user): self
     {
-        $this->members->removeElement($member);
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
+        $this->members->removeElement($user);
         return $this;
     }
 }

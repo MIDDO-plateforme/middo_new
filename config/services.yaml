@@ -4,43 +4,31 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        public: false
         bind:
-            # Clés API IA
-            $claudeApiKey: '%env(CLAUDE_API_KEY)%'
             $openaiApiKey: '%env(OPENAI_API_KEY)%'
             $anthropicApiKey: '%env(ANTHROPIC_API_KEY)%'
-            
-            # Chemins système
-            $projectPath: '%kernel.project_dir%'
-            $profilesDirectory: '%kernel.project_dir%/public/uploads/profiles'
-            
-            # Mercure (WebSocket)
-            $mercureHubUrl: '%env(MERCURE_URL)%'
-            $mercureJwtSecret: '%env(MERCURE_JWT_SECRET)%'
-            
-            # Alias pour compatibilité legacy
+            $claudeApiKey: '%env(CLAUDE_API_KEY)%'
+            $projectDir: '%kernel.project_dir%'
             $apiKey: '%env(OPENAI_API_KEY)%'
+            $mercureHubUrl: '%env(MERCURE_HUB_URL)%'
+            $mercureJwtSecret: '%env(MERCURE_JWT_SECRET)%'
 
+    # 1) Charger tous les services généraux AVANT les contrôleurs
     App\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Kernel.php'
+            - '../src/Tests/'
 
-    ########################################################################
-    # AUTORESOLVE SERVICES (DetectorService, HealthCheckService, LogAnalyzer)
-    ########################################################################
+    # 2) Charger tous les contrôleurs (publics + tag)
+    App\Controller\:
+        resource: '../src/Controller/'
+        public: true
+        tags: ['controller.service_arguments']
 
-    App\Service\AutoResolve\LogAnalyzer:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Service\AutoResolve\HealthCheckService:
-        arguments:
-            $connection: '@doctrine.dbal.default_connection'
-            $httpClient: '@http_client'
-
-    App\Service\AutoResolve\DetectorService:
-        arguments:
-            $logAnalyzer: '@App\Service\AutoResolve\LogAnalyzer'
-            $healthCheckService: '@App\Service\AutoResolve\HealthCheckService'
+    # 3) Déclaration explicite du HealthController
+    App\Controller\HealthController:
+        public: true
+        tags: ['controller.service_arguments']
