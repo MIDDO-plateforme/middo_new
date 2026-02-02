@@ -1,0 +1,22 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Mes Messages{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Mes Messages</h1>
+        <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            ✉️ Nouveau Message
+        </button>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md">
+        <!-- Liste des conversations (placeholder) -->
+        <div class="p-12 text-center text-gray-500">
+            <p class="text-lg mb-2">📬 Boîte de réception vide</p>
+            <p class="text-sm text-gray-400">Module de messagerie à implémenter.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

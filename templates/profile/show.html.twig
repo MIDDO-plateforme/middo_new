@@ -1,0 +1,56 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Header avec avatar -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white">
+            <div class="flex items-center">
+                <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center text-indigo-600 text-4xl font-bold mr-6">
+                    {{ app.user.name ? app.user.name|slice(0,1)|upper : app.user.email|slice(0,1)|upper }}
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold">{{ app.user.name ?? 'Utilisateur' }}</h1>
+                    <p class="text-indigo-100 mt-1">{{ app.user.email }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Informations Personnelles</h2>
+                    <div class="space-y-3 text-gray-700">
+                        <p><strong>Nom :</strong> {{ app.user.name ?? 'Non renseigné' }}</p>
+                        <p><strong>Email :</strong> {{ app.user.email }}</p>
+                        <p><strong>Rôles :</strong> 
+                            {% for role in app.user.roles %}
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ role }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Actions Rapides</h2>
+                    <div class="space-y-2">
+                        <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
+                            ✏️ Modifier mon profil
+                        </button>
+                        <button class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
+                            🔒 Changer mon mot de passe
+                        </button>
+                        <a href="{{ path('app_settings') }}" 
+                           class="block w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-left">
+                            ⚙️ Paramètres du compte
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
