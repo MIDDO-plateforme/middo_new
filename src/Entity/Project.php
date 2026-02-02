@@ -44,6 +44,9 @@ class Project
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(name: 'project_members')]
     private Collection $members;
+    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Workspace $workspace = null;
 
     public function __construct()
     {
@@ -136,6 +139,17 @@ class Project
     public function removeMember(User $user): self
     {
         $this->members->removeElement($user);
+        return $this;
+    }
+
+    public function getWorkspace(): ?Workspace
+    {
+        return $this->workspace;
+    }
+
+    public function setWorkspace(?Workspace $workspace): static
+    {
+        $this->workspace = $workspace;
         return $this;
     }
 }

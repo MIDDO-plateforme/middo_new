@@ -44,9 +44,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, orphanRemoval: true)]
     private Collection $notifications;
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Workspace::class)]
+    private Collection $workspaces;
+
+    #[ORM\ManyToMany(targetEntity: Workspace::class, mappedBy: 'members')]
+    private Collection $memberWorkspaces;
 
     public function __construct()
     {
+        $this->workspaces = new ArrayCollection();
+        $this->memberWorkspaces = new ArrayCollection();
         $this->notifications = new ArrayCollection();
     }
 
@@ -123,6 +130,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($notification->getUser() === $this) {
                 $notification->setUser(null);
             }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Workspace>
+     */
+    public function getWorkspaces(): Collection
+    {
+        return $this->workspaces;
+    }
+
+    public function addWorkspace(Workspace $workspace): static
+    {
+        if (!$this->workspaces->contains($workspace)) {
+            $this->workspaces->add($workspace);
+            $workspace->setOwner($this);
+        }
+        return $this;
+    }
+
+    public function removeWorkspace(Workspace $workspace): static
+    {
+        if ($this->workspaces->removeElement($workspace)) {
+            if ($workspace->getOwner() === $this) {
+                $workspace->setOwner(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Workspace>
+     */
+    public function getMemberWorkspaces(): Collection
+    {
+        return $this->memberWorkspaces;
+    }
+
+    public function addMemberWorkspace(Workspace $memberWorkspace): static
+    {
+        if (!$this->memberWorkspaces->contains($memberWorkspace)) {
+            $this->memberWorkspaces->add($memberWorkspace);
+            $memberWorkspace->addMember($this);
+        }
+        return $this;
+    }
+
+    public function removeMemberWorkspace(Workspace $memberWorkspace): static
+    {
+        if ($this->memberWorkspaces->removeElement($memberWorkspace)) {
+            $memberWorkspace->removeMember($this);
         }
         return $this;
     }
