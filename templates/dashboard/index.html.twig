@@ -1,23 +1,39 @@
-{# templates/dashboard/index.html.twig #}
-{% extends 'base_app.html.twig' %}
-{% block title %}Tableau de bord - MIDDO{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Analytics - MIDDO{% endblock %}
+
 {% block body %}
-    <h1>📊 Tableau de bord MIDDO</h1>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
-        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3>👤 Utilisateur</h3>
-            <p>{{ app.user.email }}</p>
-            <p><strong>Rôles:</strong> {{ app.user.roles|join(', ') }}</p>
+<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 40px;">
+    <h1 style="text-align: center; color: #667eea; margin-bottom: 40px;">📊 Dashboard Analytics</h1>
+    
+    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Statistiques MIDDO</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold;">42</div>
+                <div>Projets Matchés</div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold;">87%</div>
+                <div>Score Moyen</div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold;">8</div>
+                <div>Favoris</div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold;">5</div>
+                <div>Projets Actifs</div>
+            </div>
         </div>
-        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3>📊 Statistiques</h3>
-            <p>Projets: 0</p>
-            <p>Missions: 0</p>
-        </div>
-        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h3>✅ Statut</h3>
-            <p style="color: green;">Système opérationnel</p>
-            <p>Version: 2.0</p>
-        </div>
+        
+        <p style="text-align: center; color: #7f8c8d;">
+            Powered by ✨ OpenAI GPT-4o-mini
+        </p>
     </div>
+</div>
 {% endblock %}
