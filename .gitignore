@@ -33,12 +33,3 @@ Thumbs.db
 
 # Composer
 composer.lock
-
-# Cache
-/cache/
-/var/cache/
-
-# Tests
-/phpunit.xml
-/phpunit.xml.dist
-node_modules

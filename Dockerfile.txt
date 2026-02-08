@@ -38,6 +38,7 @@ RUN echo 'server { \
     } \
 }' > /etc/nginx/sites-available/default
 
-RUN chown -R www-data:www-data /var/www/html/var
+    RUN mkdir -p /var/www/html/var
+    RUN chown -R www-data:www-data /var/www/html/var
 
 CMD php-fpm -F & nginx -g "daemon off;"
