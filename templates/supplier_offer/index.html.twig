@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Offres Fournisseurs</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Fournisseur</th>
+            <th>Produit</th>
+            <th>Prix Unitaire</th>
+            <th>Status</th>
+            <th>Contact</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in offers %}
+            <tr>
+                <td>{{ o.supplierName }}</td>
+                <td>{{ o.group.productName }}</td>
+                <td>{{ o.unitPrice }} €</td>
+                <td>{{ o.status }}</td>
+                <td>{{ o.contact }}</td>
+                <td>
+                    <a href="{{ path('supplier_offer_show', {id: o.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Automatisations IA - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Automatisations IA</h1>
+    <p class="breadcrumb">Espace de Travail > Automatisations IA</p>
+</div>
+
+<div class="auto-layout">
+
+    <aside class="auto-sidebar">
+
+        <h3>Créer une règle</h3>
+        <button class="btn">Nouvelle automatisation</button>
+
+        <h3>Modèles IA</h3>
+        <button class="btn-outline">Classer automatiquement les documents</button>
+        <button class="btn-outline">Créer des tâches depuis mes fichiers</button>
+        <button class="btn-outline">Envoyer un rappel intelligent</button>
+        <button class="btn-outline">Analyser mes projets chaque matin</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Interface simplifiée</label><br>
+        <label><input type="checkbox"> Mode contraste élevé</label>
+
+    </aside>
+
+    <section class="auto-main">
+
+        <h2>Mes automatisations</h2>
+
+        <ul class="auto-list">
+            {% for a in autos %}
+                <li class="auto-item">
+                    <div>
+                        <strong>{{ a.title }}</strong>
+                        <p>{{ a.description }}</p>
+                    </div>
+                    <span class="auto-status {{ a.active ? 'active' : 'inactive' }}">
+                        {{ a.active ? 'Active' : 'Inactive' }}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </section>
+
+</div>
+
+{% endblock %}

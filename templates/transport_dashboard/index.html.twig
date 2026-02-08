@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Dashboard Transport MIDDO</h1>
+
+<hr>
+
+<h2>📦 Livraisons récentes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Commande</th>
+            <th>Départ</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>Suivi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in deliveries %}
+            <tr>
+                <td>{{ d.id }}</td>
+                <td>#{{ d.order.id }}</td>
+                <td>{{ d.pickupLocation }}</td>
+                <td>{{ d.dropLocation }}</td>
+                <td>{{ d.status }}</td>
+                <td>
+                    <a href="/track/{{ d.publicTrackingCode }}" class="btn btn-sm btn-info">
+                        Voir suivi
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>🚚 Segments en transit</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Segment</th>
+            <th>De</th>
+            <th>À</th>
+            <th>Mode</th>
+            <th>Prix</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in activeSegments %}
+            <tr>
+                <td>#{{ s.id }}</td>
+                <td>{{ s.fromLocation }}</td>
+                <td>{{ s.toLocation }}</td>
+                <td>{{ s.mode }}</td>
+                <td>{{ s.segmentPrice }} €</td>
+                <td>{{ s.status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>⚠️ Segments bloqués</h2>
+<table class="table table-danger">
+    <thead>
+        <tr>
+            <th>Segment</th>
+            <th>De</th>
+            <th>À</th>
+            <th>Mode</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in blockedSegments %}
+            <tr>
+                <td>#{{ s.id }}</td>
+                <td>{{ s.fromLocation }}</td>
+                <td>{{ s.toLocation }}</td>
+                <td>{{ s.mode }}</td>
+                <td>{{ s.status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>🧍 Transporteurs disponibles</h2>
+<ul>
+    {% for d in availableDrivers %}
+        <li>{{ d.name }} — {{ d.vehicleType }} — {{ d.phone }}</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>💰 Paiements transport</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Montant</th>
+            <th>Description</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transportPayments %}
+            <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.amount }} €</td>
+                <td>{{ t.description }}</td>
+                <td>{{ t.createdAt|date('d/m/Y H:i') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

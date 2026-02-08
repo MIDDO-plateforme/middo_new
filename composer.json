@@ -10,13 +10,12 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
-
-        "doctrine/orm": "^3.6",
-        "doctrine/doctrine-bundle": "^2.18",
         "doctrine/dbal": "^4.2",
-        "doctrine/persistence": "^3.4",
+        "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.7",
-
+        "doctrine/orm": "^3.6",
+        "doctrine/persistence": "^3.4",
+        "dompdf/dompdf": "^3.1",
         "elasticsearch/elasticsearch": "^8.0",
         "friendsofsymfony/elastica-bundle": "^7.0",
         "guzzlehttp/guzzle": "^7.10",
@@ -28,8 +27,7 @@
         "phpstan/phpdoc-parser": "^2.3",
         "predis/predis": "^3.3",
         "sensio/framework-extra-bundle": "^6.2",
-        "stripe/stripe-php": "^19.1",
-
+        "stripe/stripe-php": "^19.3",
         "symfony/asset": "6.4.*",
         "symfony/cache": "6.4.*",
         "symfony/console": "6.4.*",
@@ -57,7 +55,6 @@
         "symfony/uid": "6.4.*",
         "symfony/validator": "6.4.*",
         "symfony/yaml": "6.4.*",
-
         "tecnickcom/tcpdf": "^6.10",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"

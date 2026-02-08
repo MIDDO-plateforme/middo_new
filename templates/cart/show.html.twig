@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Mon panier</h1>
+
+<div class="mdo-card">
+
+    {% if items is empty %}
+        <p>Votre panier est vide.</p>
+    {% else %}
+
+        <table class="mdo-table">
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        <a href="{{ path('cart_decrease', {id: item.product.id}) }}">-</a>
+                        {{ item.quantity }}
+                        <a href="{{ path('cart_add', {id: item.product.id}) }}">+</a>
+                    </td>
+                    <td>{{ item.total }} €</td>
+                    <td>
+                        <a class="mdo-btn" href="{{ path('cart_remove', {id: item.product.id}) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Total : {{ total }} €</h3>
+
+        <a class="mdo-btn" href="{{ path('cart_clear') }}">Vider le panier</a>
+        <a class="mdo-btn" href="{{ path('order_checkout') }}">Passer la commande</a>
+
+    {% endif %}
+
+</div>
+{% endblock %}

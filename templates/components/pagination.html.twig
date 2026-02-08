@@ -1,0 +1,5 @@
+<div class="pagination">
+    {% for i in 1..total %}
+        <a href="?page={{ i }}" class="{{ i == current ? 'active' : '' }}">{{ i }}</a>
+    {% endfor %}
+</div>

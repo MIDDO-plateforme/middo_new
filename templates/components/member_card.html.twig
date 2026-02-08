@@ -1,0 +1,22 @@
+<div class="member-card">
+
+    <div class="avatar">{{ member.initials }}</div>
+
+    <h3>{{ member.name }}</h3>
+    <p class="role">{{ member.role }}</p>
+    <p class="location">{{ member.location }}</p>
+
+    <div class="skills">
+        {% for skill in member.skills %}
+            <span class="skill">{{ skill }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="rating">⭐ {{ member.rating }}</div>
+
+    <div class="actions">
+        <a href="/annuaire/profil/{{ member.id }}" class="btn">Voir profil</a>
+        <a href="/annuaire/contact/{{ member.id }}" class="btn-outline">Contacter</a>
+    </div>
+
+</div>

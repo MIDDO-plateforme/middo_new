@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="display:flex;min-height:80vh;">
+
+    {# Sidebar cockpit réutilisée #}
+    {% include 'cockpit/_sidebar.html.twig' %}
+
+    <div style="flex:1;padding:2rem;">
+        <h1>Dashboard global — MIDDO</h1>
+        <p style="opacity:0.7;">Vue d’ensemble de toutes les opérations</p>
+
+        <hr style="margin:1.5rem 0;">
+
+        {# Statistiques globales #}
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:1.5rem;
+        ">
+            <div class="stats-card">
+                <h3>Transporteurs actifs</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.activeTransporters }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Segments actifs</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.activeSegments }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Alertes globales</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.activeAlerts }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Santé globale</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.globalHealth }}%</p>
+            </div>
+        </div>
+
+        <hr style="margin:2rem 0;">
+
+        {# Alertes globales #}
+        {% include 'cockpit/_live_updates.html.twig' %}
+        <script src="/js/mercure.js"></script>
+    </div>
+</div>
+{% endblock %}

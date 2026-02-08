@@ -1,0 +1,52 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}IA Drive - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>IA Drive</h1>
+    <p class="breadcrumb">Dashboard > IA Drive</p>
+</div>
+
+<div class="drive-container">
+
+    <h2>Fichiers analysés par l’IA</h2>
+
+    <div class="drive-files">
+        {% for file in files %}
+            <div class="drive-file-box">
+
+                <h3>{{ file.name }}</h3>
+
+                <p><strong>Type :</strong> {{ file.type }}</p>
+                <p><strong>Taille :</strong> {{ file.size }}</p>
+
+                <h4>Tags IA</h4>
+                <ul>
+                    {% for tag in file.tags %}
+                        <li>{{ tag }}</li>
+                    {% else %}
+                        <li>Aucun tag détecté</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Analyse IA</h4>
+                <p>{{ file.ia_notes }}</p>
+
+            </div>
+        {% else %}
+            <p>Aucun fichier analysé pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    <h2>Uploader un fichier</h2>
+
+    <form action="{{ path('drive_upload') }}" method="POST" enctype="multipart/form-data" class="drive-upload-form">
+        <input type="file" name="file" required>
+        <button type="submit" class="btn-primary">Analyser avec l’IA</button>
+    </form>
+
+</div>
+
+{% endblock %}

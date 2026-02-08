@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Recommandations IA — {{ profile.name }}</h1>
+
+<div class="mdo-grid" style="margin-top:1.5rem;">
+
+    {# --- MATCHS --- #}
+    <div class="mdo-card">
+        <h3>Meilleurs matchs</h3>
+        <ul class="mdo-list">
+            {% for item in data.top_matches %}
+                <li>
+                    {{ item.profile.name }} — <strong>{{ item.score }}/100</strong>
+                </li>
+            {% else %}
+                <li>Aucun match pour le moment.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# --- COMPÉTENCES SUGGÉRÉES --- #}
+    <div class="mdo-card">
+        <h3>Compétences suggérées</h3>
+        <ul class="mdo-list">
+            {% for s in data.suggested_capabilities %}
+                <li>{{ s }}</li>
+            {% else %}
+                <li>Aucune suggestion.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# --- BESOINS SUGGÉRÉS --- #}
+    <div class="mdo-card">
+        <h3>Besoins suggérés</h3>
+        <ul class="mdo-list">
+            {% for s in data.suggested_needs %}
+                <li>{{ s }}</li>
+            {% else %}
+                <li>Aucun besoin suggéré.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# --- OPPORTUNITÉS LOCALES --- #}
+    <div class="mdo-card">
+        <h3>Opportunités locales</h3>
+        <ul class="mdo-list">
+            {% for item in data.local_opportunities %}
+                <li>{{ item.profile.name }} — {{ item.score }}/100</li>
+            {% else %}
+                <li>Aucune opportunité locale.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# --- OPPORTUNITÉS À DISTANCE --- #}
+    <div class="mdo-card">
+        <h3>Opportunités à distance</h3>
+        <ul class="mdo-list">
+            {% for item in data.remote_opportunities %}
+                <li>{{ item.profile.name }} — {{ item.score }}/100</li>
+            {% else %}
+                <li>Aucune opportunité à distance.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,4 +1,6 @@
 security:
+    enable_authenticator_manager: true
+
     password_hashers:
         App\Entity\User:
             algorithm: auto
@@ -32,16 +34,54 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
+        main:
+            pattern: ^/
+            provider: app_user_provider
+            lazy: true
+            form_login:
+                login_path: app_login
+                check_path: app_login
+            logout:
+                path: app_logout
+                target: /login
+
     role_hierarchy:
         ROLE_MANAGER: ROLE_USER
         ROLE_ADMIN: ROLE_MANAGER
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
+        ROLE_STAFF: ROLE_USER
+        ROLE_ONG: ROLE_USER
+        ROLE_CLINIQUE: ROLE_USER
+
+        ROLE_OPERATOR: ROLE_STAFF
+        ROLE_DRIVER: ROLE_USER
+        ROLE_SUPPLIER: ROLE_USER
+        ROLE_INSPECTOR: ROLE_USER
+
     access_control:
-        - { path: ^/api/test, roles: PUBLIC_ACCESS }
+        # Public API endpoints
+        - { path: ^/api/ping, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/projects/public, roles: PUBLIC_ACCESS }
         - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
+
+        # Protected API endpoints
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+        # Web access control
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/staff, roles: ROLE_STAFF }
+        - { path: ^/ong, roles: ROLE_ONG }
+        - { path: ^/clinique, roles: ROLE_CLINIQUE }
+
+        - { path: ^/cockpit, roles: ROLE_OPERATOR }
+        - { path: ^/dashboard, roles: ROLE_OPERATOR }
+        - { path: ^/transport, roles: ROLE_OPERATOR }
+        - { path: ^/bank, roles: ROLE_OPERATOR }
+        - { path: ^/legal, roles: ROLE_OPERATOR }
+
+        # Default: public
+        - { path: ^/, roles: PUBLIC_ACCESS }

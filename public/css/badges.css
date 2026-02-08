@@ -1,0 +1,55 @@
+/* -----------------------------------------
+   MIDDO – BADGES PREMIUM
+   Version 1.0
+------------------------------------------*/
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    margin-left: 8px;
+}
+
+/* BADGES DE STATUT */
+.badge-ok {
+    background: #2ecc71;
+}
+
+.badge-warning {
+    background: #f39c12;
+}
+
+.badge-danger {
+    background: #e74c3c;
+}
+
+.badge-info {
+    background: #3498db;
+}
+
+/* BADGES DE RISQUE */
+.badge-risk-low {
+    background: #27ae60;
+}
+
+.badge-risk-medium {
+    background: #f1c40f;
+    color: #333;
+}
+
+.badge-risk-high {
+    background: #c0392b;
+}
+
+/* BADGES DE PROJET */
+.badge-progress {
+    background: #8e44ad;
+}
+
+/* BADGES DE MODULE */
+.badge-module {
+    background: var(--primary);
+}

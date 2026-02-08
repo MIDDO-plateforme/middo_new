@@ -3,81 +3,78 @@
 namespace App\Form;
 
 use App\Entity\Project;
-use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class ProjectType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nom du projet',
+            ->add('title', TextType::class, [
+                'label' => 'Titre du projet',
                 'attr' => [
-                    'placeholder' => 'Ex: Site web e-commerce',
+                    'placeholder' => 'Ex: Plateforme e-commerce textile',
+                    'maxlength' => 255,
                     'class' => 'form-control'
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'Le nom du projet est obligatoire'])
+                    new NotBlank(['message' => 'Le titre est obligatoire']),
+                    new Length([
+                        'max' => 255,
+                        'maxMessage' => 'Le titre ne peut pas dépasser {{ limit }} caractères'
+                    ])
                 ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'Description détaillée',
+                'attr' => [
+                    'placeholder' => 'Décrivez votre projet, vos objectifs, votre vision...',
+                    'rows' => 6,
+                    'class' => 'form-control'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'La description est obligatoire'])
+                ]
+            ])
+            ->add('budget', NumberType::class, [
+                'label' => 'Budget estimé (FCFA)',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Décrivez votre projet...',
+                    'placeholder' => 'Ex: 500000',
                     'class' => 'form-control',
-                    'rows' => 5
+                    'min' => 0,
+                    'step' => 1000
+                ],
+                'html5' => true,
+                'constraints' => [
+                    new PositiveOrZero(['message' => 'Le budget doit être positif ou zéro'])
                 ]
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Statut',
+                'label' => 'Statut du projet',
                 'choices' => [
-                    'Brouillon' => 'draft',
-                    'En cours' => 'in_progress',
-                    'Terminé' => 'completed',
-                    'Archivé' => 'archived'
+                    'En préparation' => 'En préparation',
+                    'En recherche de financement' => 'En recherche de financement',
+                    'En cours' => 'En cours',
+                    'Terminé' => 'Terminé',
+                    'En pause' => 'En pause',
+                    'Abandonné' => 'Abandonné'
                 ],
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('budget', MoneyType::class, [
-                'label' => 'Budget',
-                'required' => false,
-                'currency' => 'EUR',
                 'attr' => [
-                    'placeholder' => '0.00',
-                    'class' => 'form-control'
-                ]
-            ])
-            ->add('startDate', DateType::class, [
-                'label' => 'Date de début',
-                'required' => false,
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('endDate', DateType::class, [
-                'label' => 'Date de fin',
-                'required' => false,
-                'widget' => 'single_text',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('members', EntityType::class, [
-                'label' => 'Membres de l\'équipe',
-                'class' => User::class,
-                'choice_label' => 'email',
-                'multiple' => true,
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control select2-multiple'
+                    'class' => 'form-select'
+                ],
+                'placeholder' => '-- Choisir un statut --',
+                'constraints' => [
+                    new NotBlank(['message' => 'Le statut est obligatoire'])
                 ]
             ])
         ;

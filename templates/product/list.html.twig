@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Centre d’Achat</h1>
+
+<div class="mdo-card" style="margin-bottom:1rem;">
+    <a class="mdo-btn" href="{{ path('product_new') }}">Ajouter un produit</a>
+</div>
+
+<div class="mdo-grid">
+    {% for p in products %}
+        <div class="mdo-card">
+            <h3>{{ p.name }}</h3>
+            <p>{{ p.description|slice(0, 120) }}…</p>
+            <strong>{{ p.price }} €</strong><br>
+            <a class="mdo-btn" href="{{ path('product_show', {id: p.id}) }}">Voir</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

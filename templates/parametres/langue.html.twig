@@ -1,0 +1,53 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Langue & Région - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Langue & Région</h1>
+    <p class="breadcrumb">Paramètres > Langue & Région</p>
+</div>
+
+<div class="lang-layout">
+
+    <section class="lang-box">
+
+        <h2>Langue de l’interface</h2>
+        <select class="input">
+            <option>Français</option>
+            <option>Anglais</option>
+            <option>Espagnol</option>
+            <option>Arabe</option>
+            <option>Chinois</option>
+            <option>Swahili</option>
+            <option>Lingala</option>
+            <option>Wolof</option>
+            <option>Peul</option>
+            <option>Créole</option>
+            <option>… toutes les langues</option>
+        </select>
+
+        <h2>Traduction automatique</h2>
+        <label><input type="checkbox" checked> Traduire automatiquement les documents</label><br>
+        <label><input type="checkbox" checked> Traduire les tâches et les projets</label><br>
+        <label><input type="checkbox" checked> Détecter la langue automatiquement</label><br>
+        <label><input type="checkbox"> Mode dialectes & langues locales</label>
+
+        <h2>Région & Format</h2>
+        <select class="input">
+            <option>France</option>
+            <option>Congo RDC</option>
+            <option>Côte d’Ivoire</option>
+            <option>Sénégal</option>
+            <option>Maroc</option>
+            <option>Canada</option>
+            <option>États-Unis</option>
+            <option>… tous les pays</option>
+        </select>
+
+    </section>
+
+</div>
+
+{% endblock %}

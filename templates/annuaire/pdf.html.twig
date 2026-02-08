@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; padding: 20px; }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        h2 { font-size: 18px; margin-top: 20px; }
+        .section { margin-bottom: 20px; }
+        .alert { padding: 8px; border-radius: 5px; margin-bottom: 5px; }
+        .alert-danger { background: #fee2e2; }
+        .alert-warning { background: #fef3c7; }
+        .alert-info { background: #dbeafe; }
+        .qr { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Profil — {{ profile.name }}</h1>
+
+<div class="section">
+    <strong>Type :</strong> {{ profile.type }}<br>
+    <strong>Description :</strong><br>
+    {{ profile.description ?: 'Aucune description.' }}
+</div>
+
+<h2>Alertes IA</h2>
+{% for alert in alerts %}
+    <div class="alert alert-{{ alert.type }}">
+        {{ alert.message }}
+    </div>
+{% else %}
+    <p>Aucune alerte.</p>
+{% endfor %}
+
+<h2>Matchs IA</h2>
+{% for item in matches %}
+    <p>{{ item.profile.name }} — {{ item.score }}/100</p>
+{% else %}
+    <p>Aucun match.</p>
+{% endfor %}
+
+<h2>Recommandations IA</h2>
+<ul>
+    {% for s in recommendations.suggested_capabilities %}
+        <li>Compétence suggérée : {{ s }}</li>
+    {% endfor %}
+    {% for s in recommendations.suggested_needs %}
+        <li>Besoin suggéré : {{ s }}</li>
+    {% endfor %}
+</ul>
+
+<div class="qr">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ url('annuaire_show', {id: profile.id}) }}" alt="QR Code">
+</div>
+
+</body>
+</html>

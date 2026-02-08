@@ -1,0 +1,31 @@
+<div class="project-card">
+
+    <h3>{{ p.title }}</h3>
+
+    <p class="project-desc">{{ p.description }}</p>
+
+    <div class="project-meta">
+        <span class="project-date">📅 {{ p.deadline }}</span>
+        <span class="project-priority priority-{{ p.priority|lower }}">
+            {{ p.priority }}
+        </span>
+    </div>
+
+    <div class="project-tags">
+        {% for tag in p.tags %}
+            <span class="tag">{{ tag }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="project-members">
+        {% for m in p.members %}
+            <span class="member-avatar">{{ m }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="actions">
+        <a href="/projets/{{ p.id }}" class="btn">Voir</a>
+        <a href="/projets/{{ p.id }}/edit" class="btn-outline">Modifier</a>
+    </div>
+
+</div>

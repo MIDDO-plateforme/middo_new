@@ -1,0 +1,39 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Documents intelligents - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Documents intelligents</h1>
+    <p class="breadcrumb">Espace de Travail > Documents intelligents</p>
+</div>
+
+<div class="doc-actions">
+    <button class="btn">📷 Scanner un document</button>
+    <button class="btn-outline">📄 Importer un fichier</button>
+    <button class="btn-outline">🧠 Analyse IA</button>
+</div>
+
+<div class="doc-grid">
+
+    {% for doc in documents %}
+        <div class="doc-card">
+            <h3>{{ doc.title }}</h3>
+            <p>{{ doc.summary }}</p>
+
+            <div class="doc-meta">
+                <span>📅 {{ doc.date }}</span>
+                <span>📁 {{ doc.folder }}</span>
+            </div>
+
+            <div class="actions">
+                <a href="/travail/documents/{{ doc.id }}" class="btn">Ouvrir</a>
+                <a href="/travail/documents/{{ doc.id }}/ia" class="btn-outline">IA</a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

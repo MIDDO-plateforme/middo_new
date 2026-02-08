@@ -1,0 +1,59 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Annuaire MIDDO</h1>
+
+<form method="get" class="mb-4">
+    <input type="text" name="q" placeholder="Rechercher..." value="{{ app.request.get('q') }}">
+
+    <select name="type">
+        <option value="">Tous les types</option>
+        <option value="particulier">Particulier</option>
+        <option value="entreprise">Entreprise</option>
+        <option value="association">Association</option>
+        <option value="institution">Institution</option>
+        <option value="artisan">Artisan</option>
+        <option value="independant">Indépendant</option>
+    </select>
+
+    <select name="capability">
+        <option value="">Compétences</option>
+        {% for cap in capabilities %}
+            <option value="{{ cap.id }}">{{ cap.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="need">
+        <option value="">Besoins</option>
+        {% for n in needs %}
+            <option value="{{ n.id }}">{{ n.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filtrer</button>
+</form>
+
+<div class="mdo-grid">
+    {% for p in profiles %}
+        <div class="mdo-card">
+            <div class="mdo-card-header">
+                <h3>{{ p.name }}</h3>
+                <span class="mdo-tag">{{ p.type }}</span>
+            </div>
+
+            {% if p.isSensitive %}
+                <div class="mdo-badges">
+                    <span class="mdo-tag mdo-badge-danger">Profil protégé</span>
+                </div>
+            {% endif %}
+
+            <a class="mdo-btn" href="{{ path('annuaire_show', {id: p.id}) }}">
+                Voir le profil
+            </a>
+        </div>
+    {% else %}
+        <p>Aucun profil trouvé.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

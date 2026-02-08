@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Your MIDDO Virtual Card</h1>
+
+<div style="
+    width: 350px;
+    height: 200px;
+    background: linear-gradient(135deg, #4b79a1, #283e51);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+">
+    <h2 style="margin: 0;">MIDDO BANK</h2>
+
+    <p style="margin-top: 40px; font-size: 20px;">
+        {{ cardNumber }}
+    </p>
+
+    <p style="margin-top: 20px;">
+        <strong>Balance:</strong> {{ balance }} €
+    </p>
+
+    <p>
+        <strong>Blocked:</strong> {{ blocked }} €
+    </p>
+
+    <p>
+        <strong>Available:</strong> {{ available }} €
+    </p>
+</div>
+
+<a href="{{ path('banque_dashboard') }}" class="btn btn-secondary mt-4">Back to Bank</a>
+{% endblock %}

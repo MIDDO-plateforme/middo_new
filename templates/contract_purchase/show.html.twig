@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Contrat #{{ contract.id }}</h1>
+
+<p><strong>Commande :</strong> #{{ contract.order.id }}</p>
+<p><strong>Status :</strong> {{ contract.status }}</p>
+<p><strong>Créé le :</strong> {{ contract.createdAt|date('d/m/Y H:i') }}</p>
+
+<h3 class="mt-4">Conditions</h3>
+<pre style="white-space: pre-wrap;">{{ contract.terms }}</pre>
+
+<a href="{{ path('contract_purchase_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

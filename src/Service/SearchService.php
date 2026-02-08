@@ -52,7 +52,7 @@ class SearchService
         $results['total'] = count($results['items']);
         $results['totalPages'] = (int) ceil($results['total'] / $limit);
 
-        // Limiter les resultats pour la pagination
+        // Limiter les résultats pour la pagination
         $offset = ($page - 1) * $limit;
         $results['items'] = array_slice($results['items'], $offset, $limit);
 
@@ -76,13 +76,13 @@ class SearchService
         foreach ($projects as $project) {
             $owner = $project->getOwner();
             $ownerName = $owner ? $owner->getFirstName() . ' ' . $owner->getLastName() : 'Anonyme';
-
+            
             $results[] = [
                 'name' => $project->getTitle(),
                 'type' => 'project',
                 'description' => $project->getDescription() ?? 'Aucune description',
                 'category' => 'Projet',
-                'location' => 'Cree par ' . $ownerName,
+                'location' => 'Créé par ' . $ownerName,
                 'date' => $project->getCreatedAt(),
                 'url' => '/project/' . $project->getId(),
             ];
@@ -119,22 +119,5 @@ class SearchService
         }
 
         return $results;
-    }
-
-    /**
-     * Verifie la disponibilite du service de recherche (Elasticsearch/Database)
-     * Pour le moment, retourne toujours true car on utilise Doctrine ORM
-     * 
-     * @return bool
-     */
-    public function isElasticsearchAvailable(): bool
-    {
-        try {
-            // Test simple: essayer de creer un QueryBuilder
-            $this->projectRepository->createQueryBuilder('p');
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
     }
 }

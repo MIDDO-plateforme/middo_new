@@ -1,0 +1,35 @@
+{# ============================================================
+   FICHIER : templates/cockpit/_live_updates.html.twig
+   Flux des mises à jour en temps réel (alertes Mercure)
+   ============================================================ #}
+
+<div style="margin-top:2rem;">
+    <h2>Mises à jour en temps réel</h2>
+    <p style="opacity:0.7;">Alertes, événements et notifications système</p>
+
+    <div id="events" style="
+        margin-top:1rem;
+        display:flex;
+        flex-direction:column;
+        gap:0.75rem;
+    ">
+        {# Affichage initial des alertes existantes #}
+        {% for alert in alerts %}
+            <div style="
+                background:white;
+                padding:0.75rem 1rem;
+                border-left:4px solid
+                    {% if alert.severity == 'critical' %}red
+                    {% elseif alert.severity == 'warning' %}orange
+                    {% else %}#3498db
+                    {% endif %};
+                border-radius:6px;
+                box-shadow:0 2px 6px rgba(0,0,0,0.06);
+            ">
+                <strong>{{ alert.type }}</strong><br>
+                <span style="opacity:0.8;">{{ alert.message }}</span><br>
+                <small style="opacity:0.6;">{{ alert.createdAt|date('d/m/Y H:i') }}</small>
+            </div>
+        {% endfor %}
+    </div>
+</div>

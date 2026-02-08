@@ -1,0 +1,49 @@
+{# ============================================================
+   FICHIER : templates/cockpit/_sidebar.html.twig
+   Sidebar cockpit MIDDO
+   ============================================================ #}
+
+<aside class="sidebar" style="
+    width:260px;
+    background:#ffffff;
+    border-right:1px solid #e5e5e5;
+    padding:1.5rem 1rem;
+    display:flex;
+    flex-direction:column;
+    gap:2rem;
+    position:sticky;
+    top:4rem;
+    height:calc(100vh - 4rem);
+">
+
+    {# Header de la sidebar #}
+    <div class="sidebar-header" style="text-align:center;">
+        <h2 style="margin:0;font-size:1.4rem;font-weight:700;color:#333;">
+            Cockpit
+        </h2>
+        <p style="margin:0;margin-top:0.25rem;font-size:0.85rem;color:#777;">
+            Vue d’ensemble
+        </p>
+    </div>
+
+    {# Menu réutilisable #}
+    <nav class="sidebar-menu" style="flex:1;overflow-y:auto;">
+        {% include 'components/_menu.html.twig' %}
+    </nav>
+
+    {# Footer de la sidebar #}
+    <div class="sidebar-footer" style="border-top:1px solid #eee;padding-top:1rem;">
+        <a href="/parametres" class="sidebar-settings" style="
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+            text-decoration:none;
+            color:#444;
+            font-size:0.9rem;
+        ">
+            <span class="menu-icon">⚙️</span>
+            <span class="menu-label">Paramètres</span>
+        </a>
+    </div>
+
+</aside>

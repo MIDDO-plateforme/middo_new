@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Commandes Groupées</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Fournisseur</th>
+            <th>Prix total</th>
+            <th>Status</th>
+            <th>Créée le</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in orders %}
+            <tr>
+                <td>{{ o.group.productName }}</td>
+                <td>{{ o.group.totalQuantity }}</td>
+                <td>{{ o.offer.supplierName }}</td>
+                <td>{{ o.totalPrice }} €</td>
+                <td>{{ o.status }}</td>
+                <td>{{ o.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('purchase_order_show', {id: o.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

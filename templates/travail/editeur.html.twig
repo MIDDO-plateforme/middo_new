@@ -1,0 +1,58 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Éditeur de texte - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Éditeur de texte</h1>
+    <p class="breadcrumb">Espace de Travail > Éditeur de texte</p>
+</div>
+
+<div class="editor-layout">
+
+    <aside class="editor-sidebar">
+
+        <h3>Fichier</h3>
+        <button class="btn">Nouveau document</button>
+        <button class="btn-outline">Importer Word</button>
+        <button class="btn-outline">Exporter PDF</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Améliorer le texte</button>
+        <button class="btn-outline">Résumer</button>
+        <button class="btn-outline">Traduire</button>
+        <button class="btn-outline">Simplifier</button>
+        <button class="btn-outline">Corriger</button>
+        <button class="btn-outline">Générer un modèle</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode contraste élevé</label><br>
+        <label><input type="checkbox"> Police adaptée</label><br>
+        <label><input type="checkbox"> Dictée vocale</label>
+
+    </aside>
+
+    <section class="editor-main">
+
+        <div class="editor-toolbar">
+            <button><b>B</b></button>
+            <button><i>I</i></button>
+            <button><u>U</u></button>
+            <button>H1</button>
+            <button>H2</button>
+            <button>• Liste</button>
+            <button>1. Liste</button>
+            <button>Aligner</button>
+        </div>
+
+        <div class="editor-area" contenteditable="true">
+            {{ content|default('Commencez à écrire ici…') }}
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

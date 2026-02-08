@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('build/intro.css') }}">
@@ -19,7 +19,7 @@
     </script>
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
 <div id="intro-screen">
     <div class="world-map"></div>
     <div class="connections"></div>

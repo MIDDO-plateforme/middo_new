@@ -1,0 +1,28 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Résultat Upload - IA Drive{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Analyse IA du fichier</h1>
+    <p class="breadcrumb">Dashboard > IA Drive > Résultat</p>
+</div>
+
+<div class="drive-result-container">
+
+    <h2>Fichier reçu</h2>
+    <div class="drive-box">
+        <p>{{ filename }}</p>
+    </div>
+
+    <h2>Analyse IA</h2>
+    <div class="drive-box">
+        <p>{{ ia_result }}</p>
+    </div>
+
+    <a href="{{ path('drive_index') }}" class="btn-secondary">Retour</a>
+
+</div>
+
+{% endblock %}

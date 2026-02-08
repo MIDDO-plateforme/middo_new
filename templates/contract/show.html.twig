@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Contract #{{ contract.id }}</h1>
+
+<p><strong>Title:</strong> {{ contract.title }}</p>
+<p><strong>Description:</strong> {{ contract.description }}</p>
+<p><strong>Amount:</strong> {{ contract.amount }} €</p>
+<p><strong>Status:</strong> {{ contract.status }}</p>
+<p><strong>Created:</strong> {{ contract.createdAt|date('d/m/Y') }}</p>
+
+<a href="{{ path('contract_index') }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

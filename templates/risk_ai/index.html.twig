@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>IA Risk Analyzer — Analyse des risques</h1>
+
+<div class="mdo-grid">
+
+    <div class="mdo-card">
+        <h3>Ruptures potentielles</h3>
+        <ul>
+            {% for r in data.lowStock %}
+                <li>{{ r.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Fournisseurs instables</h3>
+        <ul>
+            {% for r in data.supplierInstability %}
+                <li>{{ r.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Anomalies de commandes</h3>
+        <ul>
+            {% for r in data.orderAnomalies %}
+                <li>{{ r.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Dépendances critiques</h3>
+        <ul>
+            {% for r in data.criticalDependencies %}
+                <li>{{ r.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

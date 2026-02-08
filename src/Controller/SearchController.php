@@ -1,229 +1,149 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller;
 
 use App\Service\SearchService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/search')]
-#[IsGranted('ROLE_USER')]
 class SearchController extends AbstractController
 {
-    public function __construct(
-        private readonly SearchService $searchService,
-        private readonly LoggerInterface $logger,
-        private readonly RateLimiterFactory $apiSearchLimiter  // ✅ NOM CORRIGÉ (searchLimiterLimiter → apiSearchLimiter)
-    ) {}
+    private SearchService $searchService;
 
-    #[Route('', name: 'search_index', methods: ['GET', 'POST'])]
+    public function __construct(SearchService $searchService)
+    {
+        $this->searchService = $searchService;
+    }
+
+    /**
+     * Page de recherche principale
+     */
+    #[Route('', name: 'app_search_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-        $limiter = $this->apiSearchLimiter->create($request->getClientIp());  // ✅ CORRIGÉ
-        
-        if (!$limiter->consume(1)->isAccepted()) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Trop de requêtes. Veuillez patienter.'
-            ], 429);
-        }
-
-        $query = $request->get('q', '');
-        $page = max(1, (int) $request->get('page', 1));
-        $limit = min(50, max(10, (int) $request->get('limit', 20)));
-
-        if (empty($query)) {
-            return $this->render('search/index.html.twig', [
-                'query' => '',
-                'results' => [],
-                'total' => 0,
-                'page' => 1,
-                'limit' => $limit
-            ]);
-        }
-
-        try {
-            $results = $this->searchService->search(
-                $query,
-                $this->getUser(),
-                $page,
-                $limit
-            );
-
-            if ($request->isXmlHttpRequest() || $request->getContentType() === 'json') {
-                return $this->json([
-                    'success' => true,
-                    'results' => $results['results'],
-                    'total' => $results['total'],
-                    'page' => $page,
-                    'limit' => $limit
-                ]);
-            }
-
-            return $this->render('search/index.html.twig', [
-                'query' => $query,
-                'results' => $results['results'],
-                'total' => $results['total'],
-                'page' => $page,
-                'limit' => $limit
-            ]);
-
-        } catch (\Exception $e) {
-            $this->logger->error('Search error', [
-                'query' => $query,
-                'error' => $e->getMessage()
-            ]);
-
-            if ($request->isXmlHttpRequest() || $request->getContentType() === 'json') {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'Erreur lors de la recherche'
-                ], 500);
-            }
-
-            $this->addFlash('error', 'Une erreur est survenue lors de la recherche.');
-            
-            return $this->render('search/index.html.twig', [
-                'query' => $query,
-                'results' => [],
-                'total' => 0,
-                'page' => 1,
-                'limit' => $limit
-            ]);
-        }
+        return $this->render('search/index.html.twig', [
+            'query' => $request->query->get('q', ''),
+        ]);
     }
 
-    #[Route('/api', name: 'search_api', methods: ['GET', 'POST'])]
+    /**
+     * Page des résultats de recherche
+     */
+    #[Route('/results', name: 'search_results', methods: ['GET'])]
+    public function results(Request $request): Response
+    {
+        $query = $request->query->get('q', '');
+        $page = max(1, (int) $request->query->get('page', 1));
+        
+        // Préparer les filtres
+        $filters = [
+            'type' => $request->query->get('type', ''),
+            'category' => $request->query->get('category', ''),
+            'location' => $request->query->get('location', ''),
+            'sort' => $request->query->get('sort', 'relevance'),
+            'date_range' => $request->query->get('date_range', ''),
+        ];
+
+        // Utiliser le SearchService pour obtenir les vrais résultats
+        $results = $this->searchService->search($query, $filters, $page, 20);
+
+        return $this->render('search/results.html.twig', [
+            'results' => $results,
+        ]);
+    }
+
+    /**
+     * Page de recherche avancée avec filtres
+     */
+    #[Route('/advanced', name: 'app_search_advanced', methods: ['GET'])]
+    public function advanced(): Response
+    {
+        return $this->render('search/advanced.html.twig', [
+            'filters' => $this->getAvailableFilters(),
+        ]);
+    }
+
+    /**
+     * API de recherche AJAX
+     */
+    #[Route('/api', name: 'app_search_api', methods: ['POST'])]
     public function api(Request $request): JsonResponse
     {
-        $limiter = $this->apiSearchLimiter->create($request->getClientIp());  // ✅ CORRIGÉ
-        
-        if (!$limiter->consume(1)->isAccepted()) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Rate limit exceeded'
-            ], 429);
-        }
+        $data = json_decode($request->getContent(), true);
 
-        $query = $request->get('q', '');
-        
-        if (empty($query)) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Query parameter is required'
-            ], 400);
-        }
+        $query = $data['query'] ?? '';
+        $filters = $data['filters'] ?? [];
+        $page = $data['page'] ?? 1;
 
-        $page = max(1, (int) $request->get('page', 1));
-        $limit = min(50, max(10, (int) $request->get('limit', 20)));
+        $results = $this->searchService->search($query, $filters, $page, 20);
 
-        try {
-            $results = $this->searchService->search(
-                $query,
-                $this->getUser(),
-                $page,
-                $limit
-            );
-
-            return $this->json([
-                'success' => true,
-                'results' => $results['results'],
-                'total' => $results['total'],
-                'page' => $page,
-                'limit' => $limit,
-                'has_more' => ($page * $limit) < $results['total']
-            ]);
-
-        } catch (\Exception $e) {
-            $this->logger->error('API Search error', [
-                'query' => $query,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return $this->json([
-                'success' => false,
-                'error' => 'Search service temporarily unavailable'
-            ], 500);
-        }
+        return $this->json($results);
     }
 
-    #[Route('/health', name: 'search_health', methods: ['GET'])]
-    public function health(): JsonResponse
+    /**
+     * Autocomplete pour suggestions temps réel
+     */
+    #[Route('/autocomplete', name: 'app_search_autocomplete', methods: ['GET'])]
+    public function autocomplete(Request $request): JsonResponse
     {
-        try {
-            $status = $this->searchService->healthCheck();
-            
-            return $this->json([
-                'success' => true,
-                'status' => $status,
-                'timestamp' => time()
-            ]);
+        $term = $request->query->get('term', '');
 
-        } catch (\Exception $e) {
-            $this->logger->error('Search health check failed', [
-                'error' => $e->getMessage()
-            ]);
-
-            return $this->json([
-                'success' => false,
-                'status' => 'unavailable',
-                'timestamp' => time()
-            ], 503);
+        if (strlen($term) < 2) {
+            return $this->json([]);
         }
+
+        // Recherche rapide pour autocomplete
+        $results = $this->searchService->search($term, [], 1, 5);
+        
+        $suggestions = [];
+        foreach ($results['items'] as $item) {
+            $suggestions[] = [
+                'label' => $item['name'],
+                'value' => $item['name'],
+                'type' => $item['type'],
+            ];
+        }
+
+        return $this->json($suggestions);
     }
 
-    #[Route('/suggest', name: 'search_suggest', methods: ['GET'])]
-    public function suggest(Request $request): JsonResponse
+    /**
+     * Obtenir les filtres disponibles
+     */
+    private function getAvailableFilters(): array
     {
-        $limiter = $this->apiSearchLimiter->create($request->getClientIp());  // ✅ CORRIGÉ
-        
-        if (!$limiter->consume(1)->isAccepted()) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Rate limit exceeded'
-            ], 429);
-        }
-
-        $query = $request->get('q', '');
-        
-        if (empty($query) || strlen($query) < 2) {
-            return $this->json([
-                'success' => true,
-                'suggestions' => []
-            ]);
-        }
-
-        try {
-            $suggestions = $this->searchService->suggest(
-                $query,
-                $this->getUser(),
-                10
-            );
-
-            return $this->json([
-                'success' => true,
-                'suggestions' => $suggestions
-            ]);
-
-        } catch (\Exception $e) {
-            $this->logger->error('Search suggest error', [
-                'query' => $query,
-                'error' => $e->getMessage()
-            ]);
-
-            return $this->json([
-                'success' => false,
-                'suggestions' => []
-            ]);
-        }
+        return [
+            'sectors' => [
+                'tech' => 'Technologie',
+                'finance' => 'Finance',
+                'health' => 'Santé',
+                'education' => 'Éducation',
+                'ecommerce' => 'E-commerce',
+                'other' => 'Autre',
+            ],
+            'locations' => [
+                'africa' => 'Afrique',
+                'europe' => 'Europe',
+                'asia' => 'Asie',
+                'americas' => 'Amériques',
+                'oceania' => 'Océanie',
+            ],
+            'budgetRanges' => [
+                '0-10k' => '0 - 10 000 €',
+                '10k-50k' => '10 000 - 50 000 €',
+                '50k-100k' => '50 000 - 100 000 €',
+                '100k+' => '100 000 € +',
+            ],
+            'userTypes' => [
+                'entrepreneur' => 'Entrepreneur',
+                'freelancer' => 'Freelance',
+                'investor' => 'Investisseur',
+                'company' => 'Entreprise',
+            ],
+        ];
     }
 }

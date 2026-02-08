@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Centrale d’Achat MIDDO</h1>
+
+<p>Bienvenue dans le Centre d’Achat. Ici, les utilisateurs peuvent :</p>
+
+<ul>
+    <li>Créer des demandes d’achat</li>
+    <li>Rejoindre des groupes d’achat</li>
+    <li>Voir les offres des fournisseurs</li>
+    <li>Participer à des commandes groupées</li>
+</ul>
+
+<a href="{{ path('purchase_center_requests') }}" class="btn btn-primary mt-3">Voir les demandes d’achat</a>
+{% endblock %}

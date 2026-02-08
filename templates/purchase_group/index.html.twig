@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Groupes d’Achat</h1>
+
+<a href="{{ path('purchase_group_generate') }}" class="btn btn-primary">Générer les groupes automatiquement</a>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité totale</th>
+            <th>Catégorie</th>
+            <th>Lieu</th>
+            <th>Status</th>
+            <th>Créé le</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for g in groups %}
+            <tr>
+                <td>{{ g.productName }}</td>
+                <td>{{ g.totalQuantity }}</td>
+                <td>{{ g.category }}</td>
+                <td>{{ g.location }}</td>
+                <td>{{ g.status }}</td>
+                <td>{{ g.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('purchase_group_show', {id: g.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

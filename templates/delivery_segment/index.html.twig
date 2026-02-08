@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Segments de la livraison #{{ delivery.id }}</h1>
+
+<a href="{{ path('delivery_segment_create', {id: delivery.id}) }}" class="btn btn-primary">
+    Ajouter un segment
+</a>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Ordre</th>
+            <th>De</th>
+            <th>À</th>
+            <th>Mode</th>
+            <th>Status</th>
+            <th>Arrivée estimée</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in segments %}
+            <tr>
+                <td>{{ s.sequence }}</td>
+                <td>{{ s.fromLocation }}</td>
+                <td>{{ s.toLocation }}</td>
+                <td>{{ s.mode }}</td>
+                <td>{{ s.status }}</td>
+                <td>
+                    {% if s.estimatedArrival %}
+                        {{ s.estimatedArrival|date('d/m/Y H:i') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('delivery_segment_update_status', {id: s.id}) }}" class="btn btn-sm btn-info">
+                        Mettre à jour le statut
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

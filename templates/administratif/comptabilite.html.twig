@@ -1,0 +1,66 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Comptabilité - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Comptabilité intelligente</h1>
+    <p class="breadcrumb">Administratif > Comptabilité</p>
+</div>
+
+<div class="accounting-layout">
+
+    <aside class="accounting-sidebar">
+
+        <h3>Importer</h3>
+        <button class="btn">📄 Importer une facture</button>
+        <button class="btn-outline">📷 Scanner un document</button>
+        <button class="btn-outline">📁 Importer un dossier complet</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Analyser les documents</button>
+        <button class="btn-outline">Classer automatiquement</button>
+        <button class="btn-outline">Détecter les erreurs</button>
+        <button class="btn-outline">Générer un bilan</button>
+        <button class="btn-outline">Préparer la déclaration fiscale</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="accounting-main">
+
+        <h2>Mes documents comptables</h2>
+
+        <table class="accounting-table">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Catégorie</th>
+                    <th>IA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in docs %}
+                    <tr>
+                        <td>{{ d.title }}</td>
+                        <td>{{ d.amount }}</td>
+                        <td>{{ d.date }}</td>
+                        <td>{{ d.category }}</td>
+                        <td>{{ d.ia_status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+</div>
+
+{% endblock %}

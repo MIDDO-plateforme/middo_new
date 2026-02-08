@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.splash-container {
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Globe minimaliste premium */
+.globe {
+    width: 180px;
+    height: 180px;
+    border: 2px solid rgba(0, 150, 255, 0.6);
+    border-radius: 50%;
+    animation: spin 1.2s ease-out;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 0 25px rgba(0, 150, 255, 0.5),
+                inset 0 0 20px rgba(0, 150, 255, 0.3);
+}
+
+/* Titre MIDDO premium */
+.middo-title {
+    font-size: 48px;
+    color: white;
+    letter-spacing: 12px;
+    opacity: 0;
+    animation: fadeText 0.8s ease-out forwards 0.3s;
+}
+
+/* Animations */
+@keyframes spin {
+    from { transform: rotate(0deg) scale(0.8); opacity: 0; }
+    to { transform: rotate(20deg) scale(1); opacity: 1; }
+}
+
+@keyframes fadeText {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

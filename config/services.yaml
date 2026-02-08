@@ -1,34 +1,28 @@
-parameters:
-
 services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: false
-        bind:
-            $openaiApiKey: '%env(OPENAI_API_KEY)%'
-            $anthropicApiKey: '%env(ANTHROPIC_API_KEY)%'
-            $claudeApiKey: '%env(CLAUDE_API_KEY)%'
-            $projectDir: '%kernel.project_dir%'
-            $apiKey: '%env(OPENAI_API_KEY)%'
-            $mercureHubUrl: '%env(MERCURE_HUB_URL)%'
-            $mercureJwtSecret: '%env(MERCURE_JWT_SECRET)%'
 
-    # 1) Charger tous les services généraux AVANT les contrôleurs
     App\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
+            - '../src/Entity/'
             - '../src/Kernel.php'
-            - '../src/Tests/'
 
-    # 2) Charger tous les contrôleurs (publics + tag)
-    App\Controller\:
-        resource: '../src/Controller/'
-        public: true
-        tags: ['controller.service_arguments']
+    # IA Achat
+    App\Service\PurchaseAiService: ~
 
-    # 3) Déclaration explicite du HealthController
-    App\Controller\HealthController:
-        public: true
-        tags: ['controller.service_arguments']
+    # IA Opportunités
+    App\Service\PurchaseOpportunityService: ~
+
+    # IA Alertes automatiques
+    App\Service\PurchaseAlertService: ~
+
+    # Commandes IA
+    App\Command\PurchaseAlertCommand: ~
+
+    # OpenAI
+    App\Service\OpenAIService:
+        arguments:
+            $openaiApiKey: '%env(OPENAI_API_KEY)%'

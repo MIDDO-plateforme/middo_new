@@ -1,0 +1,7 @@
+{% if task.status == 'En cours' %}
+    <span class="badge badge-info">En cours</span>
+{% elseif task.status == 'En attente' %}
+    <span class="badge badge-warning">En attente</span>
+{% elseif task.status == 'Terminé' %}
+    <span class="badge badge-ok">Terminé</span>
+{% endif %}

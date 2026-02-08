@@ -1,14 +1,53 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
 {% block title %}Projets - MIDDO{% endblock %}
 
-{% block page_title %}Projets{% endblock %}
+{% block content %}
 
-{% block body %}
-<div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-header">
-                        <div>
-                            <div class="project-title">Dashboard MIDDO</div>
-                            <div class="project-status status-active">En cours
+<div class="page-header">
+    <h1>Mes projets</h1>
+    <p class="breadcrumb">Projets</p>
+</div>
+
+<div class="projects-layout">
+
+    <aside class="projects-sidebar">
+
+        <h3>Créer</h3>
+        <button class="btn">Nouveau projet</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Analyser mes projets</button>
+        <button class="btn-outline">Détecter les risques</button>
+        <button class="btn-outline">Générer un plan automatique</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="projects-main">
+
+        <h2>Liste des projets</h2>
+
+        <ul class="projects-list">
+            {% for p in projects %}
+                <li class="project-item">
+                    <div>
+                        <strong>{{ p.name }}</strong>
+                        <p>{{ p.description }}</p>
+                    </div>
+                    <span class="project-status {{ p.status|lower }}">
+                        {{ p.status }}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </section>
+
+</div>
+
 {% endblock %}

@@ -1,0 +1,65 @@
+{# ============================================================
+   FICHIER : templates/cockpit/_stats_cards.html.twig
+   Cartes statistiques du cockpit MIDDO
+   ============================================================ #}
+
+<div style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:1.5rem;
+    margin-top:1rem;
+">
+
+    {# Carte : Transporteurs actifs #}
+    <div style="
+        background:white;
+        padding:1.2rem;
+        border-radius:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    ">
+        <h3 style="margin:0;font-size:1rem;color:#555;">Transporteurs actifs</h3>
+        <p style="margin:0;margin-top:0.5rem;font-size:2rem;font-weight:700;color:#333;">
+            {{ stats.activeTransporters ?? 0 }}
+        </p>
+    </div>
+
+    {# Carte : Segments en cours #}
+    <div style="
+        background:white;
+        padding:1.2rem;
+        border-radius:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    ">
+        <h3 style="margin:0;font-size:1rem;color:#555;">Segments en cours</h3>
+        <p style="margin:0;margin-top:0.5rem;font-size:2rem;font-weight:700;color:#333;">
+            {{ stats.activeSegments ?? 0 }}
+        </p>
+    </div>
+
+    {# Carte : Alertes actives #}
+    <div style="
+        background:white;
+        padding:1.2rem;
+        border-radius:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    ">
+        <h3 style="margin:0;font-size:1rem;color:#555;">Alertes actives</h3>
+        <p style="margin:0;margin-top:0.5rem;font-size:2rem;font-weight:700;color:#333;">
+            {{ stats.activeAlerts ?? 0 }}
+        </p>
+    </div>
+
+    {# Carte : Taux de réussite #}
+    <div style="
+        background:white;
+        padding:1.2rem;
+        border-radius:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    ">
+        <h3 style="margin:0;font-size:1rem;color:#555;">Taux de réussite</h3>
+        <p style="margin:0;margin-top:0.5rem;font-size:2rem;font-weight:700;color:#333;">
+            {{ stats.successRate ?? 0 }}%
+        </p>
+    </div>
+
+</div>

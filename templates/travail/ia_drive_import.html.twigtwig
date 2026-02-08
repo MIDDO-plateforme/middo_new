@@ -1,0 +1,39 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Importer un fichier - IA Drive{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Importer un fichier</h1>
+    <p class="breadcrumb">Espace de Travail > IA Drive > Import</p>
+</div>
+
+<div class="import-layout">
+
+    <section class="import-box">
+
+        <h2>Déposer un fichier</h2>
+
+        <div class="dropzone">
+            <p>Glissez-déposez un fichier ici</p>
+            <p>ou</p>
+            <button class="btn">Choisir un fichier</button>
+        </div>
+
+        <h2>Scanner un document</h2>
+        <button class="btn-outline">📷 Scanner avec la caméra</button>
+
+        <h2>Importer un dossier complet</h2>
+        <button class="btn-outline">📁 Importer un dossier</button>
+
+        <h2>Import intelligent</h2>
+        <label><input type="checkbox" checked> Classer automatiquement</label><br>
+        <label><input type="checkbox" checked> Analyser le contenu</label><br>
+        <label><input type="checkbox"> Détecter les données sensibles</label>
+
+    </section>
+
+</div>
+
+{% endblock %}

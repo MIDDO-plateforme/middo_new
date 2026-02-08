@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block stylesheets %}
 <style>
@@ -121,7 +121,7 @@
 </style>
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
 <canvas id="particles-canvas"></canvas>
 
 <div class="splash-container">

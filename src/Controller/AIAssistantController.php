@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Project;
 use App\Service\ChatbotService;
-use App\Service\AI\SuggestionsService;
+use App\Service\SuggestionService;
 use App\Service\MatchingService;
 use App\Service\SentimentAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +18,7 @@ class AIAssistantController extends AbstractController
 {
     public function __construct(
         private ChatbotService $chatbotService,
-        private SuggestionsService $suggestionsService,
+        private SuggestionService $suggestionService,
         private MatchingService $matchingService,
         private SentimentAnalysisService $sentimentService,
         private EntityManagerInterface $em

@@ -1,22 +1,71 @@
-﻿{# Navigation principale MIDDO #}
-<nav style="background: var(--middo-gradient); padding: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
-        
-        {# Logo #}
-        <a href="{{ path('app_home') }}" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">
-            🚀 MIDDO
+﻿{# ============================================================
+   FICHIER : templates/components/_navbar.html.twig
+   Navbar globale MIDDO
+   ============================================================ #}
+
+<nav class="navbar" style="
+    background: var(--middo-gradient);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+">
+    <div class="navbar-left" style="display:flex;align-items:center;gap:1rem;">
+        <a href="{{ path('travail_index') }}"
+           style="color:white;text-decoration:none;font-weight:700;font-size:1.1rem;">
+            MIDDO
         </a>
-        
-        {# Menu principal #}
-        <ul style="display: flex; gap: 2rem; list-style: none; margin: 0;">
-            <li><a href="{{ path('app_dashboard') }}" style="color: white; text-decoration: none;">📊 Dashboard</a></li>
-            <li><a href="{{ path('app_projets') }}" style="color: white; text-decoration: none;">💼 Projets</a></li>
-            <li><a href="{{ path('app_messages') }}" style="color: white; text-decoration: none;">💬 Messages</a></li>
-        </ul>
-        
-        {# User menu #}
-        <div style="color: white;">
-            👤 Mon Compte
-        </div>
+
+        <span style="opacity:0.8;font-size:0.9rem;">
+            Plateforme collaborative avec IA
+        </span>
+    </div>
+
+    <div class="navbar-right" style="display:flex;align-items:center;gap:1rem;font-size:0.9rem;">
+
+        <a href="{{ path('global_dashboard') }}" style="color:white;text-decoration:none;">
+            Dashboard global
+        </a>
+
+        <a href="{{ path('transport_dashboard') }}" style="color:white;text-decoration:none;">
+            Transport
+        </a>
+
+        <a href="{{ path('bank_dashboard') }}" style="color:white;text-decoration:none;">
+            Banque
+        </a>
+
+        <a href="{{ path('legal_dashboard') }}" style="color:white;text-decoration:none;">
+            Juridique
+        </a>
+
+        <a href="{{ path('travail_index') }}" style="color:white;text-decoration:none;font-weight:600;">
+            Espace de travail
+        </a>
+
+        {# Icône alertes en temps réel #}
+        {% include 'components/_alerts_icon.html.twig' with { alerts: alerts ?? [] } %}
+
+        {# Profil utilisateur #}
+        {% if app.user %}
+            <span style="opacity:0.8;">
+                {{ app.user.fullName ?? app.user.email }}
+                ({{ app.user.roles|join(', ') }})
+            </span>
+
+            <a href="{{ path('app_logout') }}" style="color:white;text-decoration:none;">
+                Déconnexion
+            </a>
+        {% else %}
+            <a href="{{ path('app_login') }}" style="color:white;text-decoration:none;">
+                Connexion
+            </a>
+        {% endif %}
     </div>
 </nav>

@@ -1,7 +1,46 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
-{% block title %}Travail - MIDDO{% endblock %}
+{% block title %}Espace de Travail - MIDDO{% endblock %}
 
-{% block body %}
-    <h1> Espace Travail</h1><div class='card'><p>8 outils disponibles</p></div>
+{% block content %}
+
+<div class="page-header">
+    <h1>Espace de Travail</h1>
+    <p class="breadcrumb">Accueil > Espace de Travail</p>
+</div>
+
+<div class="workspace-grid">
+
+    <a href="/travail/documents" class="workspace-card">
+        <h3>📄 Documents intelligents</h3>
+        <p>Scanner, résumer, classer, traduire, automatiser.</p>
+    </a>
+
+    <a href="/travail/tableur" class="workspace-card">
+        <h3>📊 Tableur</h3>
+        <p>Analyse IA, graphiques, formules intelligentes.</p>
+    </a>
+
+    <a href="/travail/editeur" class="workspace-card">
+        <h3>📝 Éditeur de texte</h3>
+        <p>Rédaction assistée par IA, modèles, corrections.</p>
+    </a>
+
+    <a href="/travail/notes" class="workspace-card">
+        <h3>📚 Notes</h3>
+        <p>Organisation, pages, blocs, IA pour structurer.</p>
+    </a>
+
+    <a href="/travail/taches" class="workspace-card">
+        <h3>📌 Tâches & Rappels</h3>
+        <p>Priorisation IA, rappels automatiques.</p>
+    </a>
+
+    <a href="/travail/automatisations" class="workspace-card">
+        <h3>⚙️ Automatisations</h3>
+        <p>Workflows IA, règles intelligentes.</p>
+    </a>
+
+</div>
+
 {% endblock %}

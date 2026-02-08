@@ -1,0 +1,56 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Risques IA - {{ project.name }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Analyse des risques</h1>
+    <p class="breadcrumb">Projets > {{ project.name }} > Risques IA</p>
+</div>
+
+<div class="risks-layout">
+
+    <aside class="risks-sidebar">
+
+        <h3>IA</h3>
+        <button class="btn">Analyser les risques</button>
+        <button class="btn-outline">Proposer des solutions</button>
+        <button class="btn-outline">Analyser les dépendances</button>
+        <button class="btn-outline">Détecter les retards</button>
+
+        <h3>Actions</h3>
+        <button class="btn-outline">Exporter le rapport</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="risks-main">
+
+        <h2>Risques détectés</h2>
+
+        <ul class="risk-list">
+            {% for r in risks %}
+                <li class="risk-item {{ r.level|lower }}">
+                    <strong>{{ r.title }}</strong><br>
+                    <span class="risk-desc">{{ r.description }}</span><br>
+                    <span class="risk-level">Niveau : {{ r.level }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Recommandations IA</h2>
+
+        <div class="risk-solutions">
+            <p>{{ solutions }}</p>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

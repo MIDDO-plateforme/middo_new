@@ -1,0 +1,68 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Juridique - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Juridique intelligent</h1>
+    <p class="breadcrumb">Administratif > Juridique</p>
+</div>
+
+<div class="legal-layout">
+
+    <aside class="legal-sidebar">
+
+        <h3>Importer</h3>
+        <button class="btn">📄 Importer un contrat</button>
+        <button class="btn-outline">📷 Scanner un document</button>
+        <button class="btn-outline">📁 Importer un dossier juridique</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Analyser le document</button>
+        <button class="btn-outline">Détecter les risques</button>
+        <button class="btn-outline">Expliquer en langage simple</button>
+        <button class="btn-outline">Traduire</button>
+        <button class="btn-outline">Générer un contrat type</button>
+
+        <h3>Cabinets partenaires</h3>
+        <button class="btn-outline">Envoyer à un avocat</button>
+        <button class="btn-outline">Demander une validation</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="legal-main">
+
+        <h2>Mes documents juridiques</h2>
+
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Type</th>
+                    <th>Risques IA</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in docs %}
+                    <tr>
+                        <td>{{ d.title }}</td>
+                        <td>{{ d.type }}</td>
+                        <td>{{ d.risk }}</td>
+                        <td>{{ d.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+</div>
+
+{% endblock %}

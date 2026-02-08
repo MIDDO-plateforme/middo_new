@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Demandes d’Achat</h1>
+
+<a href="{{ path('purchase_request_create') }}" class="btn btn-primary">Créer une demande</a>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Catégorie</th>
+            <th>Lieu</th>
+            <th>Status</th>
+            <th>Créée le</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in requests %}
+            <tr>
+                <td>{{ r.productName }}</td>
+                <td>{{ r.quantity }}</td>
+                <td>{{ r.category }}</td>
+                <td>{{ r.location }}</td>
+                <td>{{ r.status }}</td>
+                <td>{{ r.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('purchase_request_show', {id: r.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

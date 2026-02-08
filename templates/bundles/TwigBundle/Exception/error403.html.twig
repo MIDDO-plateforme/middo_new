@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<section style="padding:3rem;text-align:center;">
+    <h1>Accès refusé</h1>
+    <p>Vous n’avez pas les permissions nécessaires pour accéder à cette page.</p>
+    <a href="{{ path('workplace') }}">Retour à l’espace de travail</a>
+</section>
+{% endblock %}

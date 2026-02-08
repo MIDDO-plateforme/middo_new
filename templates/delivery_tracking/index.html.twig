@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Suivi du segment #{{ segment.id }}</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tracking %}
+            <tr>
+                <td>{{ t.status }}</td>
+                <td>{{ t.timestamp|date('d/m/Y H:i') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('delivery_tracking_update', {id: segment.id}) }}" class="btn btn-primary mt-3">
+    Mettre à jour le statut
+</a>
+
+<a href="{{ path('delivery_segment_index', {id: segment.delivery.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Détails du Groupe d’Achat</h1>
+
+<p><strong>Produit :</strong> {{ group.productName }}</p>
+<p><strong>Quantité totale :</strong> {{ group.totalQuantity }}</p>
+<p><strong>Catégorie :</strong> {{ group.category }}</p>
+<p><strong>Lieu :</strong> {{ group.location }}</p>
+<p><strong>Status :</strong> {{ group.status }}</p>
+<p><strong>Créé le :</strong> {{ group.createdAt|date('d/m/Y H:i') }}</p>
+
+<a href="{{ path('purchase_group_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

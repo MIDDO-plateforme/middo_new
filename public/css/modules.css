@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MIDDO{% endblock %}</title>
+
+    <link rel="stylesheet" href="/css/middo.css">
+    <link rel="stylesheet" href="/css/sidebar.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/modules.css">
+    <script defer src="/js/theme.js"></script>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>MIDDO</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/dashboard" class="sidebar-link module-dashboard-global">🏠 Dashboard</a>
+
+            <div class="sidebar-section-title">Analyse IA</div>
+            <a href="/dashboard-global" class="sidebar-link module-dashboard-global">📊 Dashboard Global</a>
+            <a href="/risk-analyzer" class="sidebar-link module-risk">⚠️ Risk Analyzer</a>
+            <a href="/timeline" class="sidebar-link module-timeline">🕒 Timeline IA</a>
+
+            <div class="sidebar-section-title">Gestion</div>
+            <a href="/coordination" class="sidebar-link module-coordination">🤝 Coordination IA</a>
+            <a href="/project-manager" class="sidebar-link module-project">📁 Project Manager</a>
+            <a href="/institutionnel" class="sidebar-link module-institutionnel">🏛️ Institutionnel IA</a>
+
+            <div class="sidebar-section-title">Documents & Langue</div>
+            <a href="/drive" class="sidebar-link module-drive">📂 IA Drive</a>
+            <a href="/langue" class="sidebar-link module-langue">🌐 Langue & Traduction</a>
+
+            <div class="sidebar-section-title">Finances & Performance</div>
+            <a href="/finances" class="sidebar-link module-finances">💰 Finances IA</a>
+            <a href="/performance" class="sidebar-link module-performance">📈 Performance IA</a>
+
+        </nav>
+    </aside>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="main-wrapper">
+
+        <!-- NAVBAR -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <h1 class="navbar-title">{% block page_title %}{% endblock %}</h1>
+            </div>
+
+            <div class="navbar-right">
+                <button class="navbar-btn">🔔</button>
+                <button class="navbar-btn theme-toggle">🌗</button>
+                <div class="navbar-user">
+                    <span class="user-name">Koba</span>
+                    <div class="user-avatar">K</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

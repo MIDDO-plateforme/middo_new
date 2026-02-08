@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Paiement confirmé</h1>
+
+<div class="mdo-card">
+    <p>Votre commande #{{ order.id }} a été payée avec succès.</p>
+
+    <h3>Détails :</h3>
+    <ul>
+        {% for item in order.orderItems %}
+            <li>
+                {{ item.product.name }} — {{ item.quantity }} × {{ item.unitPrice }} €
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a class="mdo-btn" href="{{ path('product_list') }}">Retour au Centre d’Achat</a>
+</div>
+{% endblock %}

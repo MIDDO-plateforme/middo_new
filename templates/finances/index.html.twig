@@ -1,0 +1,57 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Finances & Preuves - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Finances & Preuves IA</h1>
+    <p class="breadcrumb">Dashboard > Finances & Preuves</p>
+</div>
+
+<div class="finances-container">
+
+    {% for item in finances %}
+        <div class="finances-box">
+
+            <h2>{{ item.project }}</h2>
+
+            <p><strong>Budget total :</strong> {{ item.budget_total }}</p>
+            <p><strong>Dépensé :</strong> {{ item.spent }}</p>
+            <p><strong>Restant :</strong> {{ item.remaining }}</p>
+
+            <h3>Preuves fournies</h3>
+            <ul>
+                {% for proof in item.proofs %}
+                    <li>{{ proof }}</li>
+                {% else %}
+                    <li>Aucune preuve fournie</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Preuves manquantes</h3>
+            <ul>
+                {% for missing in item.missing_proofs %}
+                    <li>{{ missing }}</li>
+                {% else %}
+                    <li>Aucune preuve manquante</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Risques financiers détectés</h3>
+            <ul>
+                {% for risk in item.risks %}
+                    <li>{{ risk }}</li>
+                {% else %}
+                    <li>Aucun risque détecté</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% else %}
+        <p>Aucune donnée financière disponible.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

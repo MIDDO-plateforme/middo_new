@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Milestone: {{ milestone.title }}</h1>
+
+<p><strong>Description:</strong> {{ milestone.description }}</p>
+<p><strong>Amount:</strong> {{ milestone.amount }} €</p>
+<p><strong>Status:</strong> {{ milestone.status }}</p>
+<p><strong>Created:</strong> {{ milestone.createdAt|date('d/m/Y') }}</p>
+
+<a href="{{ path('milestone_index', {id: milestone.contract.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

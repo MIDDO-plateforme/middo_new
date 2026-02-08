@@ -1,0 +1,50 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Performance & Ressources - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Performance & Ressources IA</h1>
+    <p class="breadcrumb">Dashboard > Performance & Ressources</p>
+</div>
+
+<div class="performance-container">
+
+    {% for person in performance %}
+        <div class="performance-box">
+
+            <h2>{{ person.name }}</h2>
+            <p><strong>Rôle :</strong> {{ person.role }}</p>
+
+            <p><strong>Efficacité :</strong> {{ person.efficiency }}</p>
+            <p><strong>Charge de travail :</strong> {{ person.workload }}</p>
+            <p><strong>Qualité :</strong> {{ person.quality }}</p>
+            <p><strong>Retards :</strong> {{ person.delays }}</p>
+
+            <h3>Risques détectés</h3>
+            <ul>
+                {% for risk in person.risks %}
+                    <li>{{ risk }}</li>
+                {% else %}
+                    <li>Aucun risque détecté</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Recommandations IA</h3>
+            <ul>
+                {% for rec in person.recommendations %}
+                    <li>{{ rec }}</li>
+                {% else %}
+                    <li>Aucune recommandation pour le moment</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% else %}
+        <p>Aucune donnée de performance disponible.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

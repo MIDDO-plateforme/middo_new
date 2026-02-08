@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Conversation avec {{ profile.name }}</h1>
+
+<div class="mdo-card" style="margin-bottom:1rem;">
+    {% for msg in messages %}
+        <div style="margin-bottom:0.5rem;">
+            <strong>{{ msg.sender.name }} :</strong><br>
+            {{ msg.content }}<br>
+            <small>{{ msg.createdAt|date('d/m/Y H:i') }}</small>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="mdo-card">
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="mdo-submit">Envoyer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

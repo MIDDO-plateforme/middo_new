@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Détails de l’Offre Fournisseur</h1>
+
+<p><strong>Fournisseur :</strong> {{ offer.supplierName }}</p>
+<p><strong>Produit :</strong> {{ offer.group.productName }}</p>
+<p><strong>Prix unitaire :</strong> {{ offer.unitPrice }} €</p>
+<p><strong>Status :</strong> {{ offer.status }}</p>
+<p><strong>Contact :</strong> {{ offer.contact }}</p>
+
+{% if offer.status == 'pending' %}
+    <a href="{{ path('supplier_offer_accept', {id: offer.id}) }}" class="btn btn-success mt-3">Accepter</a>
+    <a href="{{ path('supplier_offer_reject', {id: offer.id}) }}" class="btn btn-danger mt-3">Rejeter</a>
+{% endif %}
+
+<a href="{{ path('supplier_offer_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

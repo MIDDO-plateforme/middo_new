@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Créer une demande d’achat</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Nom du produit</label>
+        <input name="productName" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Quantité</label>
+        <input name="quantity" type="number" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Catégorie</label>
+        <input name="category" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lieu</label>
+        <input name="location" class="form-control" required>
+    </div>
+
+    <button class="btn btn-success">Enregistrer</button>
+</form>
+
+<a href="{{ path('purchase_request_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

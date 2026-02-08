@@ -1,73 +1,52 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-#[ORM\Table(name: 'projects')]
 class Project
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 150)]
-    #[Assert\NotBlank(message: 'Le nom du projet est obligatoire.')]
-    #[Assert\Length(max: 150)]
-    private string $name;
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'string', length: 20)]
-    #[Assert\Choice(choices: ['draft', 'active', 'archived'])]
-    private string $status = 'draft';
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $budget = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $createdAt;
+    #[ORM\Column(length: 50)]
+    private ?string $status = null;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $updatedAt;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $owner;
-
-    #[ORM\ManyToMany(targetEntity: User::class)]
-    #[ORM\JoinTable(name: 'project_members')]
-    private Collection $members;
     #[ORM\ManyToOne(inversedBy: 'projects')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Workspace $workspace = null;
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-        $this->members = new ArrayCollection();
-    }
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getTitle(): ?string
     {
-        return $this->name;
+        return $this->title;
     }
 
-    public function setName(string $name): self
+    public function setTitle(string $title): static
     {
-        $this->name = $name;
+        $this->title = $title;
+
         return $this;
     }
 
@@ -76,80 +55,58 @@ class Project
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
-    public function getStatus(): string
+    public function getBudget(): ?string
+    {
+        return $this->budget;
+    }
+
+    public function setBudget(?string $budget): static
+    {
+        $this->budget = $budget;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): \DateTime
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
-        return $this->updatedAt;
-    }
+        $this->createdAt = $createdAt;
 
-    public function setUpdatedAt(): self
-    {
-        $this->updatedAt = new \DateTime();
         return $this;
     }
 
-    public function getOwner(): User
+    public function getOwner(): ?User
     {
         return $this->owner;
     }
 
-    public function setOwner(User $owner): self
+    public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
-        return $this;
-    }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getMembers(): Collection
-    {
-        return $this->members;
-    }
-
-    public function addMember(User $user): self
-    {
-        if (!$this->members->contains($user)) {
-            $this->members->add($user);
-        }
-        return $this;
-    }
-
-    public function removeMember(User $user): self
-    {
-        $this->members->removeElement($user);
-        return $this;
-    }
-
-    public function getWorkspace(): ?Workspace
-    {
-        return $this->workspace;
-    }
-
-    public function setWorkspace(?Workspace $workspace): static
-    {
-        $this->workspace = $workspace;
         return $this;
     }
 }

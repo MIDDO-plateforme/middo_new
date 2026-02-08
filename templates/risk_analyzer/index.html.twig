@@ -1,0 +1,52 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}IA Risk Analyzer - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>IA Risk Analyzer</h1>
+    <p class="breadcrumb">Dashboard > IA Risk Analyzer</p>
+</div>
+
+<div class="risk-container">
+
+    {% for risk in risks %}
+        <div class="risk-box">
+
+            <h2>{{ risk.category }}</h2>
+
+            <p>
+    <strong>Niveau :</strong> {{ risk.level }}
+    {% if risk.level == 'Faible' %}
+        <span class="badge badge-risk-low">Faible</span>
+    {% elseif risk.level == 'Moyen' %}
+        <span class="badge badge-risk-medium">Moyen</span>
+    {% elseif risk.level == 'Élevé' %}
+        <span class="badge badge-risk-high">Élevé</span>
+    {% endif %}
+</p>
+
+            <h3>Description</h3>
+            <p>{{ risk.description }}</p>
+
+            <h3>Impact</h3>
+            <p>{{ risk.impact }}</p>
+
+            <h3>Recommandations IA</h3>
+            <ul>
+                {% for rec in risk.recommendations %}
+                    <li>{{ rec }}</li>
+                {% else %}
+                    <li>Aucune recommandation disponible</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% else %}
+        <p>Aucun risque détecté.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

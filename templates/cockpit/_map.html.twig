@@ -1,0 +1,28 @@
+{# ============================================================
+   FICHIER : templates/cockpit/_map.html.twig
+   Carte Leaflet + Filtre transporteur + Lien segment
+   ============================================================ #}
+
+<div style="margin-top:2rem;">
+    <h2>Carte des opérations</h2>
+    <p style="opacity:0.7;">Visualisation des segments, transporteurs et alertes en temps réel.</p>
+
+    <div style="margin-bottom:0.5rem;display:flex;gap:0.5rem;align-items:center;">
+        <label for="transporter-filter" style="font-size:0.9rem;">Filtrer par transporteur :</label>
+        <input id="transporter-filter"
+               type="text"
+               placeholder="ID transporteur (ex: TRUCK-01)"
+               style="padding:0.25rem 0.5rem;font-size:0.9rem;">
+        <button id="transporter-filter-clear"
+                type="button"
+                style="padding:0.25rem 0.5rem;font-size:0.8rem;">
+            Réinitialiser
+        </button>
+    </div>
+
+    <div id="middo-map" style="height:500px;border-radius:10px;overflow:hidden;margin-top:0.5rem;"></div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/map.js"></script>
+</div>

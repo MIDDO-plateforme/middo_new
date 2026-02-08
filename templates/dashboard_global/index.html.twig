@@ -1,0 +1,67 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}IA Dashboard Global - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>IA Dashboard Global</h1>
+    <p class="breadcrumb">Dashboard > IA Dashboard Global</p>
+</div>
+
+<div class="dashboard-global-container">
+
+    <div class="summary-box">
+        <h2>Résumé Exécutif</h2>
+
+        <p><strong>Niveau de risque global :</strong> {{ summary.global_risk_level }}</p>
+        <p><strong>Tâches urgentes :</strong> {{ summary.urgent_tasks }}</p>
+        <p><strong>Preuves manquantes :</strong> {{ summary.missing_proofs }}</p>
+        <p><strong>Projets en retard :</strong> {{ summary.delayed_projects }}</p>
+        <p><strong>Alertes institutionnelles :</strong> {{ summary.institutional_alerts }}</p>
+
+        <h3>Priorité IA</h3>
+        <p>{{ summary.ia_priority }}</p>
+    </div>
+
+    <div class="alerts-section">
+        <h2>Alertes IA</h2>
+
+        {% for alert in alerts %}
+            <div class="alert-box">
+
+                <h3>{{ alert.type }}</h3>
+
+                <p>
+    <strong>Gravité :</strong> {{ alert.severity }}
+    {% if alert.severity == 'Faible' %}
+        <span class="badge badge-risk-low">Faible</span>
+    {% elseif alert.severity == 'Moyen' %}
+        <span class="badge badge-risk-medium">Moyen</span>
+    {% elseif alert.severity == 'Élevé' %}
+        <span class="badge badge-danger">Élevé</span>
+    {% endif %}
+</p>
+                <p>{{ alert.message }}</p>
+
+            </div>
+        {% else %}
+            <p>Aucune alerte détectée.</p>
+        {% endfor %}
+    </div>
+
+    <div class="recommendations-section">
+        <h2>Recommandations IA</h2>
+
+        <ul>
+            {% for rec in recommendations %}
+                <li>{{ rec }}</li>
+            {% else %}
+                <li>Aucune recommandation disponible</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

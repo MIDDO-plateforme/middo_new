@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block title %}{{ document.title }} - MIDDO{% endblock %}
 
@@ -238,7 +238,7 @@
     </style>
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
     <div class="document-show-container">
         <nav class="breadcrumb-nav">
             <ol class="breadcrumb">

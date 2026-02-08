@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>IA Pricing — Optimisation des prix</h1>
+
+<div class="mdo-grid">
+    <div class="mdo-card">
+        <h3>Suggestions de prix</h3>
+        <table class="mdo-table">
+            <tr>
+                <th>Produit</th>
+                <th>Prix actuel</th>
+                <th>Prix suggéré</th>
+            </tr>
+            {% for p in products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.price }}</td>
+                    <td>{{ suggestions[p.id] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Anomalies détectées</h3>
+        {% if anomalies is empty %}
+            <p>Aucune anomalie détectée.</p>
+        {% else %}
+            <ul>
+                {% for a in anomalies %}
+                    <li>
+                        {{ a.product.name }} — actuel : {{ a.current }} / suggéré : {{ a.suggested }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

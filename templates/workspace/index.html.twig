@@ -1,8 +1,49 @@
-{% extends 'layout/app_layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block page_title %}Espace de travail{% endblock %}
-{% block page_subtitle %}Votre hub central pour orchestrer les sessions et t�ches.{% endblock %}
+{% block body %}
+<div style="display:flex;min-height:80vh;">
 
-{% block page_content %}
-<p class="text-muted">Page Espace de travail  base fonctionnelle.</p>
+    {# Sidebar cockpit réutilisée #}
+    {% include 'cockpit/_sidebar.html.twig' %}
+
+    <div style="flex:1;padding:2rem;">
+        <h1>Espace de travail — MIDDO</h1>
+        <p style="opacity:0.7;">Collaboration, tâches, projets et communication</p>
+
+        <hr style="margin:1.5rem 0;">
+
+        {# Statistiques workplace #}
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:1.5rem;
+        ">
+            <div class="stats-card">
+                <h3>Tâches du jour</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.tasksToday }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Demandes en attente</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.pendingRequests }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Projets actifs</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.activeProjects }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Membres de l’équipe</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.teamMembers }}</p>
+            </div>
+        </div>
+
+        <hr style="margin:2rem 0;">
+
+        {# Alertes workplace #}
+        {% include 'cockpit/_live_updates.html.twig' %}
+        <script src="/js/mercure.js"></script>
+    </div>
+</div>
 {% endblock %}

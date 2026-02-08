@@ -1,0 +1,96 @@
+/* -----------------------------------------
+   MIDDO – THEME SYSTEM (Light + Dark)
+   Version 1.0
+------------------------------------------*/
+
+/* MODE CLAIR (par défaut) */
+:root {
+    --bg: #f5f6fa;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    --bg-navbar: #ffffff;
+
+    --text: #333;
+    --text-light: #888;
+
+    --primary: #4a6cf7;
+    --primary-hover: #3a57d0;
+
+    --border: #e5e5e5;
+
+    --shadow: rgba(0,0,0,0.05);
+}
+
+/* MODE SOMBRE */
+.dark-mode {
+    --bg: #1e1f25;
+    --bg-card: #2a2c33;
+    --bg-sidebar: #24252b;
+    --bg-navbar: #24252b;
+
+    --text: #e6e6e6;
+    --text-light: #aaaaaa;
+
+    --primary: #6d8bff;
+    --primary-hover: #5874e0;
+
+    --border: #3a3b42;
+
+    --shadow: rgba(0,0,0,0.4);
+}
+
+/* APPLICATION DES VARIABLES */
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.sidebar {
+    background: var(--bg-sidebar);
+    box-shadow: 2px 0 10px var(--shadow);
+}
+
+.navbar {
+    background: var(--bg-navbar);
+    border-bottom: 1px solid var(--border);
+}
+
+.dashboard-card,
+.project-box,
+.risk-box,
+.institution-box,
+.timeline-item,
+.drive-file-box,
+.langue-box,
+.coordination-box {
+    background: var(--bg-card);
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.sidebar-link {
+    color: var(--text);
+}
+
+.sidebar-link:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--primary);
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: var(--border);
+    color: var(--text);
+}
+
+textarea, select, input[type="file"] {
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Détails de la Commande Groupée</h1>
+
+<p><strong>Produit :</strong> {{ order.group.productName }}</p>
+<p><strong>Quantité totale :</strong> {{ order.group.totalQuantity }}</p>
+<p><strong>Fournisseur :</strong> {{ order.offer.supplierName }}</p>
+<p><strong>Prix unitaire :</strong> {{ order.offer.unitPrice }} €</p>
+<p><strong>Prix total :</strong> {{ order.totalPrice }} €</p>
+<p><strong>Status :</strong> {{ order.status }}</p>
+<p><strong>Créée le :</strong> {{ order.createdAt|date('d/m/Y H:i') }}</p>
+
+{% if order.status == 'pending_payment' %}
+    <a href="{{ path('purchase_order_pay', {id: order.id}) }}" class="btn btn-success mt-3">Payer la commande</a>
+{% endif %}
+
+<a href="{{ path('purchase_order_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

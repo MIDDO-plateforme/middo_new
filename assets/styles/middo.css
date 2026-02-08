@@ -1,0 +1,251 @@
+/* ------------------------------
+   RESET SIMPLE
+------------------------------ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    line-height: 1.5;
+}
+
+/* ------------------------------
+   LAYOUT GLOBAL
+------------------------------ */
+.mdo-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mdo-header,
+.mdo-footer {
+    padding: 1rem 2rem;
+    background: #020617;
+    border-bottom: 1px solid #1f2937;
+}
+
+.mdo-footer {
+    border-top: 1px solid #1f2937;
+    border-bottom: none;
+    margin-top: auto;
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.mdo-main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ------------------------------
+   TYPO / TITRES
+------------------------------ */
+h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+}
+
+p {
+    margin-bottom: 0.75rem;
+}
+
+/* ------------------------------
+   LIENS & BOUTONS
+------------------------------ */
+a {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.mdo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid #38bdf8;
+    background: #0b1120;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
+}
+
+.mdo-btn:hover {
+    background: #0369a1;
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.25);
+    transform: translateY(-1px);
+}
+
+/* ------------------------------
+   FORMULAIRES
+------------------------------ */
+form {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #1f2937;
+    background: #020617;
+    color: #e5e7eb;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 1px #38bdf8;
+}
+
+/* ------------------------------
+   GRILLE & CARTES
+------------------------------ */
+.mdo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.mdo-card {
+    background: #020617;
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+}
+
+.mdo-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.mdo-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    color: #9ca3af;
+}
+
+/* ------------------------------
+   BADGES ACCESSIBILITÉ
+------------------------------ */
+.mdo-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+}
+
+.mdo-badge-danger {
+    background: #450a0a;
+    border-color: #b91c1c;
+    color: #fecaca;
+}
+
+.mdo-badge-info {
+    background: #0b1120;
+    border-color: #38bdf8;
+    color: #e0f2fe;
+}
+
+/* ------------------------------
+   LISTES
+------------------------------ */
+.mdo-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.mdo-list li {
+    margin-bottom: 0.35rem;
+}
+
+/* ------------------------------
+   RESPONSIVE
+------------------------------ */
+@media (max-width: 768px) {
+    .mdo-main {
+        padding: 1rem;
+    }
+
+    .mdo-header,
+    .mdo-footer {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* ------------------------------
+   FORMULAIRE PREMIUM
+------------------------------ */
+.mdo-form-row {
+    margin-bottom: 1rem;
+}
+
+.mdo-form-errors {
+    margin-top: 0.25rem;
+    color: #fca5a5;
+    font-size: 0.85rem;
+}
+
+button[type="submit"],
+.mdo-submit {
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid #38bdf8;
+    background: #0b1120;
+    color: #e5e7eb;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button[type="submit"]:hover,
+.mdo-submit:hover {
+    background: #0369a1;
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.25);
+}

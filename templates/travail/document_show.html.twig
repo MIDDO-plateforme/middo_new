@@ -1,0 +1,38 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Document - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>{{ doc.title }}</h1>
+    <p class="breadcrumb">Espace de Travail > Documents intelligents > {{ doc.title }}</p>
+</div>
+
+<div class="doc-layout">
+
+    <section class="doc-main">
+        <h3>Contenu</h3>
+        <p>{{ doc.content }}</p>
+    </section>
+
+    <aside class="doc-ia-panel">
+        <h3>Assistant IA</h3>
+
+        <button class="btn">Résumer le document</button>
+        <button class="btn-outline">Expliquer simplement</button>
+        <button class="btn-outline">Traduire</button>
+        <button class="btn-outline">Lire à voix haute</button>
+        <button class="btn-outline">Extraire les données</button>
+        <button class="btn-outline">Classer automatiquement</button>
+
+        <h4>Résumé IA</h4>
+        <p>{{ doc.summary }}</p>
+
+        <h4>Dossier suggéré</h4>
+        <p>{{ doc.folder }}</p>
+    </aside>
+
+</div>
+
+{% endblock %}

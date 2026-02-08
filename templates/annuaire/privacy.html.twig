@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Confidentialité — {{ profile.name }}</h1>
+
+{% form_theme form 'form/form_layout.html.twig' %}
+
+<div class="mdo-card" style="margin-top:1rem;">
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="mdo-submit">Enregistrer</button>
+    {{ form_end(form) }}
+</div>
+
+{% endblock %}

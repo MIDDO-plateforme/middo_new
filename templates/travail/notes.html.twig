@@ -1,0 +1,56 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Notes - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Notes</h1>
+    <p class="breadcrumb">Espace de Travail > Notes</p>
+</div>
+
+<div class="notes-layout">
+
+    <aside class="notes-sidebar">
+
+        <h3>Mes pages</h3>
+
+        <ul class="notes-list">
+            {% for note in notes %}
+                <li>
+                    <a href="/travail/notes/{{ note.id }}">{{ note.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <button class="btn">Nouvelle page</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Créer une page automatiquement</button>
+        <button class="btn-outline">Organiser mes notes</button>
+        <button class="btn-outline">Trouver une note</button>
+
+    </aside>
+
+    <section class="notes-main">
+
+        <h2>{{ active.title }}</h2>
+
+        <div class="notes-toolbar">
+            <button>H1</button>
+            <button>H2</button>
+            <button>• Liste</button>
+            <button>1. Liste</button>
+            <button>Tableau</button>
+            <button>Bloc IA</button>
+        </div>
+
+        <div class="notes-content" contenteditable="true">
+            {{ active.content }}
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

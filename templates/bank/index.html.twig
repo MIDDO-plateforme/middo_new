@@ -1,8 +1,65 @@
-{% extends 'layout/app_layout.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
-{% block page_title %}Banque & Paiements{% endblock %}
-{% block page_subtitle %}Suivez vos flux financiers li�s aux projets MIDDO.{% endblock %}
+{% block title %}Banque - MIDDO{% endblock %}
 
-{% block page_content %}
-<p class="text-muted">Page Banque & Paiements  base fonctionnelle.</p>
+{% block content %}
+
+<div class="page-header">
+    <h1>Banque</h1>
+    <p class="breadcrumb">Accueil > Banque</p>
+</div>
+
+{# --- Solde & Statistiques --- #}
+<div class="bank-stats-grid">
+
+    {% include 'components/balance_card.html.twig' with {
+        label: 'Solde actuel',
+        amount: '4 250 €',
+        color: 'blue'
+    } %}
+
+    {% include 'components/finance_stat_card.html.twig' with {
+        title: 'Transactions ce mois',
+        value: 32,
+        color: 'green'
+    } %}
+
+    {% include 'components/finance_stat_card.html.twig' with {
+        title: 'Revenus',
+        value: '1 850 €',
+        color: 'purple'
+    } %}
+
+    {% include 'components/finance_stat_card.html.twig' with {
+        title: 'Dépenses',
+        value: '1 200 €',
+        color: 'orange'
+    } %}
+
+</div>
+
+{# --- Actions rapides --- #}
+<div class="bank-actions">
+    <button class="btn">Ajouter une transaction</button>
+    <button class="btn-outline">Exporter</button>
+    <button class="btn-outline">Analyser avec l’IA</button>
+</div>
+
+{# --- Tableau des transactions --- #}
+<table class="transactions-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Montant</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+            {% include 'components/transaction_row.html.twig' with { t: t } %}
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

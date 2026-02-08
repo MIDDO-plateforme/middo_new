@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Tableau de bord — {{ profile.name }}</h1>
+
+<div class="mdo-grid" style="margin-top:1.5rem;">
+
+    {# --- PROFIL --- #}
+    <div class="mdo-card">
+        <div class="mdo-card-header">
+            <h3>Mon profil</h3>
+            <span class="mdo-tag">{{ profile.type }}</span>
+        </div>
+
+        <p>{{ profile.description ?: 'Aucune description.' }}</p>
+
+        {% if profile.isSensitive %}
+            <div class="mdo-badges">
+                <span class="mdo-tag mdo-badge-danger">Profil protégé</span>
+            </div>
+        {% endif %}
+
+        <a class="mdo-btn" href="{{ path('annuaire_show', {id: profile.id}) }}">
+            Voir mon profil
+        </a>
+    </div>
+
+    {# --- MATCHS IA --- #}
+    <div class="mdo-card">
+        <h3>Mes meilleurs matchs</h3>
+        <ul class="mdo-list">
+            {% for item in matches %}
+                <li>
+                    {{ item.profile.name }} — <strong>{{ item.score }}/100</strong>
+                </li>
+            {% else %}
+                <li>Aucun match pour le moment.</li>
+            {% endfor %}
+        </ul>
+
+        <a class="mdo-btn" href="{{ path('annuaire_matches', {id: profile.id}) }}">
+            Voir tous mes matchs
+        </a>
+    </div>
+
+    {# --- RECOMMANDATIONS IA --- #}
+    <div class="mdo-card">
+        <h3>Recommandations IA</h3>
+        <ul class="mdo-list">
+            {% for s in recommendations.suggested_capabilities %}
+                <li>Compétence suggérée : {{ s }}</li>
+            {% endfor %}
+            {% for s in recommendations.suggested_needs %}
+                <li>Besoin suggéré : {{ s }}</li>
+            {% endfor %}
+        </ul>
+
+        <a class="mdo-btn" href="{{ path('annuaire_recommendations', {id: profile.id}) }}">
+            Voir toutes mes recommandations
+        </a>
+    </div>
+
+    {# --- OPPORTUNITÉS LOCALES --- #}
+    <div class="mdo-card">
+        <h3>Opportunités locales</h3>
+        <ul class="mdo-list">
+            {% for item in recommendations.local_opportunities %}
+                <li>{{ item.profile.name }} — {{ item.score }}/100</li>
+            {% else %}
+                <li>Aucune opportunité locale.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# --- OPPORTUNITÉS À DISTANCE --- #}
+    <div class="mdo-card">
+        <h3>Opportunités à distance</h3>
+        <ul class="mdo-list">
+            {% for item in recommendations.remote_opportunities %}
+                <li>{{ item.profile.name }} — {{ item.score }}/100</li>
+            {% else %}
+                <li>Aucune opportunité à distance.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

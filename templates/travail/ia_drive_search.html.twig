@@ -1,0 +1,43 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Recherche IA - IA Drive{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Recherche intelligente</h1>
+    <p class="breadcrumb">Espace de Travail > IA Drive > Recherche</p>
+</div>
+
+<div class="search-layout">
+
+    <section class="search-bar">
+        <form method="get">
+            <input type="text" name="q" placeholder="Rechercher un document, un mot, un concept…" value="{{ query }}">
+            <button class="btn">Rechercher</button>
+        </form>
+    </section>
+
+    <section class="search-results">
+
+        <h2>Résultats</h2>
+
+        {% if results is empty %}
+            <p>Aucun résultat trouvé.</p>
+        {% else %}
+            <ul class="search-list">
+                {% for r in results %}
+                    <li class="search-item">
+                        <strong>{{ r.name }}</strong><br>
+                        <span class="search-type">{{ r.type }}</span><br>
+                        <span class="search-context">{{ r.context }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

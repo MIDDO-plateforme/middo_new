@@ -1,0 +1,58 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Scanner & Import IA - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Scanner & Import IA</h1>
+    <p class="breadcrumb">Espace de Travail > Documents intelligents > Scanner & Import</p>
+</div>
+
+<div class="scan-layout">
+
+    <section class="scan-actions">
+
+        <h3>Importer un document</h3>
+
+        <div class="import-buttons">
+            <button class="btn">📄 Importer un fichier</button>
+            <button class="btn-outline">📷 Scanner un document</button>
+            <button class="btn-outline">📱 Importer depuis téléphone</button>
+            <button class="btn-outline">🔊 Importer un audio (IA → texte)</button>
+            <button class="btn-outline">🎥 Importer une vidéo (IA → résumé)</button>
+        </div>
+
+        <h3>Sources externes</h3>
+
+        <div class="import-buttons">
+            <button class="btn-outline">Google Drive</button>
+            <button class="btn-outline">OneDrive</button>
+            <button class="btn-outline">Dropbox</button>
+        </div>
+
+    </section>
+
+    <section class="scan-preview">
+
+        <h3>Aperçu du document</h3>
+
+        <div class="preview-box">
+            <p>Aucun document importé pour le moment.</p>
+        </div>
+
+        <h3>Actions IA</h3>
+
+        <div class="ia-actions">
+            <button class="btn">🧠 Résumer</button>
+            <button class="btn-outline">🗂 Classer automatiquement</button>
+            <button class="btn-outline">🌍 Traduire</button>
+            <button class="btn-outline">🔍 Extraire les données</button>
+            <button class="btn-outline">📢 Lire à voix haute</button>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

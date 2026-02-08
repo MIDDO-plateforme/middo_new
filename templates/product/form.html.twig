@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Produit</h1>
+
+<div class="mdo-card">
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="mdo-submit">Enregistrer</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

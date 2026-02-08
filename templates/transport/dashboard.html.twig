@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="display:flex;min-height:80vh;">
+
+    {# Sidebar cockpit réutilisée #}
+    {% include 'cockpit/_sidebar.html.twig' %}
+
+    <div style="flex:1;padding:2rem;">
+        <h1>Transport — MIDDO</h1>
+        <p style="opacity:0.7;">Suivi des transporteurs, segments et alertes</p>
+
+        <hr style="margin:1.5rem 0;">
+
+        {# Carte Leaflet #}
+        {% include 'cockpit/_map.html.twig' %}
+
+        <hr style="margin:2rem 0;">
+
+        {# Statistiques transport #}
+        {% include 'cockpit/_stats_cards.html.twig' with { stats: stats } %}
+
+        <hr style="margin:2rem 0;">
+
+        {# Alertes transport #}
+        {% include 'cockpit/_live_updates.html.twig' %}
+        <script src="/js/mercure.js"></script>
+    </div>
+</div>
+{% endblock %}

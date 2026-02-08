@@ -1,8 +1,67 @@
-{% extends 'layout/app_layout.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
-{% block page_title %}Analytics{% endblock %}
-{% block page_subtitle %}Suivez vos indicateurs cl�s.{% endblock %}
+{% block title %}Analytics - MIDDO{% endblock %}
 
-{% block page_content %}
-<p class="text-muted">Page Analytics  base fonctionnelle.</p>
+{% block content %}
+
+<div class="page-header">
+    <h1>Analytics</h1>
+    <p class="breadcrumb">Accueil > Analytics</p>
+</div>
+
+{# --- Statistiques globales --- #}
+<div class="analytics-stats-grid">
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Utilisateurs actifs',
+        value: 128,
+        color: 'blue'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Projets en cours',
+        value: 12,
+        color: 'green'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Messages échangés',
+        value: '3.2K',
+        color: 'purple'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Réunions visio',
+        value: 42,
+        color: 'orange'
+    } %}
+</div>
+
+{# --- Graphiques --- #}
+<div class="analytics-charts">
+    <div class="chart-card">
+        <h3>Activité des utilisateurs</h3>
+        <canvas id="chartUsers"></canvas>
+    </div>
+
+    <div class="chart-card">
+        <h3>Progression des projets</h3>
+        <canvas id="chartProjects"></canvas>
+    </div>
+</div>
+
+{# --- Insights IA --- #}
+<div class="analytics-ai">
+    <h3>Insights IA</h3>
+
+    <ul>
+        <li>📈 L’activité a augmenté de 12% cette semaine.</li>
+        <li>⚠️ Deux projets présentent un risque de retard.</li>
+        <li>💬 Les messages ont augmenté de 18% après la dernière mise à jour.</li>
+        <li>🤝 Les collaborations entre équipes ont doublé ce mois-ci.</li>
+    </ul>
+
+    <button class="btn">Analyse IA complète</button>
+</div>
+
 {% endblock %}

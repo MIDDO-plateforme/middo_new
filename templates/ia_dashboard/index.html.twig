@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>IA Dashboard Global</h1>
+
+<div class="mdo-grid">
+
+    <div class="mdo-card">
+        <h3>Recommandations Produits</h3>
+        <ul>
+            {% for item in data.products %}
+                <li>{{ item.product.name }} — Score : {{ item.score }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Fournisseurs Recommandés</h3>
+        <ul>
+            {% for s in data.suppliers %}
+                <li>{{ s.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Opportunités IA</h3>
+        <ul>
+            {% for o in data.opportunities %}
+                <li>{{ o.label }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Alertes IA</h3>
+        <ul>
+            {% for a in data.alerts %}
+                <li>{{ a }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Anomalies de Prix</h3>
+        <ul>
+            {% for p in data.pricingAnomalies %}
+                <li>{{ p.product.name }} — {{ p.current }} / {{ p.suggested }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Tendances</h3>
+        <ul>
+            {% for month, total in data.trends %}
+                <li>{{ month }} : {{ total }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Prévisions</h3>
+        <ul>
+            {% for month, total in data.forecast %}
+                <li>{{ month }} : {{ total }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

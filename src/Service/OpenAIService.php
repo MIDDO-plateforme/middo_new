@@ -2,119 +2,120 @@
 
 namespace App\Service;
 
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 
 class OpenAIService
 {
-    private string $apiKey;
+    private const API_BASE_URL = 'https://api.openai.com/v1';
+    private const DEFAULT_MODEL = 'gpt-4o-mini';
+    private const MAX_TOKENS = 2000;
+    private const TEMPERATURE = 0.7;
+    
+    private HttpClientInterface $httpClient;
     private LoggerInterface $logger;
-
-    public function __construct(string $apiKey, LoggerInterface $logger)
-    {
-        $this->apiKey = $apiKey;
+    private string $apiKey;
+    
+    public function __construct(
+        HttpClientInterface $httpClient,
+        LoggerInterface $logger,
+        string $openaiApiKey
+    ) {
+        $this->httpClient = $httpClient;
         $this->logger = $logger;
+        $this->apiKey = $openaiApiKey;
     }
-
-    public function generateSuggestions(): array
+    
+    public function chat(array $messages, ?string $model = null, array $options = []): array
     {
         try {
-            $this->logger->info('🔄 [OpenAI] Appel GPT-4 pour suggestions...');
-
-            $response = $this->callOpenAI([
-                'model' => 'gpt-4',
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'Tu es un assistant IA expert en gestion de projet. Génère exactement 5 suggestions SMART (Spécifiques, Mesurables, Atteignables, Réalistes, Temporellement définis) pour améliorer un projet. Retourne UNIQUEMENT un tableau JSON avec format: ["🎯 Suggestion 1", "💰 Suggestion 2", ...]'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => 'Donne-moi 5 suggestions SMART pour améliorer mon projet de plateforme collaborative.'
-                    ]
-                ],
-                'temperature' => 0.7,
-                'max_tokens' => 500
-            ]);
-
-            if (isset($response['choices'][0]['message']['content'])) {
-                $content = $response['choices'][0]['message']['content'];
-                $suggestions = json_decode($content, true);
-
-                if (is_array($suggestions) && count($suggestions) >= 5) {
-                    $this->logger->info('✅ [OpenAI] 5 suggestions générées');
-                    return array_slice($suggestions, 0, 5);
-                }
+            $model = $model ?? self::DEFAULT_MODEL;
+            
+            $payload = [
+                'model' => $model,
+                'messages' => $messages,
+                'temperature' => $options['temperature'] ?? self::TEMPERATURE,
+                'max_tokens' => $options['max_tokens'] ?? self::MAX_TOKENS,
+            ];
+            
+            if (isset($options['response_format'])) {
+                $payload['response_format'] = $options['response_format'];
             }
-
-            throw new \Exception('Format réponse OpenAI invalide');
-
-        } catch (\Throwable $e) {
-            $this->logger->error('❌ [OpenAI] Erreur : ' . $e->getMessage());
-            return [];
+            
+            $this->logger->info('OpenAI API Request', [
+                'model' => $model,
+                'messages_count' => count($messages),
+            ]);
+            
+            $response = $this->httpClient->request('POST', self::API_BASE_URL . '/chat/completions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json; charset=utf-8',
+                ],
+                'json' => $payload,
+                'timeout' => 30,
+            ]);
+            
+            $statusCode = $response->getStatusCode();
+            $content = $response->toArray();
+            
+            if ($statusCode !== 200) {
+                throw new \Exception("OpenAI API error: " . ($content['error']['message'] ?? 'Unknown error'));
+            }
+            
+            $this->logger->info('OpenAI API Response', [
+                'status' => $statusCode,
+                'usage' => $content['usage'] ?? null,
+            ]);
+            
+            return $content;
+            
+        } catch (\Exception $e) {
+            $this->logger->error('OpenAI API Error', [
+                'message' => $e->getMessage(),
+            ]);
+            
+            throw new \Exception('Erreur OpenAI: ' . $e->getMessage());
         }
     }
-
-    public function analyzeSentiment(): array
+    
+    public function extractContent(array $response): string
     {
-        try {
-            $this->logger->info('🔄 [OpenAI] Analyse sentiment GPT-4...');
-
-            $response = $this->callOpenAI([
-                'model' => 'gpt-4',
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'Analyse le sentiment d\'un message et retourne UNIQUEMENT un JSON avec format exact: {"sentiment": "positif|négatif|neutre", "emotion": "optimiste|pessimiste|neutre|excité|anxieux", "confidence": 0.85}'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => 'Analyse le sentiment de ce message : "Je suis très motivé pour avancer sur ce projet avec mon équipe !"'
-                    ]
-                ],
-                'temperature' => 0.3,
-                'max_tokens' => 100
-            ]);
-
-            if (isset($response['choices'][0]['message']['content'])) {
-                $content = $response['choices'][0]['message']['content'];
-                $sentiment = json_decode($content, true);
-
-                if (isset($sentiment['sentiment'])) {
-                    $this->logger->info('✅ [OpenAI] Sentiment analysé : ' . $sentiment['sentiment']);
-                    return $sentiment;
-                }
-            }
-
-            throw new \Exception('Format réponse OpenAI invalide');
-
-        } catch (\Throwable $e) {
-            $this->logger->error('❌ [OpenAI] Erreur sentiment : ' . $e->getMessage());
-            return [];
-        }
+        return $response['choices'][0]['message']['content'] ?? '';
     }
-
-    private function callOpenAI(array $params): array
+    
+    public function createUserMessage(string $content): array
     {
-        $ch = curl_init('https://api.openai.com/v1/chat/completions');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($params),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $this->apiKey
-            ],
-            CURLOPT_TIMEOUT => 30
+        return ['role' => 'user', 'content' => $content];
+    }
+    
+    public function createSystemMessage(string $content): array
+    {
+        return ['role' => 'system', 'content' => $content];
+    }
+    
+    public function isConfigured(): bool
+    {
+        return !empty($this->apiKey) && $this->apiKey !== 'your_openai_api_key_here';
+    }
+    
+    public function chatJson(array $messages, ?string $model = null): array
+    {
+        $response = $this->chat($messages, $model, [
+            'response_format' => ['type' => 'json_object'],
         ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode !== 200) {
-            throw new \Exception("OpenAI API erreur HTTP $httpCode");
+        
+        $content = $this->extractContent($response);
+        
+        try {
+            return json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            $this->logger->error('JSON parsing error', [
+                'content' => $content,
+                'error' => $e->getMessage(),
+            ]);
+            
+            throw new \Exception('Erreur JSON');
         }
-
-        return json_decode($response, true) ?? [];
     }
 }

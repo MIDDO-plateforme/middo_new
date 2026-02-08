@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Recommandations IA</h1>
+
+<div class="mdo-card">
+    <p>Catégorie la plus pertinente : <strong>{{ data.top_category }}</strong></p>
+
+    <h3>Produits recommandés</h3>
+
+    <div class="mdo-grid">
+        {% for p in data.suggested_products %}
+            <div class="mdo-card">
+                <h4>{{ p.name }}</h4>
+                <p>{{ p.description|slice(0, 100) }}…</p>
+                <strong>{{ p.price }} €</strong><br>
+                <a class="mdo-btn" href="{{ path('product_show', {id: p.id}) }}">Voir</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

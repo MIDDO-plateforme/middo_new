@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Détails de la Transaction</h1>
+
+<p><strong>Type :</strong> {{ transaction.type }}</p>
+<p><strong>Montant :</strong> {{ transaction.amount }} €</p>
+<p><strong>Date :</strong> {{ transaction.date|date('d/m/Y H:i') }}</p>
+
+{% if transaction.order %}
+<p><strong>Commande liée :</strong>
+    <a href="{{ path('purchase_order_show', {id: transaction.order.id}) }}">
+        Commande #{{ transaction.order.id }}
+    </a>
+</p>
+{% endif %}
+
+<a href="{{ path('purchase_transaction_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

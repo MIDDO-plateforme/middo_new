@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Mon compte</h1>
+
+<div class="mdo-grid">
+
+    {# --- Informations du profil --- #}
+    <div class="mdo-card">
+        <h3>Informations du profil</h3>
+        <p><strong>Nom :</strong> {{ app.user.entityProfile.name ?? '—' }}</p>
+        <p><strong>Email :</strong> {{ app.user.email }}</p>
+
+        <a class="mdo-btn" href="{{ path('account_edit') }}">Modifier mes informations</a>
+    </div>
+
+    {# --- Préférences utilisateur --- #}
+    <div class="mdo-card">
+        <h3>Préférences</h3>
+        <a class="mdo-btn" href="{{ path('user_preferences') }}">Modifier mes préférences</a>
+    </div>
+
+    {# --- Historique des commandes --- #}
+    <div class="mdo-card">
+        <h3>Mes commandes</h3>
+        <a class="mdo-btn" href="{{ path('order_my_orders') }}">Voir mes commandes</a>
+    </div>
+
+    {# --- Commandes reçues (fournisseur) --- #}
+    <div class="mdo-card">
+        <h3>Commandes reçues</h3>
+        <a class="mdo-btn" href="{{ path('order_received') }}">Voir les commandes reçues</a>
+    </div>
+
+    {# --- IA : Recommandations --- #}
+    <div class="mdo-card">
+        <h3>Recommandations IA</h3>
+        <a class="mdo-btn" href="{{ path('purchase_ai') }}">Voir les recommandations</a>
+    </div>
+
+    {# --- IA : Opportunités --- #}
+    <div class="mdo-card">
+        <h3>Opportunités IA</h3>
+        <a class="mdo-btn" href="{{ path('purchase_opportunities') }}">Voir les opportunités</a>
+    </div>
+
+    <div class="mdo-card">
+    <h3>Alertes IA</h3>
+    <p>Les opportunités IA vous seront envoyées automatiquement.</p>
+</div>
+
+</div>
+{% endblock %}

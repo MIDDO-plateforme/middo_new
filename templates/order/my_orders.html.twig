@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Mes commandes</h1>
+
+<div class="mdo-card">
+    {% if orders is empty %}
+        <p>Aucune commande pour le moment.</p>
+    {% else %}
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <strong>Commande #{{ order.id }}</strong><br>
+                    Statut : {{ order.status }}<br>
+                    Date : {{ order.createdAt|date('d/m/Y H:i') }}<br>
+                    <a class="mdo-btn" href="{{ path('order_success', {id: order.id}) }}">Voir</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

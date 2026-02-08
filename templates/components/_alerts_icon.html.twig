@@ -1,0 +1,85 @@
+{# ============================================================
+   FICHIER : templates/components/_alerts_icon.html.twig
+   Icône d’alertes en temps réel (navbar)
+   ============================================================ #}
+
+<div class="alerts-wrapper" style="position:relative;">
+
+    {# Icône cliquable #}
+    <div id="alerts-button" style="
+        cursor:pointer;
+        position:relative;
+        display:flex;
+        align-items:center;
+    ">
+        <span style="font-size:1.3rem;">🔔</span>
+
+        {# Badge dynamique #}
+        <span id="alert-badge" style="
+            position:absolute;
+            top:-6px;
+            right:-6px;
+            background:red;
+            color:white;
+            font-size:0.7rem;
+            padding:2px 5px;
+            border-radius:50%;
+            min-width:18px;
+            text-align:center;
+        ">
+            {{ alerts|length }}
+        </span>
+    </div>
+
+    {# Liste déroulante des alertes #}
+    <div id="alerts-dropdown" style="
+        display:none;
+        position:absolute;
+        right:0;
+        top:30px;
+        background:white;
+        color:#333;
+        width:260px;
+        border-radius:6px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        padding:0.5rem 0;
+        z-index:2000;
+    ">
+        {% if alerts is empty %}
+            <div style="padding:0.75rem;text-align:center;color:#777;font-size:0.9rem;">
+                Aucune alerte
+            </div>
+        {% else %}
+            {% for alert in alerts %}
+                <div style="
+                    padding:0.75rem 1rem;
+                    border-bottom:1px solid #eee;
+                    font-size:0.9rem;
+                ">
+                    <strong>{{ alert.type }}</strong><br>
+                    <span style="opacity:0.8;">{{ alert.message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("alerts-button");
+    const dropdown = document.getElementById("alerts-dropdown");
+
+    if (btn && dropdown) {
+        btn.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+    }
+});
+</script>

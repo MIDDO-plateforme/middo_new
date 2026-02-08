@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Deposit Funds for Contract: {{ contract.title }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Amount (€)</label>
+        <input name="amount" type="number" step="0.01" class="form-control" required>
+    </div>
+
+    <button class="btn btn-success">Deposit</button>
+</form>
+
+<a href="{{ path('escrow_show', {id: contract.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

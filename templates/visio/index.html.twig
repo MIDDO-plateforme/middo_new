@@ -1,8 +1,79 @@
-{% extends 'layout/app_layout.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
-{% block page_title %}Visio & Sessions en direct{% endblock %}
-{% block page_subtitle %}Organisez vos rencontres synchrones.{% endblock %}
+{% block title %}Visio - MIDDO{% endblock %}
 
-{% block page_content %}
-<p class="text-muted">Page Visio & Sessions en direct  base fonctionnelle.</p>
+{% block content %}
+
+<div class="page-header">
+    <h1>Visioconférences</h1>
+    <p class="breadcrumb">Accueil > Visio</p>
+</div>
+
+{# --- Statistiques Visio --- #}
+<div class="visio-stats-grid">
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Réunions aujourd’hui',
+        value: 4,
+        color: 'blue'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'En cours',
+        value: 1,
+        color: 'green'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Planifiées',
+        value: 6,
+        color: 'purple'
+    } %}
+
+    {% include 'components/project_stat_card.html.twig' with {
+        title: 'Comptes-rendus IA',
+        value: 3,
+        color: 'orange'
+    } %}
+
+</div>
+
+{# --- Actions rapides --- #}
+<div class="visio-actions">
+    <button class="btn">Créer une salle</button>
+    <button class="btn-outline">Rejoindre</button>
+    <button class="btn-outline">Analyse IA</button>
+</div>
+
+{# --- Liste des salles --- #}
+<div class="visio-grid">
+
+    {% for room in rooms %}
+        <div class="visio-card">
+
+            <h3>{{ room.title }}</h3>
+
+            <p class="visio-desc">{{ room.description }}</p>
+
+            <div class="visio-meta">
+                <span>🕒 {{ room.time }}</span>
+                <span>👥 {{ room.participants|length }} participants</span>
+            </div>
+
+            <div class="visio-participants">
+                {% for p in room.participants %}
+                    <span class="participant-avatar">{{ p }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="actions">
+                <a href="/visio/{{ room.id }}" class="btn">Rejoindre</a>
+                <a href="/visio/{{ room.id }}/summary" class="btn-outline">Résumé IA</a>
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
+
 {% endblock %}

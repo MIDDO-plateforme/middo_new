@@ -1,157 +1,105 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller;
 
 use App\Entity\Project;
-use App\Entity\User;
+use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/api/projects', name: 'api_projects_')]
+#[Route('/project')]
 class ProjectController extends AbstractController
 {
-    public function __construct(
-        private readonly ProjectRepository $projects,
-        private readonly EntityManagerInterface $em,
-        private readonly ValidatorInterface $validator
-    ) {}
-
-    #[Route('', name: 'list', methods: ['GET'])]
-    public function list(): JsonResponse
+    #[Route('/', name: 'app_project_index', methods: ['GET'])]
+    public function index(ProjectRepository $projectRepository): Response
     {
-        $projects = $this->projects->findAll();
-        $data = array_map(fn(Project $p) => $this->serializeProject($p), $projects);
-
-        return $this->json($data);
+        return $this->render('project/index.html.twig', [
+            'projects' => $projectRepository->findAll(),
+        ]);
     }
 
-    #[Route('', name: 'create', methods: ['POST'])]
-    public function create(Request $request): JsonResponse
+    #[Route('/my-projects', name: 'app_project_my_projects', methods: ['GET'])]
+    public function myProjects(ProjectRepository $projectRepository): Response
     {
-        $payload = json_decode($request->getContent(), true);
-
-        $project = new Project();
-        $project->setName($payload['name'] ?? '');
-        $project->setDescription($payload['description'] ?? null);
-        $project->setStatus($payload['status'] ?? 'draft');
-
-        /** @var User|null $user */
         $user = $this->getUser();
-        if ($user) {
-            $project->setOwner($user);
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
 
-        if (!empty($payload['members']) && is_array($payload['members'])) {
-            foreach ($payload['members'] as $memberId) {
-                $member = $this->em->getRepository(User::class)->find($memberId);
-                if ($member) {
-                    $project->addMember($member);
-                }
-            }
-        }
+        $projects = $projectRepository->findBy(['owner' => $user]);
 
-        $errors = $this->validator->validate($project);
-        if (count($errors) > 0) {
-            return $this->json(['errors' => (string) $errors], 400);
-        }
-
-        $this->projects->save($project, true);
-
-        return $this->json($this->serializeProject($project), 201);
+        return $this->render('project/my_projects.html.twig', [
+            'projects' => $projects,
+        ]);
     }
 
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(int $id): JsonResponse
+    #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $project = $this->projects->find($id);
+        $project = new Project();
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
 
-        if (!$project) {
-            return $this->json(['error' => 'Projet introuvable'], 404);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $project->setOwner($this->getUser());
+            $project->setStatus('active');
+            $project->setCreatedAt(new \DateTimeImmutable());
+            
+            $entityManager->persist($project);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_project_show', ['id' => $project->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->json($this->serializeProject($project));
+        return $this->render('project/new.html.twig', [
+            'project' => $project,
+            'form' => $form,
+        ]);
     }
 
-    #[Route('/{id}', name: 'update', methods: ['PUT'])]
-    public function update(int $id, Request $request): JsonResponse
+    #[Route('/{id}', name: 'app_project_show', methods: ['GET'])]
+    public function show(Project $project): Response
+{
+    $response = $this->render('project/show.html.twig', [
+        'project' => $project,
+    ]);
+    
+    $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+    return $response;
+}
+
+
+    #[Route('/{id}/edit', name: 'app_project_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
-        $project = $this->projects->find($id);
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
 
-        if (!$project) {
-            return $this->json(['error' => 'Projet introuvable'], 404);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_project_show', ['id' => $project->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        $payload = json_decode($request->getContent(), true);
-
-        if (isset($payload['name'])) {
-            $project->setName($payload['name']);
-        }
-
-        if (array_key_exists('description', $payload)) {
-            $project->setDescription($payload['description']);
-        }
-
-        if (isset($payload['status'])) {
-            $project->setStatus($payload['status']);
-        }
-
-        if (isset($payload['members']) && is_array($payload['members'])) {
-            foreach ($project->getMembers() as $existing) {
-                $project->removeMember($existing);
-            }
-
-            foreach ($payload['members'] as $memberId) {
-                $member = $this->em->getRepository(User::class)->find($memberId);
-                if ($member) {
-                    $project->addMember($member);
-                }
-            }
-        }
-
-        $project->setUpdatedAt();
-
-        $errors = $this->validator->validate($project);
-        if (count($errors) > 0) {
-            return $this->json(['errors' => (string) $errors], 400);
-        }
-
-        $this->projects->save($project, true);
-
-        return $this->json($this->serializeProject($project));
+        return $this->render('project/edit.html.twig', [
+            'project' => $project,
+            'form' => $form,
+        ]);
     }
 
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
-    public function delete(int $id): JsonResponse
+    #[Route('/{id}', name: 'app_project_delete', methods: ['POST'])]
+    public function delete(Request $request, Project $project, EntityManagerInterface $entityManager): Response
     {
-        $project = $this->projects->find($id);
-
-        if (!$project) {
-            return $this->json(['error' => 'Projet introuvable'], 404);
+        if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($project);
+            $entityManager->flush();
         }
 
-        $this->projects->remove($project, true);
-
-        return $this->json(['message' => 'Projet supprimé']);
-    }
-
-    private function serializeProject(Project $p): array
-    {
-        return [
-            'id' => $p->getId(),
-            'name' => $p->getName(),
-            'description' => $p->getDescription(),
-            'status' => $p->getStatus(),
-            'owner' => $p->getOwner()?->getId(),
-            'members' => array_map(fn(User $u) => $u->getId(), $p->getMembers()->toArray()),
-            'createdAt' => $p->getCreatedAt()->format(\DATE_ATOM),
-            'updatedAt' => $p->getUpdatedAt()->format(\DATE_ATOM),
-        ];
+        return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
     }
 }

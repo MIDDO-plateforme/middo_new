@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Mettre à jour le statut du segment #{{ segment.id }}</h1>
+
+<p><strong>De :</strong> {{ segment.fromLocation }}</p>
+<p><strong>À :</strong> {{ segment.toLocation }}</p>
+<p><strong>Mode :</strong> {{ segment.mode }}</p>
+<p><strong>Status actuel :</strong> {{ segment.status }}</p>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Nouveau statut</label>
+        <select name="status" class="form-control" required>
+            <option value="pending" {% if segment.status == 'pending' %}selected{% endif %}>En attente</option>
+            <option value="in_transit" {% if segment.status == 'in_transit' %}selected{% endif %}>En cours</option>
+            <option value="blocked" {% if segment.status == 'blocked' %}selected{% endif %}>Bloqué / obstacle</option>
+            <option value="completed" {% if segment.status == 'completed' %}selected{% endif %}>Terminé</option>
+        </select>
+    </div>
+
+    <button class="btn btn-success">Mettre à jour</button>
+</form>
+
+<a href="{{ path('delivery_segment_index', {id: segment.delivery.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

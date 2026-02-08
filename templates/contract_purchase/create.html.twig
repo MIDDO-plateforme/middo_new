@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Créer un contrat pour la commande #{{ order.id }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Conditions du contrat</label>
+        <textarea name="terms" class="form-control" rows="10" required>
+- Le fournisseur {{ order.offer.supplierName }} s’engage à livrer {{ order.group.totalQuantity }} unités de {{ order.group.productName }}.
+- Le prix total est de {{ order.totalPrice }} €.
+- La livraison doit être effectuée dans la zone {{ order.group.location }}.
+- MIDDO agit comme tiers de confiance.
+- Le paiement est sécurisé via le système Escrow.
+        </textarea>
+    </div>
+
+    <button class="btn btn-success">Créer le contrat</button>
+</form>
+
+<a href="{{ path('purchase_order_show', {id: order.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

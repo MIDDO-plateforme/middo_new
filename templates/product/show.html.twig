@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>{{ product.name }}</h1>
+
+<div class="mdo-card">
+    <p>{{ product.description }}</p>
+    <strong>{{ product.price }} €</strong><br><br>
+
+    <a class="mdo-btn" href="{{ path('product_edit', {id: product.id}) }}">Modifier</a>
+    <a class="mdo-btn" href="{{ path('product_disable', {id: product.id}) }}">Désactiver</a>
+    <a class="mdo-btn" href="{{ path('cart_add', {id: product.id}) }}">
+    Ajouter au panier
+</a>
+<div class="mdo-card">
+    <h3>Produits similaires</h3>
+    <a class="mdo-btn" href="{{ path('purchase_ai') }}">Voir les recommandations IA</a>
+</div>
+{% endblock %}

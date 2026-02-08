@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Alertes Transport</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Message</th>
+            <th>Gravité</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in alerts %}
+            <tr>
+                <td>{{ a.type }}</td>
+                <td>{{ a.message }}</td>
+                <td>{{ a.severity }}</td>
+                <td>{{ a.createdAt|date('d/m/Y H:i') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

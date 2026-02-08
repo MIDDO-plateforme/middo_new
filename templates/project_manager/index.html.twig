@@ -1,0 +1,73 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}IA Project Manager - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>IA Project Manager</h1>
+    <p class="breadcrumb">Dashboard > IA Project Manager</p>
+</div>
+
+<div class="project-manager-container">
+
+    {% for project in projects %}
+        <div class="project-box">
+
+            <h2>{{ project.name }}</h2>
+
+            <span class="badge badge-progress">{{ project.progress }}%</span>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ project.progress }}%;"></div>
+            </div>
+
+            <h3>Jalons (Milestones)</h3>
+            <ul>
+                {% for milestone in project.milestones %}
+                    <li>
+                        <strong>{{ milestone.label }} :</strong> {{ milestone.status }}
+                    </li>
+                {% else %}
+                    <li>Aucun jalon enregistré</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Tâches</h3>
+            <ul>
+                {% for task in project.tasks %}
+                    <li>
+                        <strong>{{ task.task }}</strong> — Assigné à {{ task.assigned }}  
+                        ({{ task.status }})
+                    </li>
+                {% else %}
+                    <li>Aucune tâche enregistrée</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Risques détectés</h3>
+            <ul>
+                {% for risk in project.risks %}
+                    <li>{{ risk }}</li>
+                {% else %}
+                    <li>Aucun risque détecté</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Recommandations IA</h3>
+            <ul>
+                {% for rec in project.ia_recommendations %}
+                    <li>{{ rec }}</li>
+                {% else %}
+                    <li>Aucune recommandation pour le moment</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    {% else %}
+        <p>Aucun projet enregistré.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

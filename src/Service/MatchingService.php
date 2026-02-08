@@ -2,183 +2,207 @@
 
 namespace App\Service;
 
+use App\Entity\Project;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+
 class MatchingService
 {
-    private $missions = [];
-    private $userProfile = [];
+    private OpenAIService $openAIService;
+    private EntityManagerInterface $entityManager;
+    private LoggerInterface $logger;
+    
+    private const SYSTEM_PROMPT = "Tu es un expert en recrutement pour MIDDO.
 
-    public function __construct()
+Analyse un projet et des utilisateurs pour identifier les meilleurs matchs.
+
+Format JSON :
+{
+  \"matches\": [
     {
-        $this->initializeMissions();
+      \"user_id\": 123,
+      \"username\": \"nom\",
+      \"score\": 92,
+      \"raisons\": [\"raison 1\", \"raison 2\"],
+      \"competences_cles\": [\"compétence 1\"],
+      \"type_profil\": \"freelancer\",
+      \"recommandation\": \"Excellent match\"
     }
+  ],
+  \"total_analyses\": 10,
+  \"meilleurs_profils\": 5
+}
 
-    private function initializeMissions()
-    {
-        // Missions simulées (en production: depuis BDD)
-        $this->missions = [
-            [
-                'id' => 1,
-                'title' => 'Développement Smart Contract DeFi',
-                'description' => 'Création d\'un smart contract pour plateforme DeFi',
-                'budget' => 3500,
-                'duration' => '2 mois',
-                'company' => 'DeFi Corp',
-                'skills' => ['Solidity', 'Ethereum', 'Smart Contracts', 'Web3'],
-                'location' => 'Remote',
-                'urgency' => 'high',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Audit Sécurité Application Symfony',
-                'description' => 'Audit de sécurité complet d\'une application Symfony 6.3',
-                'budget' => 1200,
-                'duration' => '2 semaines',
-                'company' => 'TechStart SAS',
-                'skills' => ['Symfony', 'PHP', 'Sécurité', 'OWASP'],
-                'location' => 'Paris, France',
-                'urgency' => 'medium',
-            ],
-            [
-                'id' => 3,
-                'title' => 'Développement dApp Polygon',
-                'description' => 'Création d\'une dApp complète sur Polygon avec React frontend',
-                'budget' => 4500,
-                'duration' => '3 mois',
-                'company' => 'BlockChain Ventures',
-                'skills' => ['React', 'Web3.js', 'Polygon', 'Smart Contracts'],
-                'location' => 'Remote',
-                'urgency' => 'high',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Conseil Architecture Microservices',
-                'description' => 'Conseil et mise en place architecture microservices',
-                'budget' => 800,
-                'duration' => '1 mois',
-                'company' => 'CryptoVentures',
-                'skills' => ['Architecture', 'Microservices', 'Docker', 'Kubernetes'],
-                'location' => 'Remote',
-                'urgency' => 'low',
-            ],
-            [
-                'id' => 5,
-                'title' => 'Intégration API Payment Blockchain',
-                'description' => 'Intégration d\'API de paiement crypto dans plateforme e-commerce',
-                'budget' => 2200,
-                'duration' => '6 semaines',
-                'company' => 'E-Commerce Plus',
-                'skills' => ['PHP', 'API REST', 'Blockchain', 'Crypto'],
-                'location' => 'Lyon, France',
-                'urgency' => 'medium',
-            ],
-        ];
+Score de 0 à 100. Sois objectif.";
+    
+    public function __construct(
+        OpenAIService $openAIService,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ) {
+        $this->openAIService = $openAIService;
+        $this->entityManager = $entityManager;
+        $this->logger = $logger;
     }
-
-    public function findMatches(array $userProfile): array
+    
+    public function findBestMatches(Project $project, int $limit = 10): array
     {
-        $this->userProfile = $userProfile;
-        $userSkills = $userProfile['skills'] ?? ['Symfony', 'React', 'Blockchain', 'PHP'];
-        $userBudgetMin = $userProfile['budgetMin'] ?? 1000;
-        $userLocation = $userProfile['location'] ?? 'Remote';
-
-        $matches = [];
-
-        foreach ($this->missions as $mission) {
-            $score = $this->calculateMatchScore($mission, $userSkills, $userBudgetMin, $userLocation);
+        try {
+            if (!$this->openAIService->isConfigured()) {
+                return $this->getSimpleMatches($project, $limit);
+            }
             
-            $matches[] = [
-                'mission' => $mission,
-                'score' => $score,
-                'reasons' => $this->getMatchReasons($mission, $score),
+            $users = $this->entityManager->getRepository(User::class)
+                ->createQueryBuilder('u')
+                ->where('u.id != :creator_id')
+                ->setParameter('creator_id', $project->getCreator()->getId())
+                ->setMaxResults(50)
+                ->getQuery()
+                ->getResult();
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'matches' => [],
+                    'message' => 'Aucun utilisateur disponible.',
+                ];
+            }
+            
+            $projectContext = $this->buildProjectContext($project);
+            $usersContext = $this->buildUsersContext($users);
+            
+            $userMessage = "PROJET :
+{$projectContext}
+
+UTILISATEURS :
+{$usersContext}
+
+Identifie les {$limit} meilleurs matchs JSON.";
+            
+            $messages = [
+                $this->openAIService->createSystemMessage(self::SYSTEM_PROMPT),
+                $this->openAIService->createUserMessage($userMessage),
+            ];
+            
+            $this->logger->info('Generating matches', [
+                'project_id' => $project->getId(),
+                'users_count' => count($users),
+            ]);
+            
+            $result = $this->openAIService->chatJson($messages, 'gpt-4o-mini');
+            $matches = $this->enrichMatches($result['matches'] ?? [], $users);
+            $matches = array_slice($matches, 0, $limit);
+            
+            return [
+                'success' => true,
+                'matches' => $matches,
+                'total_analyzed' => count($users),
+                'error' => null,
+            ];
+            
+        } catch (\Exception $e) {
+            $this->logger->error('Error generating matches', [
+                'project_id' => $project->getId(),
+                'error' => $e->getMessage(),
+            ]);
+            
+            return [
+                'success' => false,
+                'matches' => $this->getSimpleMatches($project, $limit)['matches'],
+                'error' => 'Erreur lors du matching.',
             ];
         }
-
-        // Trier par score décroissant
-        usort($matches, function($a, $b) {
-            return $b['score'] - $a['score'];
-        });
-
-        // Retourner top 5
-        return array_slice($matches, 0, 5);
     }
-
-    private function calculateMatchScore(array $mission, array $userSkills, int $userBudgetMin, string $userLocation): int
+    
+    private function buildProjectContext(Project $project): string
     {
-        $score = 0;
-
-        // 1. Compétences (60% du score)
-        $skillsMatch = count(array_intersect($mission['skills'], $userSkills));
-        $skillsTotal = count($mission['skills']);
-        $skillsScore = $skillsTotal > 0 ? ($skillsMatch / $skillsTotal) * 60 : 0;
-        $score += $skillsScore;
-
-        // 2. Budget (20% du score)
-        if ($mission['budget'] >= $userBudgetMin) {
-            $budgetScore = 20;
-        } else {
-            $budgetScore = ($mission['budget'] / $userBudgetMin) * 20;
-        }
-        $score += $budgetScore;
-
-        // 3. Localisation (10% du score)
-        if ($mission['location'] === $userLocation || $mission['location'] === 'Remote' || $userLocation === 'Remote') {
-            $score += 10;
-        }
-
-        // 4. Urgence (10% du score)
-        if ($mission['urgency'] === 'high') {
-            $score += 10;
-        } elseif ($mission['urgency'] === 'medium') {
-            $score += 5;
-        }
-
-        return min(100, round($score));
+        return "Titre: {$project->getTitle()}
+Description: {$project->getDescription()}
+Budget: {$project->getBudget()} €
+Statut: {$project->getStatus()}
+Créateur: {$project->getCreator()->getUsername()}";
     }
-
-    private function getMatchReasons(array $mission, int $score): array
+    
+    private function buildUsersContext(array $users): string
     {
-        $reasons = [];
-
-        if ($score >= 90) {
-            $reasons[] = ' Correspondance exceptionnelle';
-        } elseif ($score >= 75) {
-            $reasons[] = ' Excellente correspondance';
-        } elseif ($score >= 60) {
-            $reasons[] = ' Bonne correspondance';
+        $context = [];
+        
+        foreach ($users as $user) {
+            $skills = $user->getSkills() ? implode(', ', array_map(fn($s) => $s->getName(), $user->getSkills()->toArray())) : 'Non spécifiées';
+            
+            $context[] = "- ID: {$user->getId()}, Nom: {$user->getUsername()}, Type: {$user->getUserType()}, Compétences: {$skills}";
         }
-
-        // Compétences matchées
-        $userSkills = $this->userProfile['skills'] ?? ['Symfony', 'React', 'Blockchain', 'PHP'];
-        $matchedSkills = array_intersect($mission['skills'], $userSkills);
-        if (count($matchedSkills) > 0) {
-            $reasons[] = ' ' . count($matchedSkills) . '/' . count($mission['skills']) . ' compétences correspondent';
-        }
-
-        // Budget
-        if ($mission['budget'] >= 3000) {
-            $reasons[] = ' Budget élevé';
-        }
-
-        // Remote
-        if ($mission['location'] === 'Remote') {
-            $reasons[] = ' 100% Remote';
-        }
-
-        // Urgence
-        if ($mission['urgency'] === 'high') {
-            $reasons[] = ' Mission urgente';
-        }
-
-        return $reasons;
+        
+        return implode("\n", $context);
     }
-
-    public function getMissionById(int $id): ?array
+    
+    private function enrichMatches(array $matches, array $users): array
     {
-        foreach ($this->missions as $mission) {
-            if ($mission['id'] === $id) {
-                return $mission;
+        $usersById = [];
+        foreach ($users as $user) {
+            $usersById[$user->getId()] = $user;
+        }
+        
+        $enrichedMatches = [];
+        
+        foreach ($matches as $match) {
+            $userId = $match['user_id'] ?? null;
+            
+            if (!$userId || !isset($usersById[$userId])) {
+                continue;
             }
+            
+            $user = $usersById[$userId];
+            
+            $enrichedMatches[] = [
+                'user_id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'user_type' => $user->getUserType(),
+                'email' => $user->getEmail(),
+                'bio' => $user->getBio(),
+                'score' => $match['score'] ?? 70,
+                'raisons' => $match['raisons'] ?? ['Profil correspondant'],
+                'competences_cles' => $match['competences_cles'] ?? [],
+                'recommandation' => $match['recommandation'] ?? 'Bon candidat',
+            ];
         }
-        return null;
+        
+        usort($enrichedMatches, fn($a, $b) => $b['score'] <=> $a['score']);
+        
+        return $enrichedMatches;
+    }
+    
+    private function getSimpleMatches(Project $project, int $limit): array
+    {
+        $users = $this->entityManager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->where('u.id != :creator_id')
+            ->setParameter('creator_id', $project->getCreator()->getId())
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+        
+        $matches = [];
+        
+        foreach ($users as $user) {
+            $matches[] = [
+                'user_id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'user_type' => $user->getUserType(),
+                'email' => $user->getEmail(),
+                'bio' => $user->getBio(),
+                'score' => 70,
+                'raisons' => ['Utilisateur actif'],
+                'competences_cles' => [],
+                'recommandation' => 'Profil intéressant',
+            ];
+        }
+        
+        return [
+            'success' => true,
+            'matches' => $matches,
+            'total_analyzed' => count($users),
+        ];
     }
 }

@@ -1,25 +1,62 @@
-{% extends 'base.html.twig' %}
+{# ============================================================
+   FICHIER : templates/security/login.html.twig
+   ============================================================ #}
 
-{% block title %}{{ 'login.title'|trans }}{% endblock %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion – MIDDO</title>
 
-{% block body %}
-    <h1>{{ 'login.title'|trans }}</h1>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
 
-    {% if error %}
-        <div class="error">
-            {{ error.messageKey|trans(error.messageData, 'security') }}
+<div class="login-page">
+
+    <div class="login-card">
+        <div class="login-logo">
+            <h1>MIDDO</h1>
+            <p>Assistant IA pour cliniques, ONG et entrepreneurs.</p>
         </div>
-    {% endif %}
 
-    <form method="post" action="{{ path('app_login') }}">
-        <label for="username">{{ 'login.email'|trans }}</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" required>
+        {# 🔥 IMPORTANT : le formulaire doit pointer vers app_login #}
+        <form class="login-form" method="post" action="{{ path('app_login') }}">
 
-        <label for="password">{{ 'login.password'|trans }}</label>
-        <input type="password" id="password" name="_password" required>
+            {% if error %}
+                <div class="login-error">
+                    Identifiants incorrects.
+                </div>
+            {% endif %}
 
-        <button type="submit">
-            {{ 'login.submit'|trans }}
-        </button>
-    </form>
-{% endblock %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email"
+                       name="_username"
+                       type="email"
+                       required
+                       value="{{ last_username }}"
+                       placeholder="vous@exemple.org">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input id="password"
+                       name="_password"
+                       type="password"
+                       required
+                       placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-login">Se connecter</button>
+
+            <p class="login-hint">
+                Accès sécurisé au cockpit MIDDO.
+            </p>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

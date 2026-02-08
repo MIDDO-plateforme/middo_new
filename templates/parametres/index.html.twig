@@ -1,21 +1,59 @@
-﻿{% extends 'base.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
 {% block title %}Paramètres - MIDDO{% endblock %}
 
-{% block page_title %}Paramètres{% endblock %}
+{% block content %}
 
-{% block body %}
-<div class="section">
-                <div class="section-title">Profil</div>
-                <div class="form-group">
-                    <label class="form-label">Nom complet</label>
-                    <input type="text" class="form-input" value="Baudouin" placeholder="Votre nom">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" value="mbane.baudouin@gmail.com" placeholder="Votre email">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Bio</label>
-                    <input type="text" class="form-input" value="Entrepreneur digital créant MIDDO" placeholder="Décrivez-vous">
+<div class="page-header">
+    <h1>Paramètres</h1>
+    <p class="breadcrumb">Accueil > Paramètres</p>
+</div>
+
+<div class="settings-layout">
+
+    <aside class="settings-menu">
+        <a href="#profil">Profil</a>
+        <a href="#securite">Sécurité</a>
+        <a href="#accessibilite">Accessibilité</a>
+        <a href="#ia">Préférences IA</a>
+    </aside>
+
+    <section class="settings-content">
+
+        <div id="profil" class="settings-section">
+            <h2>Profil</h2>
+            <label>Nom</label>
+            <input type="text" value="Baudouin">
+            <label>Email</label>
+            <input type="email" value="baudouin@example.com">
+        </div>
+
+        <div id="securite" class="settings-section">
+            <h2>Sécurité</h2>
+            <label>Mot de passe</label>
+            <button class="btn-outline">Modifier le mot de passe</button>
+            <label>Double authentification</label>
+            <button class="btn-outline">Activer</button>
+        </div>
+
+        <div id="accessibilite" class="settings-section">
+            <h2>Accessibilité</h2>
+            <label><input type="checkbox"> Mode contraste élevé</label><br>
+            <label><input type="checkbox"> Police adaptée (dyslexie)</label><br>
+            <label><input type="checkbox"> Lecture vocale activée</label><br>
+            <label><input type="checkbox"> Interface simplifiée</label>
+        </div>
+
+        <div id="ia" class="settings-section">
+            <h2>Préférences IA</h2>
+            <label><input type="checkbox" checked> Résumés automatiques</label><br>
+            <label><input type="checkbox" checked> Suggestions IA dans les pages</label><br>
+            <label><input type="checkbox"> Traduction automatique</label><br>
+            <label><input type="checkbox"> Analyse prédictive</label>
+        </div>
+
+    </section>
+
+</div>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block title %}Modifier {{ document.title }} - MIDDO{% endblock %}
 
@@ -7,7 +7,7 @@
     {{ include('workspace/document/new.html.twig')|striptags(false) }}
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
     <div class="document-create-container">
         <nav class="breadcrumb-nav">
             <ol class="breadcrumb">

@@ -1,11 +1,116 @@
-controllers:
-    resource: ../src/Controller/
+annuaire_index:
+    path: /annuaire
+    controller: App\Controller\AnnuaireController::index
+
+banque_index:
+    path: /banque
+    controller: App\Controller\BanqueController::index
+projets_index:
+    path: /projets
+    controller: App\Controller\ProjetsController::index
+messages_index:
+    path: /messages
+    controller: App\Controller\MessagesController::index
+visio_index:
+    path: /visio
+    controller: App\Controller\VisioController::index
+analytics_index:
+    path: /analytics
+    controller: App\Controller\AnalyticsController::index
+travail_index:
+    path: /travail
+    controller: App\Controller\TravailController::index
+
+travail_documents:
+    path: /travail/documents
+    controller: App\Controller\TravailController::documents
+parametres_index:
+    path: /parametres
+    controller: App\Controller\ParametresController::index
+travail_document_show:
+    path: /travail/documents/{id}
+    controller: App\Controller\TravailController::documentShow
+travail_scanner:
+    path: /travail/scanner
+    controller: App\Controller\TravailController::scanner
+travail_tableur:
+    path: /travail/tableur
+    controller: App\Controller\TravailController::tableur
+travail_editeur:
+    path: /travail/editeur
+    controller: App\Controller\TravailController::editeur
+travail_notes:
+    path: /travail/notes
+    controller: App\Controller\TravailController::notes
+
+travail_note_show:
+    path: /travail/notes/{id}
+    controller: App\Controller\TravailController::noteShow
+travail_taches:
+    path: /travail/taches
+    controller: App\Controller\TravailController::taches
+travail_automatisations:
+    path: /travail/automatisations
+    controller: App\Controller\TravailController::automatisations
+administratif_comptabilite:
+    path: /administratif/comptabilite
+    controller: App\Controller\AdministratifController::comptabilite
+administratif_juridique:
+    path: /administratif/juridique
+    controller: App\Controller\AdministratifController::juridique
+administratif_demarches:
+    path: /administratif/demarches
+    controller: App\Controller\AdministratifController::demarches
+administratif_supervision:
+    path: /administratif/supervision
+    controller: App\Controller\AdministratifController::supervision
+splash:
+    path: /splash
+    controller: App\Controller\SplashController::splash
+root_redirect:
+    path: /
+    controller: App\Controller\SplashController::splash
+travail_ia_drive:
+    path: /travail/ia-drive
+    controller: App\Controller\TravailController::iaDrive
+travail_ia_drive_folder:
+    path: /travail/ia-drive/folder/{name}
+    controller: App\Controller\TravailController::iaDriveFolder
+travail_ia_drive_file:
+    path: /travail/ia-drive/file/{name}
+    controller: App\Controller\TravailController::iaDriveFile
+travail_ia_drive_search:
+    path: /travail/ia-drive/search
+    controller: App\Controller\TravailController::iaDriveSearch
+travail_ia_drive_import:
+    path: /travail/ia-drive/import
+    controller: App\Controller\TravailController::iaDriveImport
+projets_detail:
+    path: /projets/{id}
+    controller: App\Controller\ProjetsController::detail
+projets_plan:
+    path: /projets/{id}/plan
+    controller: App\Controller\ProjetsController::plan
+projets_taches:
+    path: /projets/{id}/taches
+    controller: App\Controller\ProjetsController::taches
+projets_risques:
+    path: /projets/{id}/risques
+    controller: App\Controller\ProjetsController::risques
+projets_documents:
+    path: /projets/{id}/documents
+    controller: App\Controller\ProjetsController::documents
+projets_timeline:
+    path: /projets/{id}/timeline
+    controller: App\Controller\ProjetsController::timeline
+parametres_langue:
+    path: /parametres/langue
+    controller: App\Controller\ParametresController::langue
+projets_coordination:
+    path: /projets/{id}/coordination
+    controller: App\Controller\ProjetsController::coordination
+api_controllers:
+    resource: ../src/Controller/Api/
     type: attribute
 
-# Redirection page d'accueil
-app_home:
-    path: /
-    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
-    defaults:
-        route: 'app_dashboard'
-        permanent: true
+

@@ -1,8 +1,56 @@
-{% extends 'layout/app_layout.html.twig' %}
+{% extends 'base_app.html.twig' %}
 
-{% block page_title %}Messages{% endblock %}
-{% block page_subtitle %}Centralisez vos échanges avec léquipe.{% endblock %}
+{% block title %}Messages - MIDDO{% endblock %}
 
-{% block page_content %}
-<p class="text-muted">Page Messages  base fonctionnelle.</p>
+{% block content %}
+
+<div class="page-header">
+    <h1>Messages</h1>
+    <p class="breadcrumb">Accueil > Messages</p>
+</div>
+
+<div class="messages-layout">
+
+    {# --- Liste des conversations --- #}
+    <aside class="messages-list">
+        <h3>Conversations</h3>
+
+        {% for conv in conversations %}
+            <div class="conversation-item {{ conv.active ? 'active' : '' }}">
+                <div class="avatar">{{ conv.initials }}</div>
+                <div class="conversation-info">
+                    <strong>{{ conv.name }}</strong>
+                    <small>{{ conv.last_message }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    </aside>
+
+    {# --- Zone de chat --- #}
+    <section class="chat-window">
+
+        <div class="chat-header">
+            <h3>{{ active.name }}</h3>
+            <small>{{ active.status }}</small>
+        </div>
+
+        <div class="chat-messages">
+            {% for msg in active.messages %}
+                <div class="chat-message {{ msg.from == 'me' ? 'me' : 'them' }}">
+                    <p>{{ msg.text }}</p>
+                    <small>{{ msg.time }}</small>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="chat-input">
+            <input type="text" placeholder="Ã‰crire un messageâ€¦">
+            <button class="btn">Envoyer</button>
+            <button class="btn-outline">RÃ©ponse IA</button>
+        </div>
+
+    </section>
+
+</div>
+
 {% endblock %}

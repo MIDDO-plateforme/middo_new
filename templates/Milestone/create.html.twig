@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Add Milestone to Contract: {{ contract.title }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input name="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Amount (€)</label>
+        <input name="amount" type="number" step="0.01" class="form-control" required>
+    </div>
+
+    <button class="btn btn-success">Save</button>
+</form>
+
+<a href="{{ path('milestone_index', {id: contract.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block title %}Nouveau Document - {{ workspace.name }} - MIDDO{% endblock %}
 
@@ -255,7 +255,7 @@
     </style>
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
     <div class="document-create-container">
         <nav class="breadcrumb-nav">
             <ol class="breadcrumb">

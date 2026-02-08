@@ -1,0 +1,58 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}IA Drive - MIDDO{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>IA Drive</h1>
+    <p class="breadcrumb">Espace de Travail > IA Drive</p>
+</div>
+
+<div class="drive-layout">
+
+    <aside class="drive-sidebar">
+
+        <h3>Actions</h3>
+        <button class="btn">📄 Importer un fichier</button>
+        <button class="btn-outline">📁 Nouveau dossier</button>
+        <button class="btn-outline">📷 Scanner un document</button>
+
+        <h3>IA</h3>
+        <button class="btn-outline">Classer automatiquement</button>
+        <button class="btn-outline">Analyser un fichier</button>
+        <button class="btn-outline">Trouver un document</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="drive-main">
+
+        <h2>Mes fichiers</h2>
+
+        <div class="drive-grid">
+
+            {% for f in files %}
+                <div class="drive-item">
+                    <div class="drive-icon">
+                        {% if f.type == 'folder' %}
+                            📁
+                        {% else %}
+                            📄
+                        {% endif %}
+                    </div>
+                    <div class="drive-name">{{ f.name }}</div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

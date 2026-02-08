@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Contrats du Centre d’Achat</h1>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Commande</th>
+            <th>Status</th>
+            <th>Créé le</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in contracts %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>Commande #{{ c.order.id }}</td>
+                <td>{{ c.status }}</td>
+                <td>{{ c.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('contract_purchase_show', {id: c.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('purchase_center_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

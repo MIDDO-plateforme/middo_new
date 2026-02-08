@@ -1,95 +1,119 @@
-{#
-    ================================================================
-    MIDDO - COMPOSANT MENU RÉUTILISABLE
-    Session 24 - Phase 2 - Option D
-    ================================================================
-    
-    Usage:
-    {% include 'components/_menu.html.twig' with {
-        'current_route': app.request.attributes.get('_route')
-    } %}
-#}
+{# ============================================================
+   FICHIER : templates/components/_menu.html.twig
+   Menu principal MIDDO (sidebar)
+   ============================================================ #}
 
-{# Définir les éléments du menu #}
-{% set menu_items = [
-    {
-        'route': 'app_home',
-        'path': '/',
-        'icon': '🏠',
-        'label': 'Accueil',
-        'badge': null
-    },
-    {
-        'route': 'app_annuaire',
-        'path': '/annuaire',
-        'icon': '',
-        'label': 'Annuaire',
-        'badge': null
-    },
-    {
-        'route': 'app_banque',
-        'path': '/banque',
-        'icon': '',
-        'label': 'Banque',
-        'badge': null
-    },
-    {
-        'route': 'app_projets',
-        'path': '/projets',
-        'icon': '',
-        'label': 'Projets',
-        'badge': null
-    },
-    {
-        'route': 'app_messages',
-        'path': '/messages',
-        'icon': '',
-        'label': 'Messages',
-        'badge': null
-    },
-    {
-        'route': 'app_visio',
-        'path': '/visio',
-        'icon': '',
-        'label': 'Visio',
-        'badge': null
-    },
-    {
-        'route': 'app_analytics',
-        'path': '/analytics',
-        'icon': '',
-        'label': 'Analytics',
-        'badge': null
-    },
-    {
-        'route': 'app_travail',
-        'path': '/travail',
-        'icon': '',
-        'label': 'Travail',
-        'badge': null
-    }
-] %}
+<ul class="sidebar-menu-list" style="
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:0.75rem;
+">
 
-{# Récupérer la route actuelle #}
-{% set current_route = current_route|default(app.request.attributes.get('_route')) %}
-{% set current_path = app.request.pathinfo %}
-
-{# Générer les liens du menu #}
-<nav class="menu-nav" role="navigation" aria-label="Navigation principale">
-    {% for item in menu_items %}
-        {% set is_active = (current_route == item.route) or (current_path starts with item.path and item.path != '/') %}
-        
-        <a href="{{ item.path }}" 
-           class="menu-link {{ is_active ? 'active' : '' }}"
-           {% if is_active %}aria-current="page"{% endif %}
-           title="{{ item.label }}">
-            
-            <span class="menu-icon">{{ item.icon }}</span>
-            <span class="menu-label">{{ item.label }}</span>
-            
-            {% if item.badge %}
-                <span class="menu-badge">{{ item.badge }}</span>
-            {% endif %}
+    {# Tableau de bord global #}
+    <li>
+        <a href="{{ path('global_dashboard') }}" class="sidebar-link" style="
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+            padding:0.6rem 0.8rem;
+            border-radius:6px;
+            text-decoration:none;
+            color:#333;
+            font-size:0.95rem;
+        ">
+            <span class="menu-icon">📊</span>
+            <span class="menu-label">Dashboard global</span>
         </a>
-    {% endfor %}
-</nav>
+    </li>
+
+    {# Transport #}
+    <li>
+        <a href="{{ path('transport_dashboard') }}" class="sidebar-link" style="
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+            padding:0.6rem 0.8rem;
+            border-radius:6px;
+            text-decoration:none;
+            color:#333;
+            font-size:0.95rem;
+        ">
+            <span class="menu-icon">🚚</span>
+            <span class="menu-label">Transport</span>
+        </a>
+    </li>
+
+    {# Banque #}
+    <li>
+        <a href="{{ path('bank_dashboard') }}" class="sidebar-link" style="
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+            padding:0.6rem 0.8rem;
+            border-radius:6px;
+            text-decoration:none;
+            color:#333;
+            font-size:0.95rem;
+        ">
+            <span class="menu-icon">🏦</span>
+            <span class="menu-label">Banque</span>
+        </a>
+    </li>
+
+    {# Juridique #}
+    <li>
+        <a href="{{ path('legal_dashboard') }}" class="sidebar-link" style="
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+            padding:0.6rem 0.8rem;
+            border-radius:6px;
+            text-decoration:none;
+            color:#333;
+            font-size:0.95rem;
+        ">
+            <span class="menu-icon">⚖️</span>
+            <span class="menu-label">Juridique</span>
+        </a>
+    </li>
+
+    {# Workplace #}
+    <li>
+        <a href="{{ path('workplace') }}" class="sidebar-link" style="
+            display:flex;
+            align-items:center;
+            gap:0.75rem;
+            padding:0.6rem 0.8rem;
+            border-radius:6px;
+            text-decoration:none;
+            color:#333;
+            font-size:0.95rem;
+        ">
+            <span class="menu-icon">💼</span>
+            <span class="menu-label">Espace de travail</span>
+        </a>
+    </li>
+
+    {# Administration (si rôle admin) #}
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+        <li>
+            <a href="{{ path('admin_dashboard') }}" class="sidebar-link" style="
+                display:flex;
+                align-items:center;
+                gap:0.75rem;
+                padding:0.6rem 0.8rem;
+                border-radius:6px;
+                text-decoration:none;
+                color:#333;
+                font-size:0.95rem;
+            ">
+                <span class="menu-icon">🛠️</span>
+                <span class="menu-label">Administration</span>
+            </a>
+        </li>
+    {% endif %}
+
+</ul>

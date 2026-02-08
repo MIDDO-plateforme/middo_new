@@ -1,0 +1,75 @@
+/* -----------------------------------------
+   MIDDO – ANIMATIONS PREMIUM
+   Version 1.0
+------------------------------------------*/
+
+/* TRANSITIONS GLOBALES */
+* {
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* SIDEBAR */
+.sidebar-link {
+    transition: background 0.2s ease, padding-left 0.2s ease;
+}
+
+.sidebar-link:hover {
+    padding-left: 18px;
+}
+
+/* NAVBAR */
+.navbar-btn {
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* CARTES */
+.dashboard-card,
+.project-box,
+.risk-box,
+.institution-box,
+.timeline-item,
+.drive-file-box,
+.langue-box,
+.coordination-box {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-card:hover,
+.project-box:hover,
+.risk-box:hover,
+.institution-box:hover,
+.timeline-item:hover,
+.drive-file-box:hover,
+.langue-box:hover,
+.coordination-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px var(--shadow);
+}
+
+/* BOUTONS */
+.btn-primary,
+.btn-secondary {
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+    transform: translateY(-2px);
+}
+
+/* PROGRESS BAR */
+.progress-fill {
+    transition: width 0.6s ease;
+}
+
+/* FORMULAIRES */
+textarea:focus,
+select:focus,
+input[type="file"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(74,108,247,0.2);
+}

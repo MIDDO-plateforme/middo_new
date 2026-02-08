@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>{{ profile.name }}</h1>
+
+<div class="mdo-card" style="margin-top:1rem;">
+    <div class="mdo-card-header">
+        <h3>Informations générales</h3>
+        <span class="mdo-tag">{{ profile.type }}</span>
+    </div>
+
+    <p><strong>Description :</strong><br>{{ profile.description ?: 'Aucune description.' }}</p>
+
+    {% if profile.isSensitive %}
+        <div class="mdo-badges">
+            <span class="mdo-tag mdo-badge-danger">Profil protégé</span>
+        </div>
+    {% endif %}
+</div>
+
+<div class="mdo-grid" style="margin-top:1.5rem;">
+
+    <div class="mdo-card">
+        <h3>Compétences</h3>
+        <ul class="mdo-list">
+            {% for cap in profile.capabilities %}
+                <li>{{ cap.name }}</li>
+            {% else %}
+                <li>Aucune compétence renseignée.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Besoins</h3>
+        <ul class="mdo-list">
+            {% for n in profile.needs %}
+                <li>{{ n.name }}</li>
+            {% else %}
+                <li>Aucun besoin renseigné.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Localisation</h3>
+        {% if profile.location %}
+            <p>{{ profile.location.city }}, {{ profile.location.country }}</p>
+            {% if profile.location.canWorkRemotely %}
+                <span class="mdo-tag mdo-badge-info">Télétravail possible</span>
+            {% endif %}
+        {% else %}
+            <p>Non renseignée.</p>
+        {% endif %}
+    </div>
+
+    <div class="mdo-card">
+        <h3>Disponibilité</h3>
+        {% if profile.availability %}
+            <p>Disponible maintenant : {{ profile.availability.isAvailableNow ? 'Oui' : 'Non' }}</p>
+            <p>Jours : {{ profile.availability.days ? profile.availability.days|join(', ') : 'Non renseignés' }}</p>
+        {% else %}
+            <p>Non renseignée.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<div style="margin-top:2rem; display:flex; gap:1rem;">
+    <a class="mdo-btn" href="{{ path('annuaire_matches', {id: profile.id}) }}">Voir mes matchs</a>
+    <a class="mdo-btn" href="{{ path('annuaire_recommendations', {id: profile.id}) }}">Voir mes recommandations</a>
+</div>
+
+<a class="mdo-btn" href="{{ path('annuaire_dashboard', {id: profile.id}) }}">
+    Tableau de bord
+<a class="mdo-btn" href="{{ path('annuaire_pdf', {id: profile.id}) }}">
+    Télécharger le PDF
+<a class="mdo-btn" href="{{ path('messages_conversation', {id: profile.id}) }}">
+    Envoyer un message
+</a>
+
+{% endblock %}

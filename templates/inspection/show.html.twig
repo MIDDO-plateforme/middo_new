@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Inspection Report</h1>
+
+<p><strong>Milestone:</strong> {{ inspection.milestone.title }}</p>
+<p><strong>Inspector:</strong> {{ inspection.inspector.name }}</p>
+<p><strong>Decision:</strong> {{ inspection.decision }}</p>
+<p><strong>Date:</strong> {{ inspection.createdAt|date('d/m/Y H:i') }}</p>
+
+<p><strong>Report:</strong></p>
+<p>{{ inspection.report }}</p>
+
+<a href="{{ path('milestone_show', {id: inspection.milestone.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

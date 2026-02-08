@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Inspect Milestone: {{ milestone.title }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Inspector</label>
+        <select name="inspector_id" class="form-control" required>
+            {% for i in inspectors %}
+                <option value="{{ i.id }}">{{ i.name }} ({{ i.role }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Decision</label>
+        <select name="decision" class="form-control">
+            <option value="approved">Approve</option>
+            <option value="rejected">Reject</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Report</label>
+        <textarea name="report" class="form-control"></textarea>
+    </div>
+
+    <button class="btn btn-success">Submit Inspection</button>
+</form>
+
+<a href="{{ path('milestone_show', {id: milestone.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

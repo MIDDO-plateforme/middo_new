@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Matchs IA — {{ profile.name }}</h1>
+
+{% if matches is empty %}
+    <p>Aucun match trouvé pour le moment.</p>
+{% else %}
+    <div class="mdo-grid" style="margin-top:1.5rem;">
+        {% for item in matches %}
+            <div class="mdo-card">
+                <div class="mdo-card-header">
+                    <h3>{{ item.profile.name }}</h3>
+                    <span class="mdo-tag">{{ item.score }} / 100</span>
+                </div>
+
+                {% if item.profile.isSensitive %}
+                    <div class="mdo-badges">
+                        <span class="mdo-tag mdo-badge-danger">Profil protégé</span>
+                    </div>
+                {% endif %}
+
+                <p style="margin-top:0.5rem;">
+                    <strong>Type :</strong> {{ item.profile.type }}
+                </p>
+
+                <a class="mdo-btn" href="{{ path('annuaire_show', {id: item.profile.id}) }}">
+                    Voir le profil
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

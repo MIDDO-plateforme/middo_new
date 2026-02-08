@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Détail de la demande d’achat</h1>
+
+<p><strong>Produit :</strong> {{ requestItem.productName }}</p>
+<p><strong>Quantité :</strong> {{ requestItem.quantity }}</p>
+<p><strong>Catégorie :</strong> {{ requestItem.category }}</p>
+<p><strong>Lieu :</strong> {{ requestItem.location }}</p>
+<p><strong>Status :</strong> {{ requestItem.status }}</p>
+<p><strong>Créée le :</strong> {{ requestItem.createdAt|date('d/m/Y H:i') }}</p>
+
+<a href="{{ path('purchase_request_index') }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

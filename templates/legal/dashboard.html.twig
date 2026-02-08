@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="display:flex;min-height:80vh;">
+
+    {# Sidebar cockpit réutilisée #}
+    {% include 'cockpit/_sidebar.html.twig' %}
+
+    <div style="flex:1;padding:2rem;">
+        <h1>Juridique — MIDDO</h1>
+        <p style="opacity:0.7;">Suivi des contrats, risques et conformité</p>
+
+        <hr style="margin:1.5rem 0;">
+
+        {# Statistiques juridiques #}
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:1.5rem;
+        ">
+            <div class="stats-card">
+                <h3>Contrats actifs</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.contractsActive }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Revues en attente</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.pendingReviews }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Risques juridiques</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.legalRisks }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Score conformité</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.complianceScore }}%</p>
+            </div>
+        </div>
+
+        <hr style="margin:2rem 0;">
+
+        {# Alertes juridiques #}
+        {% include 'cockpit/_live_updates.html.twig' %}
+        <script src="/js/mercure.js"></script>
+    </div>
+</div>
+{% endblock %}

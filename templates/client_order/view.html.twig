@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Votre commande #{{ order.id }}</h1>
+
+<h2>Informations commande</h2>
+<p><strong>Groupe :</strong> {{ order.group.productName }}</p>
+<p><strong>Quantité totale :</strong> {{ order.group.totalQuantity }}</p>
+<p><strong>Prix total :</strong> {{ order.totalPrice }} €</p>
+
+{% if delivery %}
+<hr>
+<h2>Livraison</h2>
+<p><strong>Départ :</strong> {{ delivery.pickupLocation }}</p>
+<p><strong>Destination :</strong> {{ delivery.dropLocation }}</p>
+<p><strong>Status :</strong> {{ delivery.status }}</p>
+<p><strong>Suivi public :</strong> <a href="/track/{{ delivery.publicTrackingCode }}">Lien de suivi</a></p>
+
+<hr>
+<h2>Segments de transport</h2>
+{% for s in segments %}
+    <div class="card mb-3">
+        <div class="card-header">
+            Segment {{ s.sequence }} : {{ s.fromLocation }} → {{ s.toLocation }}
+        </div>
+        <div class="card-body">
+            <p><strong>Mode :</strong> {{ s.mode }}</p>
+            <p><strong>Status :</strong> {{ s.status }}</p>
+            <p><strong>Prix :</strong> {{ s.segmentPrice }} €</p>
+
+            {% if contracts[s.id] is defined and contracts[s.id] %}
+                <p><strong>Contrat :</strong>
+                    <a href="{{ path('logistic_contract_show', {id: s.id}) }}">Voir le contrat</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<hr>
+<h2>Paiements transport liés</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Montant</th>
+            <th>Description</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+            <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.amount }} €</td>
+                <td>{{ t.description }}</td>
+                <td>{{ t.createdAt|date('d/m/Y H:i') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<p>Aucune livraison encore associée à cette commande.</p>
+{% endif %}
+
+{% endblock %}

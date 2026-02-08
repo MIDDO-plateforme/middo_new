@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Dashboard Global MIDDO</h1>
+
+<p>
+    Vue unifiée : Achats, Transport, Banque, Juridique.
+</p>
+
+<hr>
+
+<h2>🛒 Centre d’Achat — Commandes récentes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Groupe</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Vue client</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in orders|slice(0,10) %}
+            <tr>
+                <td>{{ o.id }}</td>
+                <td>{{ o.group.productName ?? '—' }}</td>
+                <td>{{ o.totalPrice }} €</td>
+                <td>{{ o.status ?? '—' }}</td>
+                <td>
+                    <a href="{{ path('client_order_view', {id: o.id}) }}" class="btn btn-sm btn-info">
+                        Détails
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>🚚 Transport — Livraisons & segments</h2>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Livraisons</h3>
+        <ul>
+            {% for d in deliveries|slice(0,10) %}
+                <li>
+                    #{{ d.id }} — {{ d.pickupLocation }} → {{ d.dropLocation }} ({{ d.status }})
+                    — <a href="/track/{{ d.publicTrackingCode }}">Suivi public</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h3>Segments récents</h3>
+        <ul>
+            {% for s in segments|slice(0,10) %}
+                <li>
+                    Segment #{{ s.id }} — {{ s.fromLocation }} → {{ s.toLocation }}
+                    — {{ s.mode }} — {{ s.status }} — {{ s.segmentPrice }} €
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<hr>
+
+<h2>🏦 Banque — Transactions récentes</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Montant</th>
+            <th>Status</th>
+            <th>Référence</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions|slice(0,10) %}
+            <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.type }}</td>
+                <td>{{ t.amount }} €</td>
+                <td>{{ t.status }}</td>
+                <td>{{ t.referenceType }} #{{ t.referenceId }}</td>
+                <td>{{ t.createdAt|date('d/m/Y H:i') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>⚖️ Juridique — Contrats logistiques</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Segment</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Voir</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in contracts|slice(0,10) %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>Segment #{{ c.segment.id }}</td>
+                <td>{{ c.status }}</td>
+                <td>{{ c.createdAt|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('logistic_contract_show', {id: c.segment.id}) }}" class="btn btn-sm btn-info">
+                        Contrat
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+<h2>🧩 Liens rapides</h2>
+<ul>
+    <li><a href="{{ path('transport_dashboard') }}">Dashboard Transport</a></li>
+    <li><a href="{{ path('bank_dashboard') }}">Dashboard Banque</a></li>
+    <li><a href="{{ path('legal_dashboard') }}">Dashboard Juridique</a></li>
+</ul>
+
+{% endblock %}

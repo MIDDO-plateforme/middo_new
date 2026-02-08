@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('assets/css/matching-responsive.css') }}">
@@ -11,7 +11,7 @@
 
 {% block title %}Mes Favoris - MIDDO{% endblock %}
 
-{% block body %}
+{% block page_content %}
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
     <h1 style="text-align: center; color: #2c3e50; margin-bottom: 10px;">⭐ Mes Favoris</h1>
     <p style="text-align: center; color: #7f8c8d; margin-bottom: 40px;">

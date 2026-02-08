@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
 {% block title %}{{ project.name }} - MIDDO{% endblock %}
 
@@ -170,7 +170,7 @@
     </style>
 {% endblock %}
 
-{% block body %}
+{% block page_content %}
     <div class="project-show-container">
         <div class="project-header">
             <h1 class="project-title">📊 {{ project.name }}</h1>
