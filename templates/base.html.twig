@@ -5,30 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MIDDO - Plateforme Collaborative avec IA{% endblock %}</title>
     
-    {# Favicon #}
     <link rel="icon" href="/favicon.ico">
     
-    {# CSS Variables MIDDO #}
     <style>
         :root {
-            /* Couleurs principales */
             --middo-violet: #8b5cf6;
             --middo-bleu: #3b82f6;
             --middo-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
-            
-            /* Couleurs fonctionnelles */
             --middo-success: #10b981;
             --middo-warning: #f59e0b;
             --middo-error: #ef4444;
             --middo-info: #3b82f6;
-            
-            /* Neutres Light */
             --middo-bg-light: #f8fafc;
             --middo-card-light: #ffffff;
             --middo-text-light: #0f172a;
             --middo-border-light: #e2e8f0;
-            
-            /* Neutres Dark */
             --middo-bg-dark: #0f172a;
             --middo-card-dark: #1e293b;
             --middo-text-dark: #f1f5f9;
@@ -52,25 +43,28 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+
     {# Navigation principale #}
     {% include 'components/_navbar.html.twig' %}
-    
+
     {# Contenu principal #}
     <main>
         {% block body %}{% endblock %}
     </main>
-    
+
     {# Footer #}
     {% include 'components/_footer.html.twig' %}
-    
+
     {% block javascripts %}{% endblock %}
 
-    <a class="mdo-nav-link" href="{{ path('purchase_opportunities') }}">Opportunités IA</a>
-    <a class="mdo-nav-link" href="{{ path('ia_marketplace') }}">IA Marketplace</a>
-    <a class="mdo-nav-link" href="{{ path('ia_pricing') }}">IA Pricing</a>
-    <a class="mdo-nav-link" href="{{ path('ia_trends') }}">IA Tendances</a>
-    <a class="mdo-nav-link" href="{{ path('ia_forecast') }}">IA Prévision</a>
-    <a class="mdo-nav-link" href="{{ path('ia_dashboard') }}">IA Dashboard</a>
-    <a class="mdo-nav-link" href="{{ path('ia_risk') }}">IA Risques</a>
+    {# Liens IA désactivés (routes inexistantes) #}
+    {# <a class="mdo-nav-link" href="{{ path('purchase_opportunities') }}">Opportunités IA</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_marketplace') }}">IA Marketplace</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_pricing') }}">IA Pricing</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_trends') }}">IA Tendances</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_forecast') }}">IA Prévision</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_dashboard') }}">IA Dashboard</a> #}
+    {# <a class="mdo-nav-link" href="{{ path('ia_risk') }}">IA Risques</a> #}
+
 </body>
 </html>
