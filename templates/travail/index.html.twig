@@ -1,42 +1,48 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Espace de Travail - MIDDO{% endblock %}
+{% block page_title %}
+    Espace de Travail
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Tous vos outils intelligents au même endroit
+{% endblock %}
 
-<div class="page-header">
-    <h1>Espace de Travail</h1>
-    <p class="breadcrumb">Accueil > Espace de Travail</p>
-</div>
+{% block page_actions %}
+    {# Exemple : bouton pour créer un document ou une note #}
+    <button class="btn btn-primary">Nouveau document</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="workspace-grid">
 
-    <a href="/travail/documents" class="workspace-card">
+    <a href="{{ path('travail_documents') }}" class="workspace-card" aria-label="Documents intelligents">
         <h3>📄 Documents intelligents</h3>
         <p>Scanner, résumer, classer, traduire, automatiser.</p>
     </a>
 
-    <a href="/travail/tableur" class="workspace-card">
+    <a href="{{ path('travail_tableur') }}" class="workspace-card" aria-label="Tableur intelligent">
         <h3>📊 Tableur</h3>
         <p>Analyse IA, graphiques, formules intelligentes.</p>
     </a>
 
-    <a href="/travail/editeur" class="workspace-card">
+    <a href="{{ path('travail_editeur') }}" class="workspace-card" aria-label="Éditeur de texte">
         <h3>📝 Éditeur de texte</h3>
         <p>Rédaction assistée par IA, modèles, corrections.</p>
     </a>
 
-    <a href="/travail/notes" class="workspace-card">
+    <a href="{{ path('travail_notes') }}" class="workspace-card" aria-label="Notes">
         <h3>📚 Notes</h3>
         <p>Organisation, pages, blocs, IA pour structurer.</p>
     </a>
 
-    <a href="/travail/taches" class="workspace-card">
+    <a href="{{ path('travail_taches') }}" class="workspace-card" aria-label="Tâches et rappels">
         <h3>📌 Tâches & Rappels</h3>
         <p>Priorisation IA, rappels automatiques.</p>
     </a>
 
-    <a href="/travail/automatisations" class="workspace-card">
+    <a href="{{ path('travail_automatisations') }}" class="workspace-card" aria-label="Automatisations">
         <h3>⚙️ Automatisations</h3>
         <p>Workflows IA, règles intelligentes.</p>
     </a>

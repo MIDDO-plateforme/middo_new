@@ -1,0 +1,42 @@
+<div class="ia-doc-generator">
+
+    <div class="ia-doc-generator-header">
+        <h3>Génération de documents</h3>
+        <span class="ia-doc-generator-status" data-status="idle">Prêt</span>
+    </div>
+
+    <div class="ia-doc-generator-body">
+
+        <label class="ia-doc-label">
+            Type de document
+            <select class="ia-doc-type">
+                <option value="contract">Contrat</option>
+                <option value="summary">Note de synthèse</option>
+                <option value="email">Email client</option>
+                <option value="report">Rapport</option>
+            </select>
+        </label>
+
+        <label class="ia-doc-label">
+            Contexte / instructions
+            <textarea class="ia-doc-input" placeholder="Décrivez le contexte, les clauses, le ton, etc."></textarea>
+        </label>
+
+        <div class="ia-doc-actions">
+            <button class="btn-primary ia-doc-run">Générer</button>
+            <button class="btn-outline ia-doc-clear">Effacer</button>
+        </div>
+
+        <div class="ia-doc-loader" style="display:none;">
+            <div class="spinner"></div>
+            <p>Génération en cours…</p>
+        </div>
+
+        <div class="ia-doc-result" style="display:none;">
+            <h4>Document généré</h4>
+            <pre class="ia-doc-output"></pre>
+        </div>
+
+    </div>
+
+</div>

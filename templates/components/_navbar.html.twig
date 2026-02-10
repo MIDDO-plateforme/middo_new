@@ -29,22 +29,7 @@
 
     <div class="navbar-right" style="display:flex;align-items:center;gap:1rem;font-size:0.9rem;">
 
-        <a href="{{ path('global_dashboard') }}" style="color:white;text-decoration:none;">
-            Dashboard global
-        </a>
-
-        <a href="{{ path('transport_dashboard') }}" style="color:white;text-decoration:none;">
-            Transport
-        </a>
-
-        <a href="{{ path('bank_dashboard') }}" style="color:white;text-decoration:none;">
-            Banque
-        </a>
-
-        <a href="{{ path('legal_dashboard') }}" style="color:white;text-decoration:none;">
-            Juridique
-        </a>
-
+        {# Lien principal vers l’espace de travail (route stable) #}
         <a href="{{ path('travail_index') }}" style="color:white;text-decoration:none;font-weight:600;">
             Espace de travail
         </a>

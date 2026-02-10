@@ -1,7 +1,17 @@
 {% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Accueil - MIDDO{% endblock %}
+{% block page_title %}
+    Accueil
+{% endblock %}
+
+{% block page_subtitle %}
+    Bienvenue sur votre espace MIDDO
+{% endblock %}
+
+{% block page_actions %}
+    {# Actions spécifiques à la page d'accueil (optionnel) #}
+{% endblock %}
 
 {% block page_content %}
-    <h1>Bienvenue sur MIDDO</h1><p style='color:white'>Chargement de votre espace...</p>
+    <p>Chargement de votre espace...</p>
 {% endblock %}

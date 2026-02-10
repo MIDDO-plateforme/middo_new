@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Risques IA - {{ project.name }}{% endblock %}
+{% block page_title %}
+    Risques IA – {{ project.name }}
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Analyse automatique, détection des risques et recommandations IA
+{% endblock %}
 
-<div class="page-header">
-    <h1>Analyse des risques</h1>
-    <p class="breadcrumb">Projets > {{ project.name }} > Risques IA</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Analyser les risques</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="risks-layout">
 
-    <aside class="risks-sidebar">
+    <aside class="risks-sidebar" aria-label="Menu risques IA">
 
         <h3>IA</h3>
         <button class="btn">Analyser les risques</button>

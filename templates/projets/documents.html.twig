@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Documents - {{ project.name }}{% endblock %}
+{% block page_title %}
+    Documents – {{ project.name }}
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Analyse IA, classification automatique et gestion des documents du projet
+{% endblock %}
 
-<div class="page-header">
-    <h1>Documents du projet</h1>
-    <p class="breadcrumb">Projets > {{ project.name }} > Documents</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Ajouter un document</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="docs-layout">
 
-    <aside class="docs-sidebar">
+    <aside class="docs-sidebar" aria-label="Menu documents IA">
 
         <h3>IA</h3>
         <button class="btn">Analyser les documents</button>

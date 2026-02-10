@@ -1,13 +1,20 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Visio - MIDDO{% endblock %}
+{% block page_title %}
+    Visioconférences
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Gérez vos réunions, salles et comptes-rendus IA
+{% endblock %}
 
-<div class="page-header">
-    <h1>Visioconférences</h1>
-    <p class="breadcrumb">Accueil > Visio</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Créer une salle</button>
+    <button class="btn-outline">Rejoindre</button>
+    <button class="btn-outline">Analyse IA</button>
+{% endblock %}
+
+{% block page_content %}
 
 {# --- Statistiques Visio --- #}
 <div class="visio-stats-grid">
@@ -35,14 +42,6 @@
         value: 3,
         color: 'orange'
     } %}
-
-</div>
-
-{# --- Actions rapides --- #}
-<div class="visio-actions">
-    <button class="btn">Créer une salle</button>
-    <button class="btn-outline">Rejoindre</button>
-    <button class="btn-outline">Analyse IA</button>
 </div>
 
 {# --- Liste des salles --- #}
@@ -67,8 +66,8 @@
             </div>
 
             <div class="actions">
-                <a href="/visio/{{ room.id }}" class="btn">Rejoindre</a>
-                <a href="/visio/{{ room.id }}/summary" class="btn-outline">Résumé IA</a>
+                <a href="{{ path('visio_index') ~ '/' ~ room.id }}" class="btn">Rejoindre</a>
+                <a href="{{ path('visio_index') ~ '/' ~ room.id ~ '/summary' }}" class="btn-outline">Résumé IA</a>
             </div>
 
         </div>

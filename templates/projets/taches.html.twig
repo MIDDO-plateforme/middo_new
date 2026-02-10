@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Tâches IA - {{ project.name }}{% endblock %}
+{% block page_title %}
+    Tâches IA – {{ project.name }}
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Génération automatique, analyse IA et gestion des tâches du projet
+{% endblock %}
 
-<div class="page-header">
-    <h1>Tâches du projet</h1>
-    <p class="breadcrumb">Projets > {{ project.name }} > Tâches IA</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Générer les tâches automatiquement</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="tasks-layout">
 
-    <aside class="tasks-sidebar">
+    <aside class="tasks-sidebar" aria-label="Menu tâches IA">
 
         <h3>IA</h3>
         <button class="btn">Générer les tâches automatiquement</button>

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA Automations — MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">IA Automations</h1>
+                <p class="page-subtitle">
+                    Créez des workflows IA automatisés pour accélérer vos processus.
+                </p>
+            </div>
+
+            <button class="btn-primary" id="openAutomationModal">+ Nouvelle automation</button>
+        </header>
+
+        <section class="automations-grid">
+
+            <div class="automation-card">
+                <h3>Résumé automatique quotidien</h3>
+                <p class="automation-desc">
+                    Résume chaque matin les nouveaux dossiers ajoutés.
+                </p>
+                <div class="automation-meta">
+                    <span class="automation-status ok">Actif</span>
+                    <span class="automation-frequency">Chaque jour à 08:00</span>
+                </div>
+                <div class="automation-actions">
+                    <button class="btn-outline">Modifier</button>
+                    <button class="btn-danger">Supprimer</button>
+                </div>
+            </div>
+
+            <div class="automation-card">
+                <h3>Analyse de risques hebdomadaire</h3>
+                <p class="automation-desc">
+                    Analyse tous les projets en cours et détecte les risques.
+                </p>
+                <div class="automation-meta">
+                    <span class="automation-status ok">Actif</span>
+                    <span class="automation-frequency">Chaque lundi</span>
+                </div>
+                <div class="automation-actions">
+                    <button class="btn-outline">Modifier</button>
+                    <button class="btn-danger">Supprimer</button>
+                </div>
+            </div>
+
+        </section>
+
+        {# Modal de création #}
+        <div id="automationModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h2>Nouvelle automation IA</h2>
+
+                <label>
+                    Nom de l’automation
+                    <input type="text" class="modal-input" id="automationName">
+                </label>
+
+                <label>
+                    Description
+                    <textarea class="modal-input" id="automationDescription"></textarea>
+                </label>
+
+                <label>
+                    Fréquence
+                    <select class="modal-input" id="automationFrequency">
+                        <option value="daily">Tous les jours</option>
+                        <option value="weekly">Chaque semaine</option>
+                        <option value="monthly">Chaque mois</option>
+                    </select>
+                </label>
+
+                <label>
+                    Action IA
+                    <select class="modal-input" id="automationAction">
+                        <option value="summary">Résumé automatique</option>
+                        <option value="risks">Analyse de risques</option>
+                        <option value="suggestions">Suggestions IA</option>
+                        <option value="documents">Génération de documents</option>
+                    </select>
+                </label>
+
+                <div class="modal-actions">
+                    <button class="btn-primary">Enregistrer</button>
+                    <button class="btn-outline" id="closeAutomationModal">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/ia_automations.js"></script>
+{% endblock %}

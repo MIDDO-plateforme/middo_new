@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Plan IA - {{ project.name }}{% endblock %}
+{% block page_title %}
+    Plan IA – {{ project.name }}
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Phases générées automatiquement, analyse IA et structuration du projet
+{% endblock %}
 
-<div class="page-header">
-    <h1>Plan automatique IA</h1>
-    <p class="breadcrumb">Projets > {{ project.name }} > Plan IA</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Regénérer le plan</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="plan-layout">
 
-    <aside class="plan-sidebar">
+    <aside class="plan-sidebar" aria-label="Menu plan IA">
 
         <h3>IA</h3>
         <button class="btn">Regénérer le plan</button>

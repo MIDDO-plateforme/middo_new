@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Démarches administratives - MIDDO{% endblock %}
+{% block page_title %}
+    Démarches administratives automatisées
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Génération IA, pré-remplissage, analyse et gestion de vos démarches
+{% endblock %}
 
-<div class="page-header">
-    <h1>Démarches administratives automatisées</h1>
-    <p class="breadcrumb">Administratif > Démarches</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Nouvelle démarche</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="demarches-layout">
 
-    <aside class="demarches-sidebar">
+    <aside class="demarches-sidebar" aria-label="Menu démarches administratives">
 
         <h3>Créer une démarche</h3>
         <button class="btn">Nouvelle démarche</button>

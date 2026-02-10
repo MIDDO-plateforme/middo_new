@@ -1,13 +1,18 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Analytics - MIDDO{% endblock %}
+{% block page_title %}
+    Analytics
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Statistiques globales, graphiques et insights IA
+{% endblock %}
 
-<div class="page-header">
-    <h1>Analytics</h1>
-    <p class="breadcrumb">Accueil > Analytics</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Analyse IA complète</button>
+{% endblock %}
+
+{% block page_content %}
 
 {# --- Statistiques globales --- #}
 <div class="analytics-stats-grid">
@@ -39,15 +44,17 @@
 
 {# --- Graphiques --- #}
 <div class="analytics-charts">
+
     <div class="chart-card">
         <h3>Activité des utilisateurs</h3>
-        <canvas id="chartUsers"></canvas>
+        <canvas id="chartUsers" aria-label="Graphique de l'activité des utilisateurs"></canvas>
     </div>
 
     <div class="chart-card">
         <h3>Progression des projets</h3>
-        <canvas id="chartProjects"></canvas>
+        <canvas id="chartProjects" aria-label="Graphique de progression des projets"></canvas>
     </div>
+
 </div>
 
 {# --- Insights IA --- #}
@@ -60,8 +67,6 @@
         <li>💬 Les messages ont augmenté de 18% après la dernière mise à jour.</li>
         <li>🤝 Les collaborations entre équipes ont doublé ce mois-ci.</li>
     </ul>
-
-    <button class="btn">Analyse IA complète</button>
 </div>
 
 {% endblock %}

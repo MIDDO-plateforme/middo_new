@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}{{ project.name }} - Projet{% endblock %}
+{% block page_title %}
+    {{ project.name }}
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Vue générale du projet, avancement, tâches, documents et analyse IA
+{% endblock %}
 
-<div class="page-header">
-    <h1>{{ project.name }}</h1>
-    <p class="breadcrumb">Projets > {{ project.name }}</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Analyser le projet</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="project-detail-layout">
 
-    <aside class="project-sidebar">
+    <aside class="project-sidebar" aria-label="Menu projet">
 
         <h3>IA</h3>
         <button class="btn">Analyser le projet</button>

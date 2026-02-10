@@ -1,18 +1,24 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Messages - MIDDO{% endblock %}
+{% block page_title %}
+    Messages
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Vos conversations et échanges
+{% endblock %}
 
-<div class="page-header">
-    <h1>Messages</h1>
-    <p class="breadcrumb">Accueil > Messages</p>
-</div>
+{% block page_actions %}
+    {# Exemple : bouton pour créer une nouvelle conversation #}
+    <button class="btn btn-primary">Nouvelle conversation</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="messages-layout">
 
     {# --- Liste des conversations --- #}
-    <aside class="messages-list">
+    <aside class="messages-list" aria-label="Liste des conversations">
         <h3>Conversations</h3>
 
         {% for conv in conversations %}
@@ -27,7 +33,7 @@
     </aside>
 
     {# --- Zone de chat --- #}
-    <section class="chat-window">
+    <section class="chat-window" aria-label="Fenêtre de discussion">
 
         <div class="chat-header">
             <h3>{{ active.name }}</h3>
@@ -44,7 +50,7 @@
         </div>
 
         <div class="chat-input">
-            <input type="text" placeholder="Écrire un message…">
+            <input type="text" placeholder="Écrire un message…" aria-label="Écrire un message">
             <button class="btn">Envoyer</button>
             <button class="btn-outline">Réponse IA</button>
         </div>

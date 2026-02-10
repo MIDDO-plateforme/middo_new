@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Paramètres - MIDDO{% endblock %}
+{% block page_title %}
+    Paramètres
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Gérez votre profil, sécurité, accessibilité et préférences IA
+{% endblock %}
 
-<div class="page-header">
-    <h1>Paramètres</h1>
-    <p class="breadcrumb">Accueil > Paramètres</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Enregistrer</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="settings-layout">
 
-    <aside class="settings-menu">
+    <aside class="settings-menu" aria-label="Menu des paramètres">
         <a href="#profil">Profil</a>
         <a href="#securite">Sécurité</a>
         <a href="#accessibilite">Accessibilité</a>
@@ -22,22 +27,27 @@
 
         <div id="profil" class="settings-section">
             <h2>Profil</h2>
-            <label>Nom</label>
-            <input type="text" value="Baudouin">
-            <label>Email</label>
-            <input type="email" value="baudouin@example.com">
+
+            <label for="name">Nom</label>
+            <input id="name" type="text" value="Baudouin">
+
+            <label for="email">Email</label>
+            <input id="email" type="email" value="baudouin@example.com">
         </div>
 
         <div id="securite" class="settings-section">
             <h2>Sécurité</h2>
+
             <label>Mot de passe</label>
             <button class="btn-outline">Modifier le mot de passe</button>
+
             <label>Double authentification</label>
             <button class="btn-outline">Activer</button>
         </div>
 
         <div id="accessibilite" class="settings-section">
             <h2>Accessibilité</h2>
+
             <label><input type="checkbox"> Mode contraste élevé</label><br>
             <label><input type="checkbox"> Police adaptée (dyslexie)</label><br>
             <label><input type="checkbox"> Lecture vocale activée</label><br>
@@ -46,6 +56,7 @@
 
         <div id="ia" class="settings-section">
             <h2>Préférences IA</h2>
+
             <label><input type="checkbox" checked> Résumés automatiques</label><br>
             <label><input type="checkbox" checked> Suggestions IA dans les pages</label><br>
             <label><input type="checkbox"> Traduction automatique</label><br>

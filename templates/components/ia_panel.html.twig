@@ -1,0 +1,32 @@
+<div class="ia-panel">
+
+    <div class="ia-header">
+        <h3>Assistant IA</h3>
+        <span class="ia-status" data-status="idle">Prêt</span>
+    </div>
+
+    <div class="ia-body">
+
+        <textarea 
+            class="ia-input" 
+            placeholder="Décrivez ce que vous voulez que l’IA fasse…"
+        ></textarea>
+
+        <div class="ia-actions">
+            <button class="btn btn-primary ia-run">Exécuter</button>
+            <button class="btn-outline ia-clear">Effacer</button>
+        </div>
+
+        <div class="ia-loader" style="display:none;">
+            <div class="spinner"></div>
+            <p>Analyse en cours…</p>
+        </div>
+
+        <div class="ia-result" style="display:none;">
+            <h4>Résultat</h4>
+            <div class="ia-output"></div>
+        </div>
+
+    </div>
+
+</div>

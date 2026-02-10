@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA Dashboard — MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">IA Dashboard</h1>
+                <p class="page-subtitle">
+                    Vue d’ensemble des modules IA, de leur état et des dernières activités.
+                </p>
+            </div>
+        </header>
+
+        {# KPIs #}
+        <section class="stats-grid">
+            <div class="stats-card">
+                <h3>Requêtes IA (24h)</h3>
+                <div class="stats-value">128</div>
+            </div>
+
+            <div class="stats-card">
+                <h3>Taux de succès</h3>
+                <div class="stats-value">98%</div>
+            </div>
+
+            <div class="stats-card">
+                <h3>Temps moyen de réponse</h3>
+                <div class="stats-value">1.2s</div>
+            </div>
+
+            <div class="stats-card">
+                <h3>Modules actifs</h3>
+                <div class="stats-value">4</div>
+            </div>
+        </section>
+
+        <hr class="section-separator">
+
+        {# État des modules IA #}
+        <section>
+            <h2>Modules IA</h2>
+
+            <div class="ia-modules-grid">
+
+                <div class="ia-module-card">
+                    <h3>Suggestions IA</h3>
+                    <p class="ia-module-status ok">Actif</p>
+                    <a href="/ia/lab" class="btn-outline">Ouvrir</a>
+                </div>
+
+                <div class="ia-module-card">
+                    <h3>Résumé automatique</h3>
+                    <p class="ia-module-status ok">Actif</p>
+                    <a href="/ia/lab" class="btn-outline">Ouvrir</a>
+                </div>
+
+                <div class="ia-module-card">
+                    <h3>Analyse de risques</h3>
+                    <p class="ia-module-status ok">Actif</p>
+                    <a href="/ia/lab" class="btn-outline">Ouvrir</a>
+                </div>
+
+                <div class="ia-module-card">
+                    <h3>Génération de documents</h3>
+                    <p class="ia-module-status ok">Actif</p>
+                    <a href="/ia/lab" class="btn-outline">Ouvrir</a>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="section-separator">
+
+        {# Logs IA récents #}
+        <section>
+            <h2>Dernières activités IA</h2>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Heure</th>
+                        <th>Module</th>
+                        <th>Action</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10:12</td>
+                        <td>Résumé</td>
+                        <td>Résumé d’un dossier client</td>
+                        <td>OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:58</td>
+                        <td>Suggestions</td>
+                        <td>Analyse d’un projet</td>
+                        <td>OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:41</td>
+                        <td>Risques</td>
+                        <td>Détection d’incohérences</td>
+                        <td>OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:22</td>
+                        <td>Documents</td>
+                        <td>Génération d’un contrat</td>
+                        <td>OK</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+{% endblock %}

@@ -1,17 +1,22 @@
-{% extends 'base_app.html.twig' %}
+{% extends 'layout/app_layout.html.twig' %}
 
-{% block title %}Comptabilité - MIDDO{% endblock %}
+{% block page_title %}
+    Comptabilité intelligente
+{% endblock %}
 
-{% block content %}
+{% block page_subtitle %}
+    Analyse IA, importation, classification et gestion comptable
+{% endblock %}
 
-<div class="page-header">
-    <h1>Comptabilité intelligente</h1>
-    <p class="breadcrumb">Administratif > Comptabilité</p>
-</div>
+{% block page_actions %}
+    <button class="btn btn-primary">Importer un document</button>
+{% endblock %}
+
+{% block page_content %}
 
 <div class="accounting-layout">
 
-    <aside class="accounting-sidebar">
+    <aside class="accounting-sidebar" aria-label="Menu comptabilité">
 
         <h3>Importer</h3>
         <button class="btn">📄 Importer une facture</button>

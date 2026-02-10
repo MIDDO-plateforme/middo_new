@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laboratoire IA MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">Laboratoire IA MIDDO</h1>
+                <p class="page-subtitle">
+                    Espace d’expérimentation des modules IA : suggestions, résumés, risques, génération de documents.
+                </p>
+            </div>
+        </header>
+
+        <section class="ia-lab-grid">
+
+            <div class="ia-lab-column">
+                {% include 'components/ia_suggestions.html.twig' %}
+                {% include 'components/ia_risks.html.twig' %}
+            </div>
+
+            <div class="ia-lab-column">
+                {% include 'components/ia_summary.html.twig' %}
+                {% include 'components/ia_doc_generator.html.twig' %}
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/ia_suggestions.js"></script>
+<script src="/js/ia_summary.js"></script>
+<script src="/js/ia_risks.js"></script>
+<script src="/js/ia_doc_generator.js"></script>
+{% endblock %}
