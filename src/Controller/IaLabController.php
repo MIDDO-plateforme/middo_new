@@ -8,9 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IaLabController extends AbstractController
 {
-    #[Route('/ia/logs', name: 'ia_logs')]
-    public function logs(): Response
+    #[Route('/ia/lab', name: 'ia_lab')]
+    public function index(): Response
     {
-        return $this->render('ia/logs.html.twig');
+        return $this->render('ia/lab.html.twig');
     }
 }
