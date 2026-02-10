@@ -1,42 +1,28 @@
-// ============================================================
-// MIDDO — IA Analyse de risques
-// ============================================================
-
 document.addEventListener("DOMContentLoaded", () => {
-    const panels = document.querySelectorAll(".ia-risks");
+    const input = document.getElementById("ia-risks-input");
+    const btn = document.getElementById("ia-risks-run");
+    const output = document.getElementById("ia-risks-output");
 
-    panels.forEach(panel => {
-        const runBtn = panel.querySelector(".ia-risks-run");
-        const loader = panel.querySelector(".ia-risks-loader");
-        const results = panel.querySelector(".ia-risks-results");
-        const list = panel.querySelector(".ia-risks-list");
-        const status = panel.querySelector(".ia-risks-status");
+    btn.addEventListener("click", async () => {
+        const text = input.value.trim();
+        if (!text) {
+            output.textContent = "Veuillez entrer un texte.";
+            return;
+        }
 
-        runBtn.addEventListener("click", async () => {
-            list.innerHTML = "";
-            results.style.display = "none";
-            loader.style.display = "block";
-            status.textContent = "Analyse…";
+        output.textContent = "⏳ Analyse des risques...";
 
-            // Placeholder IA
-            setTimeout(() => {
-                loader.style.display = "none";
-                results.style.display = "block";
-                status.textContent = "Terminé";
+        try {
+            const response = await fetch("/api/ia/risks", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
 
-                const risks = [
-                    { level: "high", text: "Dépendance forte à un seul fournisseur critique." },
-                    { level: "medium", text: "Données incomplètes pour la prise de décision finale." },
-                    { level: "low", text: "Retards potentiels mais maîtrisables sur certaines étapes." }
-                ];
-
-                risks.forEach(r => {
-                    const li = document.createElement("li");
-                    li.classList.add(r.level);
-                    li.textContent = r.text;
-                    list.appendChild(li);
-                });
-            }, 1200);
-        });
+            const data = await response.json();
+            output.textContent = data.result || "Aucun risque détecté.";
+        } catch (error) {
+            output.textContent = "❌ Erreur lors de l'analyse.";
+        }
     });
 });

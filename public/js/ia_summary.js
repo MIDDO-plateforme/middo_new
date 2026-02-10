@@ -1,39 +1,28 @@
-// ============================================================
-// MIDDO — IA Résumé automatique
-// ============================================================
-
 document.addEventListener("DOMContentLoaded", () => {
-    const panels = document.querySelectorAll(".ia-summary");
+    const input = document.getElementById("ia-summary-input");
+    const btn = document.getElementById("ia-summary-run");
+    const output = document.getElementById("ia-summary-output");
 
-    panels.forEach(panel => {
-        const runBtn = panel.querySelector(".ia-summary-run");
-        const loader = panel.querySelector(".ia-summary-loader");
-        const result = panel.querySelector(".ia-summary-result");
-        const output = panel.querySelector(".ia-summary-output");
-        const status = panel.querySelector(".ia-summary-status");
+    btn.addEventListener("click", async () => {
+        const text = input.value.trim();
+        if (!text) {
+            output.textContent = "Veuillez entrer un texte.";
+            return;
+        }
 
-        runBtn.addEventListener("click", async () => {
-            result.style.display = "none";
-            output.innerHTML = "";
-            loader.style.display = "block";
-            status.textContent = "Analyse…";
+        output.textContent = "⏳ Résumé en cours...";
 
-            // Placeholder IA
-            setTimeout(() => {
-                loader.style.display = "none";
-                result.style.display = "block";
-                status.textContent = "Terminé";
+        try {
+            const response = await fetch("/api/ia/summary", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
 
-                output.innerHTML = `
-                    Ce dossier peut être résumé en quelques points clés :
-                    <ul>
-                        <li>Contexte général clarifié.</li>
-                        <li>Enjeux principaux identifiés.</li>
-                        <li>Risques et dépendances à surveiller.</li>
-                        <li>Prochaines étapes recommandées.</li>
-                    </ul>
-                `;
-            }, 1200);
-        });
+            const data = await response.json();
+            output.textContent = data.result || "Résumé indisponible.";
+        } catch (error) {
+            output.textContent = "❌ Erreur lors du résumé.";
+        }
     });
 });

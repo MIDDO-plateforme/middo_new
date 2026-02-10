@@ -1,52 +1,28 @@
-// ============================================================
-// MIDDO — IA Génération de documents
-// ============================================================
-
 document.addEventListener("DOMContentLoaded", () => {
-    const panels = document.querySelectorAll(".ia-doc-generator");
+    const input = document.getElementById("ia-docgen-input");
+    const btn = document.getElementById("ia-docgen-run");
+    const output = document.getElementById("ia-docgen-output");
 
-    panels.forEach(panel => {
-        const typeSelect = panel.querySelector(".ia-doc-type");
-        const input = panel.querySelector(".ia-doc-input");
-        const runBtn = panel.querySelector(".ia-doc-run");
-        const clearBtn = panel.querySelector(".ia-doc-clear");
-        const loader = panel.querySelector(".ia-doc-loader");
-        const result = panel.querySelector(".ia-doc-result");
-        const output = panel.querySelector(".ia-doc-output");
-        const status = panel.querySelector(".ia-doc-generator-status");
+    btn.addEventListener("click", async () => {
+        const text = input.value.trim();
+        if (!text) {
+            output.textContent = "Veuillez décrire le document.";
+            return;
+        }
 
-        clearBtn.addEventListener("click", () => {
-            input.value = "";
-            result.style.display = "none";
-            output.textContent = "";
-            status.textContent = "Prêt";
-        });
+        output.textContent = "⏳ Génération du document...";
 
-        runBtn.addEventListener("click", async () => {
-            const type = typeSelect.value;
-            const context = input.value.trim();
-            if (!context) return;
+        try {
+            const response = await fetch("/api/ia/docgen", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
+            });
 
-            result.style.display = "none";
-            output.textContent = "";
-            loader.style.display = "block";
-            status.textContent = "Génération…";
-
-            // Placeholder IA
-            setTimeout(() => {
-                loader.style.display = "none";
-                result.style.display = "block";
-                status.textContent = "Terminé";
-
-                output.textContent =
-`[${type.toUpperCase()} — Brouillon IA]
-
-Contexte :
-${context}
-
-Ce texte est un exemple de document généré automatiquement.
-Tu pourras ici brancher ton API IA pour produire un contenu réel.`;
-            }, 1500);
-        });
+            const data = await response.json();
+            output.textContent = data.result || "Document non généré.";
+        } catch (error) {
+            output.textContent = "❌ Erreur lors de la génération.";
+        }
     });
 });
