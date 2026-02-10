@@ -1,5 +1,6 @@
 ﻿FROM php:8.3-fpm
 
+# --- Dépendances système ---
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -10,20 +11,30 @@ RUN apt-get update && apt-get install -y \
     nginx \
     postgresql-client
 
+# --- Extensions PHP ---
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl pdo pdo_pgsql zip opcache
 
+# --- Composer ---
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# --- Code source ---
 WORKDIR /var/www/html
 COPY . .
 
+# --- Installation des dépendances Symfony (prod) ---
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# --- Création du dossier var AVANT cache:clear ---
+RUN mkdir -p /var/www/html/var
+
+# --- Droits pour Symfony ---
+RUN chown -R www-data:www-data /var/www/html/var
+
+# --- Compilation du cache Symfony ---
 RUN php bin/console cache:clear --env=prod --no-debug || true
 
-RUN php bin/console cache:clear --env=prod || true
-
+# --- Configuration Nginx ---
 RUN echo 'server { \
     listen 80; \
     server_name _; \
@@ -38,7 +49,5 @@ RUN echo 'server { \
     } \
 }' > /etc/nginx/sites-available/default
 
-    RUN mkdir -p /var/www/html/var
-    RUN chown -R www-data:www-data /var/www/html/var
-
+# --- Lancement des services ---
 CMD php-fpm -F & nginx -g "daemon off;"
