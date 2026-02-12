@@ -50,4 +50,6 @@ RUN echo 'server { \
 }' > /etc/nginx/sites-available/default
 
 # --- Lancement des services ---
-CMD php-fpm -F & nginx -g "daemon off;"
+CMD chown -R www-data:www-data /var/www/html/var && php-fpm -F & nginx -g "daemon off;"
+
+
