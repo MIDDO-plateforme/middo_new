@@ -14,3 +14,5 @@ echo " Warmup du cache..."
 php bin/console cache:warmup --env=prod
 
 echo " Build termine avec succes!"
+
+chmod -R 777 var/cache var/log
