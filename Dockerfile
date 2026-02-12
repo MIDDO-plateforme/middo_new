@@ -23,13 +23,16 @@ WORKDIR /var/www/html
 COPY . .
 
 # --- Création des dossiers nécessaires à Symfony ---
-RUN mkdir -p /var/www/html/var/cache /var/www/html/var/log
+RUN mkdir -p var/cache var/log
 
 # --- Installation des dépendances Symfony (prod) ---
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # --- Droits pour Symfony ---
-RUN chown -R www-data:www-data /var/www/html/var
+RUN chown -R www-data:www-data var
+
+# --- Configuration PHP-FPM pour écouter sur 9000 ---
+RUN sed -i 's|listen = .*|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
 
 # --- Compilation du cache Symfony ---
 RUN php bin/console cache:clear --env=prod --no-debug || true
