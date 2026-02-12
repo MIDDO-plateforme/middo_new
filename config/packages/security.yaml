@@ -66,6 +66,7 @@ security:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/projects/public, roles: PUBLIC_ACCESS }
         - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
+        - { path: ^/api/health$, roles: PUBLIC_ACCESS }   # ← AJOUT CORRECTIF
 
         # Protected API endpoints
         - { path: ^/api/admin, roles: ROLE_ADMIN }
