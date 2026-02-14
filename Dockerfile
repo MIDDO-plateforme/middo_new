@@ -1,5 +1,7 @@
 FROM php:8.3-fpm
 
+# force rebuild 20260214
+
 # --- Dépendances système ---
 RUN apt-get update && apt-get install -y \
     git \
