@@ -33,3 +33,7 @@ Thumbs.db
 
 # Composer
 composer.lock
+config/accessKeys.csv
+config/Différents Clè.md
+.env
+middo_genius_pro/backend/.env
