@@ -26,3 +26,14 @@ services:
     App\Service\OpenAIService:
         arguments:
             $openaiApiKey: '%env(OPENAI_API_KEY)%'
+
+    # Stripe
+    App\Service\StripePaymentService:
+        arguments:
+            $stripeSecretKey: '%stripe_secret_key%'
+            $stripeWebhookSecret: '%stripe_webhook_secret%'
+
+parameters:
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+

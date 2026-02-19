@@ -1,7 +1,5 @@
 FROM php:8.3-fpm
 
-# force rebuild 20260214
-
 # --- Dépendances système ---
 RUN apt-get update && apt-get install -y \
     git \
@@ -11,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     zip \
     nginx \
+    supervisor \
     postgresql-client
 
 # --- Extensions PHP ---
@@ -24,37 +23,24 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# --- Création des dossiers nécessaires à Symfony ---
+# --- Création des dossiers nécessaires ---
 RUN mkdir -p var/cache var/log
 
-# --- Installation des dépendances Symfony (prod) ---
+# --- Installation des dépendances Symfony ---
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# --- Droits pour Symfony ---
-RUN chown -R www-data:www-data var
+# --- Permissions ---
+RUN chown -R www-data:www-data /var/www/html
 
-# --- Configuration PHP-FPM pour écouter sur 9000 ---
+# --- Configuration PHP-FPM ---
 RUN sed -i 's|listen = .*|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
 
-# --- Compilation du cache Symfony ---
-RUN php bin/console cache:clear --env=prod --no-debug || true
-
 # --- Configuration Nginx ---
-RUN echo 'server { \
-    listen 80; \
-    server_name _; \
-    root /var/www/html/public; \
-    index index.php; \
-    location / { \
-        try_files $uri /index.php$is_args$args; \
-    } \
-    location ~ \.php$ { \
-        include fastcgi.conf; \
-        fastcgi_pass 127.0.0.1:9000; \
-    } \
-}' > /etc/nginx/sites-available/default
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-# --- Lancement des services ---
-CMD chown -R www-data:www-data /var/www/html/var && php-fpm -F & nginx -g "daemon off;"
+# --- Supervisor ---
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# --- Commande de démarrage ---
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
