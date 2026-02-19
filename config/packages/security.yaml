@@ -18,7 +18,7 @@ security:
             security: false
 
         public_api:
-            pattern: ^/api/(test|register|projects|workspaces/health)(/|$)
+            pattern: ^/api/(test|register|projects|workspaces/health|ai)(/|$)
             stateless: true
             security: false
 
@@ -60,7 +60,6 @@ security:
         ROLE_INSPECTOR: ROLE_USER
 
     access_control:
-        # Public API endpoints
         - { path: ^/api/ping, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
@@ -68,14 +67,11 @@ security:
         - { path: ^/api/workspaces/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/health$, roles: PUBLIC_ACCESS }
 
-        # IA PUBLIC
         - { path: ^/api/ai, roles: PUBLIC_ACCESS }
 
-        # Protected API endpoints
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
-        # Web access control
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/staff, roles: ROLE_STAFF }
         - { path: ^/ong, roles: ROLE_ONG }
@@ -87,5 +83,4 @@ security:
         - { path: ^/bank, roles: ROLE_OPERATOR }
         - { path: ^/legal, roles: ROLE_OPERATOR }
 
-        # Default: public
         - { path: ^/, roles: PUBLIC_ACCESS }
