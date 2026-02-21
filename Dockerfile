@@ -36,6 +36,9 @@ RUN chown -R www-data:www-data /var/www/html
 # --- Configuration PHP-FPM ---
 RUN sed -i 's|listen = .*|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
 
+# --- Configuration PHP personnalisée ---
+COPY php-custom.ini /usr/local/etc/php/conf.d/php-custom.ini
+
 # --- Configuration Nginx ---
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 
@@ -44,5 +47,4 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # --- Commande de démarrage ---
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
 
