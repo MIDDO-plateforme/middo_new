@@ -1,0 +1,25 @@
+# Exclure les anciens sites PHP et les fichiers parasites
+dist/
+dev_scripts/
+archives/
+middo_genius_pro/
+docs/
+
+# Exclure les dépendances locales
+node_modules/
+
+# Exclure les fichiers Docker eux-mêmes
+docker/
+
+# Exclure les fichiers inutiles
+*.md
+*.txt
+*.log
+
+# Garder uniquement le code Symfony
+!public/
+!src/
+!config/
+!vendor/
+!composer.json
+!composer.lock
