@@ -24,7 +24,8 @@ WORKDIR /var/www/html
 COPY . .
 
 # --- Création des dossiers nécessaires ---
-RUN mkdir -p var/cache var/log
+RUN mkdir -p var/cache var/log \
+    && chown -R www-data:www-data /var/www/html/var
 
 # --- Installation des dépendances Symfony ---
 RUN composer install --no-dev --optimize-autoloader --no-scripts
@@ -43,4 +44,5 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # --- Commande de démarrage ---
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
 
