@@ -8,9 +8,6 @@ docs/
 # Exclure les dépendances locales
 node_modules/
 
-# Exclure les fichiers Docker eux-mêmes
-docker/
-
 # Exclure les fichiers inutiles
 *.md
 *.txt
