@@ -1,0 +1,4 @@
+ia_admin_helper:
+  path: /ia/admin-helper
+  controller: App\UI\Http\Controller\IA\AdminHelperController::help
+  methods: [POST]

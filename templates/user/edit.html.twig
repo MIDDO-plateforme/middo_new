@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier utilisateur{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:700px; margin:auto;">
+
+    <h1>Modifier {{ user.name }}</h1>
+
+    <form action="{{ path('user_update', {id: user.id}) }}" method="POST">
+
+        <label>Nom :</label><br>
+        <input type="text" name="name" value="{{ user.name }}"><br><br>
+
+        <label>Email :</label><br>
+        <input type="email" name="email" value="{{ user.email }}"><br><br>
+
+        <label>Rôle :</label><br>
+        <input type="text" name="role" value="{{ user.role }}"><br><br>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+
+</div>
+{% endblock %}

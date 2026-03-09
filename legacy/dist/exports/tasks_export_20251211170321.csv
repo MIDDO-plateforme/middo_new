@@ -1,0 +1,6 @@
+﻿ID;Titre;Description;Statut;Priorite;Date_Creation;Date_Echeance;Date_Completion;Tags
+1;"Optimiser performances API";"Reduire temps de reponse des endpoints";pending;urgent;"2025-12-11 13:06:31";"2025-12-13 17:00:00";;
+2;"Documentation technique";"Rediger README et guide utilisateur";completed;low;"2025-12-11 13:06:31";"2025-12-08 16:00:00";"2025-12-11 13:06:31";
+3;"Integrer Chart.js dans Dashboard";"Graphiques animes pour visualisation des donnees";completed;high;"2025-12-11 13:08:28";"2025-12-10 18:00:00";"2025-12-11 13:08:28";
+4;"Configurer Notifications Temps Reel";"Implementer SSE pour push instantane";in_progress;high;"2025-12-11 13:08:28";"2025-12-12 12:00:00";;
+5;"Tests End-to-End";"Valider toutes les fonctionnalites de MIDDO";pending;medium;"2025-12-11 13:08:29";"2025-12-15 09:00:00";;

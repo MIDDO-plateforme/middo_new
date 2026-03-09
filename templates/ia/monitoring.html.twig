@@ -1,0 +1,43 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}Monitoring IA — MIDDO{% endblock %}
+{% block page_title %}Monitoring IA{% endblock %}
+
+{% block content %}
+
+<h2>Statistiques IA</h2>
+
+<div class="grid">
+    <div class="card">
+        <h3>Total des appels IA</h3>
+        <p class="big-number">{{ stats.total_calls }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total des tokens consommés</h3>
+        <p class="big-number">{{ stats.tokens }}</p>
+    </div>
+</div>
+
+<h3>Providers utilisés</h3>
+<ul>
+    {% for provider, count in stats.providers %}
+        <li>{{ provider }} : {{ count }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Modèles utilisés</h3>
+<ul>
+    {% for model, count in stats.models %}
+        <li>{{ model }} : {{ count }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Pipelines utilisés</h3>
+<ul>
+    {% for pipeline, count in stats.pipelines %}
+        <li>{{ pipeline }} : {{ count }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

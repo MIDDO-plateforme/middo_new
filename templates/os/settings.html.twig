@@ -1,0 +1,58 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Paramètres OS' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Paramètres du système MIDDO OS',
+        content: '
+            Configuration interne du système : sécurité, environnement, services, limites et options avancées.
+        '
+    } %}
+
+    <h2 style="margin-bottom:15px;">Configuration actuelle</h2>
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Paramètre', 'Valeur'],
+        rows: [
+            ['Environnement', os.environment],
+            ['Version', os.version],
+            ['Mode debug', os.debug ? 'Activé' : 'Désactivé'],
+            ['Cache actif', os.cache_enabled ? 'Oui' : 'Non'],
+            ['Logs niveau', os.log_level|upper],
+            ['Fuseau horaire', os.timezone]
+        ]
+    } %}
+
+    <h2 style="margin-top:40px; margin-bottom:15px;">Modifier les paramètres</h2>
+
+    <form method="post" action="/os/settings/update">
+
+        <div class="form-group">
+            <label>Mode debug</label>
+            <select name="debug">
+                <option value="0" {% if not os.debug %}selected{% endif %}>Désactivé</option>
+                <option value="1" {% if os.debug %}selected{% endif %}>Activé</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Niveau de logs</label>
+            <select name="log_level">
+                <option value="info" {% if os.log_level == 'info' %}selected{% endif %}>Info</option>
+                <option value="warning" {% if os.log_level == 'warning' %}selected{% endif %}>Warning</option>
+                <option value="error" {% if os.log_level == 'error' %}selected{% endif %}>Error</option>
+                <option value="debug" {% if os.log_level == 'debug' %}selected{% endif %}>Debug</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Fuseau horaire</label>
+            <input type="text" name="timezone" value="{{ os.timezone }}" required>
+        </div>
+
+        <button class="btn-primary" type="submit">Enregistrer</button>
+    </form>
+
+{% endblock %}

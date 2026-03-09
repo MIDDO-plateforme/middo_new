@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA Logs Center — MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">IA Logs Center</h1>
+                <p class="page-subtitle">
+                    Historique complet des requêtes IA, statuts, modules et temps de réponse.
+                </p>
+            </div>
+        </header>
+
+        <section class="logs-filters">
+            <select class="logs-filter">
+                <option value="">Tous les modules</option>
+                <option value="suggestions">Suggestions IA</option>
+                <option value="summary">Résumé automatique</option>
+                <option value="risks">Analyse de risques</option>
+                <option value="documents">Génération de documents</option>
+            </select>
+
+            <select class="logs-filter">
+                <option value="">Tous les statuts</option>
+                <option value="ok">OK</option>
+                <option value="error">Erreur</option>
+            </select>
+
+            <input type="text" class="logs-search" placeholder="Rechercher…">
+        </section>
+
+        <section class="logs-table-wrapper">
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Heure</th>
+                        <th>Module</th>
+                        <th>Action</th>
+                        <th>Durée</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10:12</td>
+                        <td>Résumé</td>
+                        <td>Résumé d’un dossier client</td>
+                        <td>1.1s</td>
+                        <td class="status-ok">OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:58</td>
+                        <td>Suggestions</td>
+                        <td>Analyse d’un projet</td>
+                        <td>0.9s</td>
+                        <td class="status-ok">OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:41</td>
+                        <td>Risques</td>
+                        <td>Détection d’incohérences</td>
+                        <td>1.4s</td>
+                        <td class="status-ok">OK</td>
+                    </tr>
+                    <tr>
+                        <td>09:22</td>
+                        <td>Documents</td>
+                        <td>Génération d’un contrat</td>
+                        <td>1.7s</td>
+                        <td class="status-ok">OK</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Ajouter un segment à la livraison #{{ delivery.id }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Ordre du segment (1, 2, 3...)</label>
+        <input name="sequence" type="number" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lieu de départ</label>
+        <input name="fromLocation" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lieu d’arrivée</label>
+        <input name="toLocation" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mode de transport</label>
+        <input name="mode" class="form-control" placeholder="camion, moto, collecteur local..." required>
+    </div>
+
+    <button class="btn btn-success">Enregistrer le segment</button>
+</form>
+
+<a href="{{ path('delivery_segment_index', {id: delivery.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

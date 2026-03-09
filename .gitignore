@@ -1,0 +1,39 @@
+# ============================
+# MIDDO - Git Ignore
+# ============================
+
+# Secrets
+.env
+.env.*
+!.env.example
+test_new_key.php
+
+# Symfony / PHP
+/var/
+/vendor/
+/public/bundles/
+/node_modules/
+
+# Backup & temp files
+*.backup*
+*.php.txt
+*.twig.txt
+*_fix*
+*_corrupt*
+
+# IDE / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+/logs/
+/*.log
+
+# Composer
+composer.lock
+config/accessKeys.csv
+config/Différents Clè.md
+.env
+middo_genius_pro/backend/.env

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="display:flex;min-height:80vh;">
+
+    {# Sidebar cockpit réutilisée #}
+    {% include 'core_os/cockpit/_sidebar.html.twig' %}
+
+    <div style="flex:1;padding:2rem;">
+        <h1>Banque — MIDDO</h1>
+        <p style="opacity:0.7;">Vue d’ensemble financière</p>
+
+        <hr style="margin:1.5rem 0;">
+
+        {# Statistiques financières #}
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:1.5rem;
+        ">
+            <div class="stats-card">
+                <h3>Transactions du jour</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.transactionsToday }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Transferts en attente</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.pendingTransfers }}</p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Solde total</h3>
+                <p style="font-size:2rem;font-weight:700;">
+                    {{ stats.totalBalance|number_format(0, '.', ' ') }} €
+                </p>
+            </div>
+
+            <div class="stats-card">
+                <h3>Alertes financières</h3>
+                <p style="font-size:2rem;font-weight:700;">{{ stats.riskAlerts }}</p>
+            </div>
+        </div>
+
+        <hr style="margin:2rem 0;">
+
+        {# Alertes financières #}
+        {% include 'core_os/cockpit/_live_updates.html.twig' %}
+        <script src="/js/mercure.js"></script>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+ia_controllers:
+    resource: ../../src/Controller/Ia/
+    type: attribute
+    prefix: /ia
+

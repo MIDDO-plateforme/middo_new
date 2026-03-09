@@ -1,0 +1,179 @@
+/* ========================================
+   MIDDO STYLES - Boutons et Cartes
+   ======================================== */
+
+/* Bouton Principal MIDDO */
+.btn-middo {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-middo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-middo:active {
+    transform: translateY(0);
+}
+
+/* Bouton Secondaire */
+.btn-secondary-middo {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-secondary-middo:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Bouton Danger */
+.btn-danger-middo {
+    background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(245, 101, 101, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-danger-middo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(245, 101, 101, 0.4);
+    color: white;
+}
+
+/* Carte Projet */
+.card-middo {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.card-middo:hover {
+    box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+    transform: translateY(-4px);
+}
+
+/* Titre de Carte */
+.card-title-middo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+/* Description de Carte */
+.card-description-middo {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Badge de Statut */
+.badge-middo {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-warning {
+    background: #feebc8;
+    color: #744210;
+}
+
+.badge-info {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+/* Conteneur de Boutons */
+.btn-group-middo {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Texte Visible */
+.text-middo {
+    color: #2d3748 !important;
+}
+
+.text-middo-light {
+    color: #718096 !important;
+}
+
+/* En-tête de Page */
+.page-header-middo {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.page-title-middo {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+/* Grille de Projets */
+.projects-grid-middo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Message "Aucun Projet" */
+.empty-state-middo {
+    text-align: center;
+    padding: 3rem;
+    color: #718096;
+}
+
+.empty-state-middo .icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #cbd5e0;
+}

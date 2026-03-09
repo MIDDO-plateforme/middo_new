@@ -1,0 +1,1 @@
+                © {{ 'now'|date('Y') }} MIDDO - Plateforme universelle - Développé avec ❤️ pour le monde 🌍

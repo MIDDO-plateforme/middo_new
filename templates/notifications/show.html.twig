@@ -1,0 +1,44 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = notification.title %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: notification.title,
+        content: '
+            <p>' ~ notification.message ~ '</p>
+            <p>Type : ' ~ include("components/badge.html.twig", { type: notification.type, label: notification.type|capitalize }) ~ '</p>
+            <p>Date : ' ~ notification.created_at|date("d/m/Y H:i") ~ '</p>
+        '
+    } %}
+
+    <div style="margin-bottom:20px; display:flex; gap:10px;">
+        <a href="/notifications/{{ notification.id }}/read" style="
+            padding:10px 16px;
+            background:#4caf50;
+            border-radius:8px;
+            color:#fff;
+            text-decoration:none;
+            font-size:14px;
+        ">Marquer comme lue</a>
+
+        <a href="javascript:void(0)" onclick="middoOpenModal('delete-{{ notification.id }}')" style="
+            padding:10px 16px;
+            background:#f44336;
+            border-radius:8px;
+            color:#fff;
+            text-decoration:none;
+            font-size:14px;
+        ">Supprimer</a>
+    </div>
+
+    {% include 'components/modal.html.twig' with {
+        modal_id: 'delete-' ~ notification.id,
+        title: 'Supprimer la notification',
+        message: 'Es-tu sûr de vouloir supprimer cette notification ?<br><br><strong>' ~ notification.title ~ '</strong>',
+        confirm_label: 'Supprimer',
+        confirm_action: "window.location='/notifications/" ~ notification.id ~ "/delete';"
+    } %}
+
+{% endblock %}

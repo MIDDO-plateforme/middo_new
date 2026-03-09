@@ -1,0 +1,71 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    {{ folder.name }}
+{% endblock %}
+
+{% block page_subtitle %}
+    Dossier IA — fichiers, sous-dossiers, classification intelligente.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">📤 Importer</button>
+    <button class="btn btn-outline">📁 Nouveau sous-dossier</button>
+    <button class="btn btn-soft">🧠 Organiser avec l’IA</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="drive-layout">
+
+    <aside class="drive-sidebar">
+        <h3>📁 Dossiers</h3>
+        <ul class="drive-folders">
+            <li><a href="{{ path('travail_ia_drive') }}">Tous les fichiers</a></li>
+            {% for f in folders %}
+                <li class="{{ f.id == folder.id ? 'active' : '' }}">
+                    <a href="{{ path('travail_ia_drive_folder', { id: f.id }) }}">{{ f.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <section class="drive-main">
+
+        <div class="drive-toolbar">
+            <input type="search" placeholder="Rechercher dans ce dossier…">
+            <button class="btn-outline">🧠 Recherche IA</button>
+        </div>
+
+        <table class="drive-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Modifié le</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('travail_ia_drive_file', { id: file.id }) }}">
+                                {{ file.name }}
+                            </a>
+                        </td>
+                        <td>{{ file.type }}</td>
+                        <td>{{ file.updatedAt|date('d/m/Y H:i') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">Aucun fichier dans ce dossier.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+═══════════════════════════════════════════════════════════════
+🚀 MIDDO - MÉMO SESSION 20 - 15 NOVEMBRE 2025 🚀
+═══════════════════════════════════════════════════════════════
+
+📅 Date : 15 Novembre 2025
+⏰ Durée totale : ~2 heures de travail intense
+👨‍💼 Entrepreneur : Baudouin (MBANE LOKOTA)
+🎯 Objectif session : Système de photos de profil complet
+
+🎉 RÉSULTAT : SESSION 20 EN COURS (80% COMPLÉTÉE !) 🎉
+
+═══════════════════════════════════════════════════════════════
+✅ ACCOMPLISSEMENTS SESSION 20 (15 NOV 2025)
+═══════════════════════════════════════════════════════════════
+
+**PHASE 1 : PRÉPARATION ENVIRONNEMENT (TERMINÉE ✅)**
+- ✅ Dossier `public/uploads/profiles` créé avec succès
+- ✅ PowerShell dans le bon répertoire
+- ✅ Environnement prêt pour la suite
+
+**PHASE 2 : MODIFICATION ENTITÉ USER (TERMINÉE ✅)**
+- ✅ Champ `profilePicture` existe déjà dans User.php
+- ✅ Méthodes getProfilePicture() et setProfilePicture() présentes
+- ✅ Base de données déjà synchronisée (colonne profile_picture existe)
+- ✅ Aucune migration nécessaire
+- ⏰ Temps gagné : 10 minutes !
+
+**PHASE 3 : SERVICE DE GESTION PHOTOS (TERMINÉE ✅)**
+- ✅ Service FileUploader.php existant analysé
+- ✅ FileUploader.php amélioré avec redimensionnement (300x300 px)
+- ✅ Compression optimisée ajoutée (JPEG 85%, PNG niveau 6)
+- ✅ Méthode delete() ajoutée (suppression ancienne photo)
+- ✅ Support multi-formats (JPG, PNG, GIF)
+- ✅ Préservation transparence PNG/GIF
+
+**PHASE 4 : FORMULAIRE D'UPLOAD (TERMINÉE ✅)**
+- ✅ ProfileEditType.php déjà complet (champ profilePictureFile existe)
+- ✅ Validation 2 Mo maximum, formats JPG/PNG/JPEG acceptés
+- ✅ ProfileController.php amélioré (suppression ancienne photo)
+- ✅ Message de succès avec emoji ✅
+- ✅ Rétrocompatible à 100%
+
+**PHASE 5 : AFFICHAGE PHOTOS INTERFACE (EN COURS 🔄)**
+- ✅ Extension Twig `ProfilePictureExtension.php` créée
+  - Fonction profile_picture(user) : retourne URL photo ou null
+  - Fonction user_initials(user) : retourne initiales (fallback)
+- ✅ Nettoyage fichiers doublons (ProfilePictureService, ProfilePictureType)
+- 🔄 Modification base.html.twig navbar (en cours)
+- ⏳ Modification templates projets (à faire)
+- ⏳ Tests complets (à faire)
+
+═══════════════════════════════════════════════════════════════
+📊 PROGRESSION SESSION 20
+═══════════════════════════════════════════════════════════════
+
+🎯 PHASES COMPLÉTÉES : 4/7 (57%)
+⏰ TEMPS ÉCOULÉ : ~1h30
+📈 AVANCEMENT GLOBAL : 80% (phases simples déjà faites)
+
+PHASES RESTANTES (20 min estimées) :
+- [ ] Phase 5 : Finaliser affichage photos dans templates (10 min)
+- [ ] Phase 6 : Tests complets (5 min)
+- [ ] Phase 7 : Git commit final (5 min)
+
+═══════════════════════════════════════════════════════════════
+🔗 LIENS IMPORTANTS
+═══════════════════════════════════════════════════════════════
+
+🤖 Agent IA Permanent MIDDO :
+https://www.genspark.ai/agents?id=82bbfc58-037d-4710-9b89-feb17fa34f87
+
+📚 Documentation Mémoire :
+https://www.genspark.ai/doc_agent?id=82bbfc58-037d-4710-9b89-feb17fa34f87
+
+📄 Mémo SESSION 19 Complet :
+https://www.genspark.ai/api/files/s/cijF4mBX
+
+📄 Documentation HTML (règles travail) :
+https://www.genspark.ai/api/files/s/xveQAV94
+
+═══════════════════════════════════════════════════════════════
+📂 FICHIERS MODIFIÉS SESSION 20 (15 NOV)
+═══════════════════════════════════════════════════════════════
+
+✅ FICHIERS AMÉLIORÉS :
+1. src/Service/FileUploader.php
+   - Ajout redimensionnement automatique (300x300 px)
+   - Ajout compression optimisée (JPEG 85%, PNG niveau 6)
+   - Ajout méthode delete() pour supprimer anciennes photos
+   - Support multi-formats (JPG, PNG, GIF)
+   - Préservation transparence PNG/GIF
+
+2. src/Controller/ProfileController.php
+   - Ajout suppression ancienne photo avant upload
+   - Message de succès amélioré avec emoji ✅
+
+3. src/Twig/ProfilePictureExtension.php (NOUVEAU)
+   - Fonction profile_picture(user) : retourne URL photo
+   - Fonction user_initials(user) : retourne initiales
+
+4. templates/base.html.twig (EN COURS)
+   - Navbar avec affichage photos (à finaliser)
+
+✅ FICHIERS SUPPRIMÉS (nettoyage) :
+- src/Service/ProfilePictureService.php (doublon de FileUploader)
+- src/Form/ProfilePictureType.php (doublon, on utilise ProfileEditType)
+
+✅ FICHIERS ANALYSÉS (déjà corrects) :
+- src/Entity/User.php (champ profilePicture déjà présent)
+- src/Form/ProfileEditType.php (champ upload déjà présent)
+
+═══════════════════════════════════════════════════════════════
+🎯 PLAN POUR TERMINER SESSION 20 (20 MIN)
+═══════════════════════════════════════════════════════════════
+
+**PHASE 5 : FINALISER AFFICHAGE PHOTOS (10 MIN)**
+
+Étape 1 : Modifier base.html.twig (navbar)
+- Remplacer icône person-circle par photo ronde
+- Fallback initiales si pas de photo
+- Style professionnel (bordure blanche, ombre)
+
+Étape 2 : Lister templates projets
+- Commande : Get-ChildItem -Path templates\project -Filter *.twig -Recurse
+- Identifier les templates qui affichent les créateurs
+
+Étape 3 : Modifier templates projets
+- Afficher photo du créateur dans les cartes projets
+- Fallback initiales si pas de photo
+
+**PHASE 6 : TESTS COMPLETS (5 MIN)**
+
+1. Démarrer serveur : php -S localhost:8000 -t public
+2. Se connecter : test.projet@middo.local / Test1234!
+3. Aller sur profil : /profile/edit
+4. Uploader une photo de test
+5. Vérifier affichage dans navbar
+6. Vérifier affichage dans projets
+7. Changer la photo (vérifier suppression ancienne)
+
+**PHASE 7 : GIT COMMIT FINAL (5 MIN)**
+
+```bash
+git add .
+git commit -m "SESSION 20 COMPLÈTE - Système photos de profil : upload, redimensionnement, affichage navbar et projets"

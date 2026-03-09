@@ -1,0 +1,36 @@
+<header class="layout-header">
+
+    <div class="header-left">
+        {% if block('page_title') is defined %}
+            <h1 class="page-title">
+                {% block page_title %}{% endblock %}
+            </h1>
+        {% endif %}
+
+        {% if block('page_subtitle') is defined %}
+            <p class="page-subtitle">
+                {% block page_subtitle %}{% endblock %}
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="header-actions">
+        {% if block('page_actions') is defined %}
+            <div class="page-actions">
+                {% block page_actions %}{% endblock %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="header-user">
+        <button class="user-notifications" aria-label="Notifications">
+            🔔
+        </button>
+
+        <div class="user-profile">
+            <img src="/assets/img/user_default.png" alt="Utilisateur" class="user-avatar">
+            <span class="user-name">Utilisateur</span>
+        </div>
+    </div>
+
+</header>

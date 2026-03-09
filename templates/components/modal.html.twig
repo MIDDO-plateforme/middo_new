@@ -1,0 +1,7 @@
+<div class="modal-overlay" id="{{ id }}">
+    <div class="modal">
+        <h3 class="modal-title">{{ title }}</h3>
+        <div class="modal-content">{{ content|raw }}</div>
+        <button class="btn" onclick="document.getElementById('{{ id }}').style.display='none'">Fermer</button>
+    </div>
+</div>

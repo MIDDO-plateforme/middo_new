@@ -1,0 +1,45 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block page_title %}Mes documents{% endblock %}
+
+{% block content %}
+<div class="documents-app">
+
+    <div class="documents-header">
+        <h2>Mes documents</h2>
+        <p class="documents-subtitle">
+            Tous vos fichiers importants centralisés dans MIDDO OS.
+        </p>
+    </div>
+
+    <div class="documents-toolbar">
+        <a class="btn btn-primary" href="{{ path('user_documents_upload') }}">
+            Ajouter un document
+        </a>
+    </div>
+
+    <div class="documents-list">
+        {% if documents is not empty %}
+            <ul>
+                {% for doc in documents %}
+                    <li class="documents-item">
+                        <span class="documents-name">
+                            {{ doc.originalName }}
+                        </span>
+                        <span class="documents-meta">
+                            Ajouté le {{ doc.uploadedAt|date('d/m/Y H:i') }}
+                        </span>
+                        <a class="btn btn-small"
+                           href="{{ path('user_documents_analyze', { id: doc.id }) }}">
+                            Analyser avec IA
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun document pour le moment.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

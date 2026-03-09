@@ -1,0 +1,31 @@
+<header class="topbar">
+
+    <div class="topbar-left">
+        <h1 class="page-title">
+            {% block page_title %}MIDDO OS{% endblock %}
+        </h1>
+    </div>
+
+    <div class="topbar-center">
+        <form class="search-bar" action="#" method="get">
+            <input type="text" name="q" placeholder="Rechercher...">
+        </form>
+    </div>
+
+    <div class="topbar-right">
+
+        <a href="{{ path('user_notifications') }}" class="topbar-icon">
+            🔔
+            {% if app.user.unreadNotifications is defined and app.user.unreadNotifications > 0 %}
+                <span class="badge">{{ app.user.unreadNotifications }}</span>
+            {% endif %}
+        </a>
+
+        <div class="topbar-user">
+            <span class="user-name">{{ app.user.username }}</span>
+            <a href="{{ path('app_profile') }}" class="avatar">👤</a>
+        </div>
+
+    </div>
+
+</header>

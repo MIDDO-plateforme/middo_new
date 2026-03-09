@@ -1,0 +1,52 @@
+App\Domain\User\Entity\User:
+    type: entity
+    table: users
+
+    id:
+        id:
+            type: string
+            length: 36
+
+    fields:
+        email:
+            type: string
+            length: 180
+
+        passwordHash:
+            type: string
+            length: 255
+
+        roles:
+            type: json
+
+        firstname:
+            type: string
+            nullable: true
+
+        lastname:
+            type: string
+            nullable: true
+
+        avatar:
+            type: string
+            nullable: true
+
+        locale:
+            type: string
+            length: 10
+
+        timezone:
+            type: string
+            length: 50
+
+        preferences:
+            type: json
+
+        iaSettings:
+            type: json
+
+        createdAt:
+            type: datetime_immutable
+
+        updatedAt:
+            type: datetime_immutable

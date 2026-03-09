@@ -1,0 +1,36 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}IA Admin — MIDDO{% endblock %}
+{% block page_title %}IA Admin{% endblock %}
+
+{% block content %}
+<div class="page">
+    <h2>Assistant administratif IA</h2>
+    <p>Analyse, simplification et guides administratifs.</p>
+
+    <form id="ia-admin-form">
+        <textarea id="ia-admin-text" placeholder="Collez ici un texte administratif…"></textarea>
+        <button type="button" onclick="iaAdminAnalyze()">Analyser</button>
+        <button type="button" onclick="iaAdminSimplify()">Simplifier</button>
+        <button type="button" onclick="iaAdminGuide()">Générer un guide</button>
+    </form>
+
+    <pre id="ia-admin-result"></pre>
+</div>
+
+<script>
+async function callAdmin(endpoint) {
+    const text = document.getElementById('ia-admin-text').value;
+    const res = await fetch('/api/ia/admin/' + endpoint, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('ia-admin-result').textContent = data.content ?? JSON.stringify(data, null, 2);
+}
+function iaAdminAnalyze(){ callAdmin('analyze'); }
+function iaAdminSimplify(){ callAdmin('simplify'); }
+function iaAdminGuide(){ callAdmin('guide'); }
+</script>
+{% endblock %}

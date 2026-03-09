@@ -1,0 +1,27 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Détail paiement' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Détails du paiement',
+        content: '
+            Informations complètes de la transaction sélectionnée.
+        '
+    } %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Champ', 'Valeur'],
+        rows: [
+            ['Référence', payment.reference],
+            ['Montant', payment.amount ~ ' €'],
+            ['Statut', payment.status|capitalize],
+            ['Méthode', payment.method|capitalize],
+            ['Date', payment.created_at|date('d/m/Y H:i')]
+        ]
+    } %}
+
+    <a class="btn-secondary" href="/payment">Retour</a>
+
+{% endblock %}

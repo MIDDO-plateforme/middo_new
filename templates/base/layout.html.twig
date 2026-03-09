@@ -1,0 +1,17 @@
+{% extends 'base/base.html.twig' %}
+
+{% block title %}
+    {{ page_title|default('MIDDO OS') }}
+{% endblock %}
+
+{% block header_title %}
+    {{ page_title|default('MIDDO OS') }}
+{% endblock %}
+
+{% block content %}
+<div style="animation: fadeIn 0.4s ease;">
+    {% block page_content %}
+    <!-- Le contenu spécifique de chaque page sera injecté ici -->
+    {% endblock %}
+</div>
+{% endblock %}

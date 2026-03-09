@@ -1,0 +1,29 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Détail projet' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: project.name,
+        content: '
+            Informations complètes du projet sélectionné.
+        '
+    } %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Champ', 'Valeur'],
+        rows: [
+            ['Nom', project.name],
+            ['Statut', project.status|capitalize],
+            ['Progression', project.progress ~ ' %'],
+            ['Description', project.description],
+            ['Créé le', project.created_at|date('d/m/Y H:i')],
+            ['Mis à jour le', project.updated_at|date('d/m/Y H:i')]
+        ]
+    } %}
+
+    <a class="btn-secondary" href="/project">Retour</a>
+    <a class="btn-primary" href="/project/{{ project.id }}/edit" style="margin-left:10px;">Modifier</a>
+
+{% endblock %}

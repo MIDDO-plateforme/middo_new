@@ -1,0 +1,33 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Services MIDDO OS' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Services internes',
+        content: '
+            Voici la liste complète des services internes utilisés par MIDDO OS.  
+            Chaque service possède un statut, une description et un rôle précis dans le fonctionnement global du système.
+        '
+    } %}
+
+    <h2 style="margin-bottom:15px;">Liste des services</h2>
+
+    {% set rows = [] %}
+
+    {% for service in services %}
+        {% set rows = rows|merge([[
+            service.name,
+            include('components/badge.html.twig', { type: service.running ? 'success' : 'danger', label: service.running ? 'En cours' : 'Arrêté' }),
+            service.description,
+            service.version
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Service', 'Statut', 'Description', 'Version'],
+        rows: rows
+    } %}
+
+{% endblock %}

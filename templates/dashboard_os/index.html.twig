@@ -1,0 +1,85 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    Tableau de bord
+{% endblock %}
+
+{% block page_subtitle %}
+    Votre résumé intelligent de la journée.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">Créer une tâche</button>
+    <button class="btn btn-outline">Nouvelle note</button>
+    <button class="btn btn-soft">🧠 Demander à l’IA</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="dashboard-layout">
+
+    <section class="dashboard-main">
+
+        <div class="panel-block">
+            <h3>📌 Tâches du jour</h3>
+            <ul>
+                {% for t in tasks_today %}
+                    <li>{{ t.title }}</li>
+                {% else %}
+                    <li>Aucune tâche pour aujourd’hui.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="panel-block">
+            <h3>📄 Derniers documents</h3>
+            <ul>
+                {% for d in recent_docs %}
+                    <li>{{ d.title }}</li>
+                {% else %}
+                    <li>Aucun document récent.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="panel-block">
+            <h3>📝 Notes récentes</h3>
+            <ul>
+                {% for n in recent_notes %}
+                    <li>{{ n.title }}</li>
+                {% else %}
+                    <li>Aucune note récente.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </section>
+
+    <aside class="dashboard-sidepanel">
+
+        <div class="panel-block">
+            <h4>🧠 Suggestions IA</h4>
+            <p>{{ suggestion_ia|default('Aucune suggestion pour le moment.') }}</p>
+        </div>
+
+        <div class="panel-block">
+            <h4>🔔 Notifications</h4>
+            <ul>
+                {% for notif in notifications %}
+                    <li>{{ notif.message }}</li>
+                {% else %}
+                    <li>Aucune notification.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="panel-block">
+            <h4>👥 Activité des collaborateurs</h4>
+            <p>Aucune activité récente.</p>
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}

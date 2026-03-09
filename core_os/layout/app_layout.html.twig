@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="layout-root">
+
+    {# --- SIDEBAR MIDDO OS --- #}
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        {# --- HEADER GLOBAL (titre, actions, utilisateur) --- #}
+        {% include 'layout/_header.html.twig' %}
+
+        {# --- CONTENU PRINCIPAL --- #}
+        <section class="page-content">
+            {% block page_content %}{% endblock %}
+        </section>
+
+    </main>
+
+    {# --- PANNEAU IA COMMUN (réductible, contextuel, premium) --- #}
+    <aside class="layout-ia-panel">
+        {% include 'layout/_ai_panel.html.twig' %}
+    </aside>
+
+</div>
+{% endblock %}

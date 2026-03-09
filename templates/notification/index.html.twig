@@ -1,0 +1,30 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Notifications' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Centre de notifications',
+        content: '
+            Liste des alertes, messages système et événements importants.
+        '
+    } %}
+
+    {% set rows = [] %}
+    {% for notif in notifications %}
+        {% set rows = rows|merge([[
+            notif.title,
+            notif.message|slice(0, 80) ~ '...',
+            notif.type|capitalize,
+            notif.created_at|date('d/m/Y H:i'),
+            '<a href="/notification/' ~ notif.id ~ '">Voir</a>'
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Titre', 'Message', 'Type', 'Date', 'Actions'],
+        rows: rows
+    } %}
+
+{% endblock %}

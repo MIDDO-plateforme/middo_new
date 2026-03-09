@@ -1,0 +1,15 @@
+{% extends 'layout/layout.html.twig' %}
+{% block page_title %}Analyse IA — {{ document.originalName }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Analyse IA du document</h2>
+
+    <p><strong>Document :</strong> {{ document.originalName }}</p>
+
+    <h3>Résultat IA</h3>
+    <pre>{{ result }}</pre>
+
+    <a class="btn" href="{{ path('user_documents') }}">Retour</a>
+</div>
+{% endblock %}

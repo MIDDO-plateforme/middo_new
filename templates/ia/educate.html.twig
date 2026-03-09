@@ -1,0 +1,37 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}IA Éducation — MIDDO{% endblock %}
+{% block page_title %}IA Éducation{% endblock %}
+
+{% block content %}
+<div class="page">
+    <h2>Explications pédagogiques</h2>
+    <p>Explique des notions à différents niveaux.</p>
+
+    <form id="ia-educate-form">
+        <input id="ia-educate-topic" placeholder="Sujet à expliquer…">
+        <select id="ia-educate-level">
+            <option value="beginner">Débutant</option>
+            <option value="intermediate">Intermédiaire</option>
+            <option value="advanced">Avancé</option>
+        </select>
+        <button type="button" onclick="iaEducate()">Expliquer</button>
+    </form>
+
+    <pre id="ia-educate-result"></pre>
+</div>
+
+<script>
+async function iaEducate() {
+    const topic = document.getElementById('ia-educate-topic').value;
+    const level = document.getElementById('ia-educate-level').value;
+    const res = await fetch('/api/ia/educate/explain', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ topic, level })
+    });
+    const data = await res.json();
+    document.getElementById('ia-educate-result').textContent = data.content ?? JSON.stringify(data, null, 2);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+[08:23:32] ?? Démarrage de l'audit...
+[08:23:32] ?? Projet: C:\Users\MBANE LOKOTA\middo_new
+[08:23:36]  Dossier APIs trouvé: C:\Users\MBANE LOKOTA\middo_new\src\Controller\Api
+[08:23:38]  Analyse de 4 APIs...
+[08:23:40]  Analyse de ChatbotController...
+[08:23:41]     Fichier trouvé (1.99 KB, 59 lignes)
+[08:23:41]    ??  Aucune route détectée
+[08:23:41]     Méthodes publiques: 1
+[08:23:41]     Gestion d'erreurs (try-catch) détectée
+[08:23:41]    ??  Pas de logging détecté
+[08:23:41]    ??  Pas d'intégration OpenAI détectée
+[08:23:41]     Score: 50/100
+[08:23:41]  Analyse de SuggestionsController...
+[08:23:41]     Fichier trouvé (1.97 KB, 55 lignes)
+[08:23:41]    ?? Routes trouvées: 1
+[08:23:41]     Méthodes publiques: 2
+[08:23:41]      Pas de try-catch détecté
+[08:23:41]    ??  Pas de logging détecté
+[08:23:41]    ??  Pas d'intégration OpenAI détectée
+[08:23:41]     Score: 50/100
+[08:23:41]  Analyse de MatchingController...
+[08:23:41]     Fichier trouvé (8.65 KB, 282 lignes)
+[08:23:41]    ?? Routes trouvées: 5
+[08:23:41]     Méthodes publiques: 9
+[08:23:41]     Gestion d'erreurs (try-catch) détectée
+[08:23:41]    ? Logging détecté
+[08:23:41]    ??  Pas d'intégration OpenAI détectée
+[08:23:41]     Score: 100/100
+[08:23:41]  Analyse de SentimentController...
+[08:23:41]     Fichier trouvé (2.53 KB, 71 lignes)
+[08:23:41]    ?? Routes trouvées: 2
+[08:23:41]     Méthodes publiques: 2
+[08:23:41]     Gestion d'erreurs (try-catch) détectée
+[08:23:41]    ? Logging détecté
+[08:23:41]    ?? Intégration OpenAI détectée
+[08:23:41]     Score: 100/100
+[08:23:42]  Vérification de la configuration .env...
+[08:23:42]      Clé OpenAI non trouvée
+[08:23:42] ?? Génération du rapport HTML...
+[08:23:48] ? Rapport HTML généré: C:\Users\MBANE LOKOTA\middo_new\audit_ia_report.html
+[08:23:48]  RÉSUMÉ:
+[08:23:48]     APIs analysées: 4
+[08:23:48]     APIs trouvées: 4
+[08:23:49]     Score moyen: 0/100
+[08:23:49] ?? RAPPORT HTML: C:\Users\MBANE LOKOTA\middo_new\audit_ia_report.html
+[08:23:49] ?? LOG DÉTAILLÉ: C:\Users\MBANE LOKOTA\middo_new\audit_ia.log
+[08:23:49] ?? Ouverture du rapport dans le navigateur...

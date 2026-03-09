@@ -1,0 +1,81 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Connexion' %}
+
+{% block page_content %}
+
+<div style="
+    max-width:420px;
+    margin:40px auto;
+    background:#141414;
+    border:1px solid #222;
+    padding:30px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    animation: fadeIn 0.4s ease;
+">
+
+    <h2 style="margin-bottom:20px; text-align:center;">Connexion</h2>
+
+    {% if error is defined and error %}
+        {% include 'components/alert.html.twig' with {
+            type: 'danger',
+            title: 'Erreur',
+            message: error
+        } %}
+    {% endif %}
+
+    <form method="post" action="/auth/login" style="display:flex; flex-direction:column; gap:15px;">
+
+        <div>
+            <label>Email</label>
+            <input type="email" name="email" required style="
+                width:100%;
+                padding:12px;
+                border-radius:8px;
+                border:1px solid #333;
+                background:#1b1b1b;
+                color:#eee;
+                margin-top:5px;
+            ">
+        </div>
+
+        <div>
+            <label>Mot de passe</label>
+            <input type="password" name="password" required style="
+                width:100%;
+                padding:12px;
+                border-radius:8px;
+                border:1px solid #333;
+                background:#1b1b1b;
+                color:#eee;
+                margin-top:5px;
+            ">
+        </div>
+
+        <button type="submit" style="
+            padding:12px;
+            background:#4caf50;
+            border:none;
+            border-radius:8px;
+            color:#fff;
+            font-size:15px;
+            cursor:pointer;
+            transition:0.2s;
+        "
+            onmouseover="this.style.opacity='0.85'"
+            onmouseout="this.style.opacity='1'"
+        >
+            Se connecter
+        </button>
+
+    </form>
+
+    <div style="margin-top:20px; text-align:center; font-size:14px; color:#aaa;">
+        <p><a href="/auth/register" style="color:#4caf50;">Créer un compte</a></p>
+        <p><a href="/auth/reset" style="color:#4caf50;">Mot de passe oublié ?</a></p>
+    </div>
+
+</div>
+
+{% endblock %}

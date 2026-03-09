@@ -1,0 +1,180 @@
+/* ============================================================
+   FICHIER : public/css/ui-kit.css
+   UI Kit MIDDO — Design unifié, réutilisable partout
+   ============================================================ */
+
+/* ------------------------------
+   Variables globales
+--------------------------------*/
+:root {
+    --middo-primary: #4b79ff;
+    --middo-primary-light: #6a9bff;
+    --middo-secondary: #1e1e2f;
+    --middo-bg: #f5f6fa;
+    --middo-white: #ffffff;
+    --middo-border: #e5e5e5;
+    --middo-text: #333;
+    --middo-muted: #777;
+
+    --middo-radius: 10px;
+    --middo-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* ------------------------------
+   Layout
+--------------------------------*/
+.middo-container {
+    padding: 2rem;
+}
+
+.middo-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.middo-grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.middo-grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* ------------------------------
+   Cards
+--------------------------------*/
+.middo-card {
+    background: var(--middo-white);
+    padding: 1.2rem;
+    border-radius: var(--middo-radius);
+    box-shadow: var(--middo-shadow);
+}
+
+.middo-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--middo-muted);
+}
+
+.middo-card-value {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--middo-text);
+}
+
+/* ------------------------------
+   Buttons
+--------------------------------*/
+.middo-btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.middo-btn-primary {
+    background: var(--middo-primary);
+    color: white;
+}
+
+.middo-btn-primary:hover {
+    background: var(--middo-primary-light);
+}
+
+.middo-btn-outline {
+    border: 1px solid var(--middo-primary);
+    color: var(--middo-primary);
+    background: transparent;
+}
+
+.middo-btn-outline:hover {
+    background: var(--middo-primary);
+    color: white;
+}
+
+/* ------------------------------
+   Badges
+--------------------------------*/
+.middo-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.middo-badge-info {
+    background: #dce6ff;
+    color: #2f54eb;
+}
+
+.middo-badge-warning {
+    background: #fff4d6;
+    color: #d48806;
+}
+
+.middo-badge-danger {
+    background: #ffe2e2;
+    color: #cf1322;
+}
+
+/* ------------------------------
+   Tables
+--------------------------------*/
+.middo-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--middo-radius);
+    overflow: hidden;
+    box-shadow: var(--middo-shadow);
+}
+
+.middo-table th,
+.middo-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--middo-border);
+}
+
+.middo-table th {
+    background: #f0f3ff;
+    text-align: left;
+    font-weight: 600;
+}
+
+.middo-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ------------------------------
+   Inputs
+--------------------------------*/
+.middo-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--middo-border);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.middo-input:focus {
+    outline: none;
+    border-color: var(--middo-primary);
+    box-shadow: 0 0 0 2px rgba(75, 121, 255, 0.2);
+}
+
+/* ------------------------------
+   Animations
+--------------------------------*/
+.middo-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

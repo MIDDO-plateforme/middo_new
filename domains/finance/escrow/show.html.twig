@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Escrow for Contract: {{ contract.title }}</h1>
+
+<p><strong>Total Amount:</strong> {{ escrow.totalAmount }} €</p>
+<p><strong>Blocked Amount:</strong> {{ escrow.blockedAmount }} €</p>
+<p><strong>Released Amount:</strong> {{ escrow.releasedAmount }} €</p>
+<p><strong>Status:</strong> {{ escrow.status }}</p>
+
+<a href="{{ path('escrow_deposit', {id: contract.id}) }}" class="btn btn-primary mt-3">Deposit Funds</a>
+<a href="{{ path('escrow_release', {id: escrow.id}) }}" class="btn btn-success mt-3">Release Funds</a>
+
+<a href="{{ path('contract_show', {id: contract.id}) }}" class="btn btn-secondary mt-3">Back</a>
+{% endblock %}

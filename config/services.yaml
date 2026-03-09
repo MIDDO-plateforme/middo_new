@@ -1,0 +1,218 @@
+parameters:
+    openai_api_key: '%env(OPENAI_API_KEY)%'
+    openai_model: '%env(OPENAI_MODEL)%'
+    anthropic_api_key: '%env(ANTHROPIC_API_KEY)%'
+    anthropic_model: '%env(ANTHROPIC_MODEL)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+        bind:
+            string $projectDir: '%kernel.project_dir%'
+
+    # ================================
+    #   PROVIDERS IA (DÉCLARATION MANUELLE)
+    # ================================
+
+    App\Infrastructure\IA\Provider\OpenAIProvider:
+        autowire: false
+        arguments:
+            $client: '@http_client'
+            $apiKey: '%openai_api_key%'
+            $model: '%openai_model%'
+            $counter: '@App\AI\Provider\TokenCounterInterface'
+
+    App\Infrastructure\IA\Provider\AnthropicProvider:
+        autowire: false
+        arguments:
+            $client: '@http_client'
+            $apiKey: '%anthropic_api_key%'
+            $model: '%anthropic_model%'
+            $counter: '@App\AI\Provider\TokenCounterInterface'
+
+    # ================================
+    #   AiKernel
+    # ================================
+
+    App\IA\AiKernel:
+        arguments:
+            $providers:
+                - '@App\Infrastructure\IA\Provider\OpenAIProvider'
+                - '@App\Infrastructure\IA\Provider\AnthropicProvider'
+
+    # ================================
+    #   PROVIDER ROUTER
+    # ================================
+
+    App\AI\Provider\ProviderRouter:
+        arguments:
+            $providers:
+                - '@App\Infrastructure\IA\Provider\OpenAIProvider'
+                - '@App\Infrastructure\IA\Provider\AnthropicProvider'
+
+    # ================================
+    #   AUTOLOAD APP
+    # ================================
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # JWT secret
+    App\Infrastructure\Auth\Security\JwtSecret:
+        arguments:
+            $value: '%env(JWT_SECRET)%'
+
+    # TokenCounter : interface → implémentation
+    App\AI\Provider\TokenCounterInterface: '@App\Infrastructure\IA\Service\TokenCounter'
+
+    # Injection des clés API + modèles dans la commande IA
+    App\Command\AiEngineTestCommand:
+        arguments:
+            $openaiApiKey: '%openai_api_key%'
+            $openaiModel: '%openai_model%'
+            $anthropicApiKey: '%anthropic_api_key%'
+            $anthropicModel: '%anthropic_model%'
+
+    # ================================
+    #   CLIENTS IA
+    # ================================
+
+    App\IA\Client\OpenAiClient:
+        arguments:
+            $httpClient: '@http_client'
+            $apiKey: '%openai_api_key%'
+            $model: '%openai_model%'
+
+    App\IA\Client\AnthropicClient:
+        arguments:
+            $httpClient: '@http_client'
+            $apiKey: '%anthropic_api_key%'
+            $model: '%anthropic_model%'
+
+    App\IA\Client\MiddoCoreClient: ~
+
+    App\IA\Client\IaRouter:
+        arguments:
+            $openAiClient: '@App\IA\Client\OpenAiClient'
+            $anthropicClient: '@App\IA\Client\AnthropicClient'
+            $middoCoreClient: '@App\IA\Client\MiddoCoreClient'
+
+    App\IA\Client\IaClientInterface: '@App\IA\Client\IaRouter'
+
+    # ================================
+    #   ORCHESTRATEUR IA v3
+    # ================================
+
+    App\IA\Orchestrator\Orchestrator:
+        arguments:
+            $pipelineManager: '@App\IA\Orchestrator\PipelineManager'
+            $agentManager: '@App\IA\Orchestrator\AgentManager'
+            $memoryManager: '@App\IA\Orchestrator\MemoryManager'
+            $snapshotBuilder: '@App\IA\Orchestrator\SnapshotBuilder'
+            $cortexEngine: '@App\IA\Cortex\CortexEngine'
+            $logger: '@logger'
+
+    App\IA\Orchestrator\PipelineManager: ~
+    App\IA\Orchestrator\MemoryManager: ~
+    App\IA\Orchestrator\SnapshotBuilder: ~
+
+    App\IA\Orchestrator\AgentManager:
+        arguments:
+            $planner: '@App\IA\Agents\PlannerAgent'
+            $safety: '@App\IA\Agents\SafetyAgent'
+            $executor: '@App\IA\Agents\ExecutorAgent'
+            $logger: '@logger'
+
+    App\IA\Agents\PlannerAgent:
+        arguments:
+            $iaClient: '@App\IA\Client\IaClientInterface'
+
+    App\IA\Agents\SafetyAgent:
+        arguments:
+            $iaClient: '@App\IA\Client\IaClientInterface'
+
+    App\IA\Agents\ExecutorAgent:
+        arguments:
+            $iaClient: '@App\IA\Client\IaClientInterface'
+
+    # ================================
+    #   CORTEX v4
+    # ================================
+
+    App\IA\Cortex\CortexEngine: ~
+
+    App\IA\Cortex\CortexMonitor:
+        arguments:
+            $cortexEngine: '@App\IA\Cortex\CortexEngine'
+            $logger: '@logger'
+
+    App\IA\Cortex\CortexOrchestrator:
+        arguments:
+            $cortexEngine: '@App\IA\Cortex\CortexEngine'
+            $cortexMonitor: '@App\IA\Cortex\CortexMonitor'
+
+    # ================================
+    #   MÉMOIRE PERSISTANTE DOCTRINE
+    # ================================
+
+    App\IA\Cortex\Repository\CortexMemoryRepository: ~
+
+    App\IA\Cortex\CortexMemorySynchronizer:
+        arguments:
+            $repository: '@App\IA\Cortex\Repository\CortexMemoryRepository'
+            $cortexEngine: '@App\IA\Cortex\CortexEngine'
+
+    App\IA\Cortex\CortexMemoryLoader:
+        arguments:
+            $synchronizer: '@App\IA\Cortex\CortexMemorySynchronizer'
+
+    # ================================
+    #   MODE AUTONOME
+    # ================================
+
+    App\IA\Autonomous\AutonomousState: ~
+
+    App\IA\Autonomous\AutonomousTask: ~
+
+    App\IA\Autonomous\AutonomousLoop:
+        arguments:
+            $cortex: '@App\IA\Cortex\CortexEngine'
+            $monitor: '@App\IA\Cortex\CortexMonitor'
+            $orchestrator: '@App\IA\Cortex\CortexOrchestrator'
+
+    App\IA\Autonomous\AutonomousSupervisor: ~
+
+    App\IA\Autonomous\AutonomousScheduler: ~
+
+    # ================================
+    #   VISION (OCR + ANALYSE)
+    # ================================
+
+    App\IA\Vision\VisionOcr:
+        arguments:
+            $httpClient: '@http_client'
+            $apiKey: '%openai_api_key%'
+
+    App\IA\Vision\VisionAnalyzer:
+        arguments:
+            $iaClient: '@App\IA\Client\IaClientInterface'
+
+    App\IA\Vision\VisionProcessor:
+        arguments:
+            $ocr: '@App\IA\Vision\VisionOcr'
+            $analyzer: '@App\IA\Vision\VisionAnalyzer'
+
+    App\IA\Vision\VisionPipeline:
+        arguments:
+            $processor: '@App\IA\Vision\VisionProcessor'

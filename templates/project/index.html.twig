@@ -1,0 +1,30 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Projets' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Liste des projets',
+        content: '
+            Gestion des projets, progression, statuts et accès aux détails.
+        '
+    } %}
+
+    {% set rows = [] %}
+    {% for project in projects %}
+        {% set rows = rows|merge([[
+            project.name,
+            project.status|capitalize,
+            project.progress ~ ' %',
+            project.created_at|date('d/m/Y H:i'),
+            '<a href="/project/' ~ project.id ~ '">Voir</a>'
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Nom', 'Statut', 'Progression', 'Créé le', 'Actions'],
+        rows: rows
+    } %}
+
+{% endblock %}

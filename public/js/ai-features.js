@@ -1,0 +1,258 @@
+﻿// MIDDO - Scripts IA Frontend
+// Connexion des boutons IA aux APIs backend
+
+// Configuration des endpoints
+const API_ENDPOINTS = {
+    chatbot: '/api/chatbot',
+    suggestions: '/api/suggestions/analyze',
+    matching: '/api/ia_engine/matching/find-profiles',
+    sentiment: '/api/sentiment/analyze'
+};
+
+// Fonction helper pour les appels API
+async function callAPI(endpoint, data) {
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+// 1. CHATBOT GPT-4
+async function openChatbot(projectId) {
+    // Créer la modale de chat
+    const modal = document.createElement('div');
+    modal.className = 'ai-modal';
+    modal.innerHTML = `
+        <div class="ai-modal-content">
+            <div class="ai-modal-header">
+                <h3>🤖 Assistant IA - GPT-4</h3>
+                <button class="close-modal" onclick="this.closest('.ai-modal').remove()">×</button>
+            </div>
+            <div class="ai-chat-messages" id="chatMessages"></div>
+            <div class="ai-chat-input">
+                <input type="text" id="chatInput" placeholder="Posez votre question..." />
+                <button onclick="sendChatMessage(${projectId})">Envoyer</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Message d'accueil
+    addChatMessage('assistant', 'Bonjour ! Je suis votre assistant IA. Comment puis-je vous aider avec votre projet ?');
+}
+
+async function sendChatMessage(projectId) {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Afficher le message utilisateur
+    addChatMessage('user', message);
+    input.value = '';
+    
+    // Afficher le loader
+    const loaderId = 'loader-' + Date.now();
+    addChatMessage('assistant', '<div class="loader">Réflexion en cours...</div>', loaderId);
+    
+    try {
+        // Appel API
+        const result = await callAPI(API_ENDPOINTS.chatbot, {
+            message: message,
+            project_id: projectId
+        });
+        
+        // Supprimer le loader
+        document.getElementById(loaderId)?.remove();
+        
+        // Afficher la réponse
+        addChatMessage('assistant', result.response);
+        
+    } catch (error) {
+        document.getElementById(loaderId)?.remove();
+        addChatMessage('assistant', '❌ Erreur: ' + error.message);
+    }
+}
+
+function addChatMessage(role, content, id = null) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${role}`;
+    if (id) messageDiv.id = id;
+    messageDiv.innerHTML = content;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// 2. SUGGESTIONS IA (AMÉLIORER)
+async function improveSuggestions(projectId) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = '⏳ Analyse...';
+    button.disabled = true;
+    
+    try {
+        // Récupérer le contenu du projet
+        const projectContent = document.querySelector('.project-content')?.textContent || 'Aide clinique en Afrique';
+        
+        const result = await callAPI(API_ENDPOINTS.suggestions, {
+            project_id: projectId,
+            content: projectContent
+        });
+        
+        // Afficher les suggestions
+        showModal('✨ Suggestions d\'amélioration', `
+            <div class="suggestions-list">
+                ${result.suggestions ? result.suggestions.map(s => `<div class="suggestion-item">• ${s}</div>`).join('') : result.response}
+            </div>
+        `);
+        
+    } catch (error) {
+        alert('❌ Erreur: ' + error.message);
+    } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+}
+
+// 3. MATCHING PROFILS
+async function findProfiles(projectId) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = '⏳ Recherche...';
+    button.disabled = true;
+    
+    try {
+        const result = await callAPI(API_ENDPOINTS.matching, {
+            project_id: projectId,
+            skills: ['sante', 'Afrique', 'clinique']
+        });
+        
+        // Afficher les profils
+        const profilesHTML = result.matches.map(match => `
+            <div class="profile-card">
+                <div class="profile-header">
+                    <strong>${match.name}</strong>
+                    <span class="score">Score: ${(match.score * 100).toFixed(0)}%</span>
+                </div>
+                <div class="profile-info">
+                    <div>📍 ${match.location}</div>
+                    <div>💼 ${match.expertise}</div>
+                    <div>🏷️ ${match.skills.join(', ')}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        showModal(`👥 ${result.total} Profils trouvés`, profilesHTML);
+        
+    } catch (error) {
+        alert('❌ Erreur: ' + error.message);
+    } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+}
+
+// 4. ANALYSE DE TON
+async function analyzeSentiment(projectId) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = '⏳ Analyse...';
+    button.disabled = true;
+    
+    try {
+        // Récupérer le texte du projet
+        const projectText = document.querySelector('.project-content')?.textContent || 'Aide clinique en Afrique pour améliorer la santé';
+        
+        const result = await callAPI(API_ENDPOINTS.sentiment, {
+            text: projectText
+        });
+        
+        // Afficher le résultat
+        const emotionEmoji = result.emotion === 'joie' ? '😊' : result.emotion === 'tristesse' ? '😢' : '😐';
+        showModal('😊 Analyse de ton', `
+            <div class="sentiment-result">
+                <div class="sentiment-score">
+                    <div class="score-circle" style="background: linear-gradient(${result.score * 360}deg, #4CAF50 0%, #FFC107 50%, #f44336 100%)">
+                        <span>${(result.score * 100).toFixed(0)}%</span>
+                    </div>
+                </div>
+                <div class="sentiment-details">
+                    <h4>${emotionEmoji} Sentiment: ${result.sentiment}</h4>
+                    <p>Émotion dominante: ${result.emotion}</p>
+                    <p>Score: ${result.score}/1.0</p>
+                </div>
+            </div>
+        `);
+        
+    } catch (error) {
+        alert('❌ Erreur: ' + error.message);
+    } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+    }
+}
+
+// Fonction helper pour afficher une modale
+function showModal(title, content) {
+    const modal = document.createElement('div');
+    modal.className = 'ai-modal';
+    modal.innerHTML = `
+        <div class="ai-modal-content">
+            <div class="ai-modal-header">
+                <h3>${title}</h3>
+                <button class="close-modal" onclick="this.closest('.ai-modal').remove()">×</button>
+            </div>
+            <div class="ai-modal-body">
+                ${content}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('MIDDO IA Scripts chargés');
+    
+    // Attacher les événements aux boutons IA
+    const projectId = 1; // À adapter dynamiquement
+    
+    // Bouton Assistant IA
+    const chatbotBtn = document.querySelector('[data-ai="chatbot"]');
+    if (chatbotBtn) {
+        chatbotBtn.addEventListener('click', () => openChatbot(projectId));
+    }
+    
+    // Bouton Améliorer
+    const suggestionsBtn = document.querySelector('[data-ai="suggestions"]');
+    if (suggestionsBtn) {
+        suggestionsBtn.addEventListener('click', () => improveSuggestions(projectId));
+    }
+    
+    // Bouton Trouver des Profils
+    const matchingBtn = document.querySelector('[data-ai="matching"]');
+    if (matchingBtn) {
+        matchingBtn.addEventListener('click', () => findProfiles(projectId));
+    }
+    
+    // Bouton Analyser le Ton
+    const sentimentBtn = document.querySelector('[data-ai="sentiment"]');
+    if (sentimentBtn) {
+        sentimentBtn.addEventListener('click', () => analyzeSentiment(projectId));
+    }
+});

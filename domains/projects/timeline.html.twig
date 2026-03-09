@@ -1,0 +1,55 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Timeline - {{ project.name }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Timeline du projet</h1>
+    <p class="breadcrumb">Projets > {{ project.name }} > Timeline IA</p>
+</div>
+
+<div class="timeline-layout">
+
+    <aside class="timeline-sidebar">
+
+        <h3>IA</h3>
+        <button class="btn">Analyser la timeline</button>
+        <button class="btn-outline">Détecter les retards</button>
+        <button class="btn-outline">Optimiser le planning</button>
+        <button class="btn-outline">Proposer un recalcul</button>
+
+        <h3>Actions</h3>
+        <button class="btn-outline">Exporter</button>
+        <button class="btn-outline">Ajouter un événement</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="timeline-main">
+
+        <h2>Vue chronologique</h2>
+
+        <div class="timeline">
+
+            {% for event in timeline %}
+                <div class="timeline-event">
+                    <div class="timeline-date">{{ event.date }}</div>
+                    <div class="timeline-content">
+                        <strong>{{ event.title }}</strong><br>
+                        <span>{{ event.description }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

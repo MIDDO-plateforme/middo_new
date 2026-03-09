@@ -1,0 +1,7 @@
+framework:
+    cache:
+        app: cache.adapter.filesystem
+        system: cache.adapter.filesystem
+        pools:
+            cache.redis:
+                adapter: cache.adapter.filesystem

@@ -1,0 +1,96 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    IA Insights
+{% endblock %}
+
+{% block page_subtitle %}
+    Analyse avancée : produits, fournisseurs, anomalies, tendances et prévisions IA.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">Exporter les insights</button>
+    <button class="btn btn-outline">Rafraîchir les données</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="ia-insights-grid">
+
+    <section class="ia-insights-main">
+
+        <div class="mdo-card">
+            <h3>Recommandations Produits</h3>
+            <ul>
+                {% for item in data.products %}
+                    <li>{{ item.product.name }} — Score : {{ item.score }}</li>
+                {% else %}
+                    <li>Aucune recommandation disponible.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mdo-card">
+            <h3>Opportunités IA</h3>
+            <ul>
+                {% for o in data.opportunities %}
+                    <li>{{ o.label }}</li>
+                {% else %}
+                    <li>Aucune opportunité détectée.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mdo-card">
+            <h3>Anomalies de Prix</h3>
+            <ul>
+                {% for p in data.pricingAnomalies %}
+                    <li>{{ p.product.name }} — {{ p.current }} / {{ p.suggested }}</li>
+                {% else %}
+                    <li>Aucune anomalie détectée.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </section>
+
+    <aside class="ia-insights-side">
+
+        <div class="mdo-card">
+            <h3>Fournisseurs Recommandés</h3>
+            <ul>
+                {% for s in data.suppliers %}
+                    <li>{{ s.name }}</li>
+                {% else %}
+                    <li>Aucun fournisseur recommandé.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mdo-card">
+            <h3>Tendances</h3>
+            <ul>
+                {% for month, total in data.trends %}
+                    <li>{{ month }} : {{ total }}</li>
+                {% else %}
+                    <li>Aucune tendance disponible.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="mdo-card">
+            <h3>Prévisions</h3>
+            <ul>
+                {% for month, total in data.forecast %}
+                    <li>{{ month }} : {{ total }}</li>
+                {% else %}
+                    <li>Aucune prévision disponible.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}

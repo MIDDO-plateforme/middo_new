@@ -1,0 +1,83 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    IA Drive
+{% endblock %}
+
+{% block page_subtitle %}
+    Votre espace de fichiers intelligent : recherche, classement, IA, intégrations externes.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">📤 Importer</button>
+    <button class="btn btn-outline">📁 Nouveau dossier</button>
+    <button class="btn btn-soft">🧠 Organiser avec l’IA</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="drive-layout">
+
+    {# --- Sidebar : arborescence / dossiers --- #}
+    <aside class="drive-sidebar">
+
+        <h3>📁 Dossiers</h3>
+        <ul class="drive-folders">
+            <li class="active">Tous les fichiers</li>
+            <li>Projets</li>
+            <li>Administratif</li>
+            <li>Contrats</li>
+            <li>Archives</li>
+        </ul>
+
+        <h3>🌐 Sources externes</h3>
+        <ul class="drive-sources">
+            <li>Google Drive</li>
+            <li>OneDrive</li>
+            <li>Dropbox</li>
+        </ul>
+
+    </aside>
+
+    {# --- Zone principale : recherche + liste de fichiers --- #}
+    <section class="drive-main">
+
+        <div class="drive-toolbar">
+            <input type="search" placeholder="Rechercher un fichier, un dossier, un contenu…">
+            <button class="btn-outline">🧠 Recherche IA</button>
+        </div>
+
+        <table class="drive-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Dossier</th>
+                    <th>Modifié le</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('travail_ia_drive_file', { id: file.id }) }}">
+                                {{ file.name }}
+                            </a>
+                        </td>
+                        <td>{{ file.type }}</td>
+                        <td>{{ file.folder }}</td>
+                        <td>{{ file.updatedAt|date('d/m/Y H:i') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Aucun fichier pour le moment.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+</div>
+
+{% endblock %}

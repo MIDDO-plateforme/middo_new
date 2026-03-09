@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Commandes reçues</h1>
+
+<div class="mdo-card">
+    {% if items is empty %}
+        <p>Aucune commande reçue.</p>
+    {% else %}
+        <ul>
+            {% for item in items %}
+                <li>
+                    <strong>{{ item.product.name }}</strong><br>
+                    Quantité : {{ item.quantity }}<br>
+                    Prix unitaire : {{ item.unitPrice }} €<br>
+                    Commande #{{ item.orderRef.id }}<br>
+                    Client : {{ item.orderRef.buyer.name }}<br>
+                    <a class="mdo-btn" href="{{ path('order_success', {id: item.orderRef.id}) }}">Voir</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

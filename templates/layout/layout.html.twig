@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block page_title %}MIDDO OS{% endblock %}</title>
+
+    {# CSS global #}
+    <link rel="stylesheet" href="/assets/css/os.css">
+    <link rel="stylesheet" href="/assets/css/os_windows.css">
+    <link rel="stylesheet" href="/assets/css/widgets.css">
+    <link rel="stylesheet" href="/assets/css/search.css">
+
+    {# JS global #}
+    <script src="/assets/js/os.js" defer></script>
+    <script src="/assets/js/os_drag.js" defer></script>
+    <script src="/assets/js/os_resize.js" defer></script>
+    <script src="/assets/js/search.js" defer></script>
+
+    {# Widgets JS #}
+    <script src="/assets/js/widgets/world_clock.js" defer></script>
+    <script src="/assets/js/widgets/weather.js" defer></script>
+    <script src="/assets/js/widgets/quick_ai.js" defer></script>
+
+</head>
+<body>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>

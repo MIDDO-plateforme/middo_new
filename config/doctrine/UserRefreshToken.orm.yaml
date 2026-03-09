@@ -1,0 +1,24 @@
+App\Infrastructure\Auth\RefreshToken\UserRefreshToken:
+    type: entity
+    table: user_refresh_tokens
+
+    id:
+        refreshToken:
+            type: string
+            length: 255
+
+    fields:
+        userId:
+            type: string
+
+        sessionId:
+            type: string
+
+        deviceId:
+            type: string
+
+        expiresAt:
+            type: datetime_immutable
+
+        revoked:
+            type: boolean

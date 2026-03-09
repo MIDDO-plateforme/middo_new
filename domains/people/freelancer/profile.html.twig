@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - Profil Entrepreneur</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #8b7ec8;
+            --light-gray: #f5f5f5;
+            --dark-gray: #616161;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .navbar .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        .navbar .nav-link:hover {
+            color: white !important;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            position: relative;
+        }
+        
+        .profile-stats {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+        
+        .skill-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .progress {
+            height: 10px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--dark-gray);
+        }
+        
+        .sidebar-card {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">MIDDO</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clinic"><i class="fas fa-hospital"></i> Cliniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/entrepreneur"><i class="fas fa-rocket"></i> Entrepreneurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/investor"><i class="fas fa-money-bill-wave"></i> Investisseurs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <img src="https://via.placeholder.com/150" alt="{{ freelancer.name }}" class="profile-avatar">
+                </div>
+                <div class="col-md-9">
+                    <h1>{{ freelancer.name }}</h1>
+                    <p class="lead mb-0">{{ freelancer.title }}</p>
+                    <div class="d-flex align-items-center mt-2">
+                        <span class="me-3"><i class="fas fa-map-marker-alt"></i> {{ freelancer.location }}</span>
+                        <span class="me-3"><i class="fas fa-clock"></i> Membre depuis {{ freelancer.member_since }}</span>
+                        <div>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                            <span class="ms-1">{{ freelancer.rating }}/5 ({{ freelancer.reviews_count }} avis)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Stats -->
+    <div class="container mb-4">
+        <div class="row profile-stats">
+            <div class="col-6 col-md-3 text-center">
+                <p class="stat-value">{{ freelancer.completion_rate }}%</p>
+                <p class="stat-label">Projets terminés</p>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <p class="stat-value">{{ freelancer.projects_completed }}</p>
+                <p class="stat-label">Projets réalisés</p>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <p class="stat-value">{{ freelancer.hourly_rate }}€/h</p>
+                <p class="stat-label">Taux horaire</p>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+                <p class="stat-value">{{ freelancer.rating }}/5</p>
+                <p class="stat-label">Évaluation</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- About Me -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-user me-2"></i> À propos de moi
+                    </div>
+                    <div class="card-body">
+                        <p>{{ freelancer.bio }}</p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-code me-2"></i> Compétences
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Développement Frontend</h6>
+                                {% for skill in freelancer.skills.frontend %}
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>{{ skill.name }}</span>
+                                        <span>{{ skill.level }}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: {{ skill.level }}%"></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Développement Backend</h6>
+                                {% for skill in freelancer.skills.backend %}
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>{{ skill.name }}</span>
+                                        <span>{{ skill.level }}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: {{ skill.level }}%"></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Technologies et outils</h6>
+                            <div>
+                                {% for tech in freelancer.skills.technologies %}
+                                <span class="skill-badge">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (Sidebar) -->
+            <div class="col-lg-4">
+                <!-- Contact Card -->
+                <div class="card sidebar-card">
+                    <div class="card-header">
+                        <i class="fas fa-handshake me-2"></i> Travailler avec moi
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 mb-4">
+                            <button class="btn btn-primary"><i class="fas fa-envelope me-2"></i> Contacter</button>
+                            <button class="btn btn-outline-primary"><i class="fas fa-briefcase me-2"></i> Inviter sur un projet</button>
+                        </div>
+                        <div class="mb-4">
+                            <h6>Informations</h6>
+                            <div class="mb-2">
+                                <i class="fas fa-map-marker-alt text-muted me-2"></i> {{ freelancer.location }}
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-clock text-muted me-2"></i> Répond généralement en {{ freelancer.response_time }}
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-language text-muted me-2"></i> {{ freelancer.languages|join(', ') }}
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-euro-sign text-muted me-2"></i> {{ freelancer.hourly_rate }} €/ heure
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-calendar-alt text-muted me-2"></i> Disponible à partir du {{ freelancer.availability }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
