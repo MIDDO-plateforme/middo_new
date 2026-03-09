@@ -14,17 +14,17 @@ services:
             string $projectDir: '%kernel.project_dir%'
 
     # ================================
-    #   PROVIDERS IA (DÉCLARATION MANUELLE)
+    #   PROVIDERS IA (CORRIGÉ)
     # ================================
 
-    App\Infrastructure\IA\Provider\OpenAIProvider:
+    App\AI\Provider\OpenAIProvider:
         arguments:
             $client: '@http_client'
             $apiKey: '%openai_api_key%'
             $model: '%openai_model%'
             $counter: '@App\AI\Provider\TokenCounterInterface'
 
-    App\Infrastructure\IA\Provider\AnthropicProvider:
+    App\AI\Provider\AnthropicProvider:
         arguments:
             $client: '@http_client'
             $apiKey: '%anthropic_api_key%'
@@ -32,14 +32,14 @@ services:
             $counter: '@App\AI\Provider\TokenCounterInterface'
 
     # ================================
-    #   AiKernel
+    #   AiKernel (CORRIGÉ)
     # ================================
 
     App\IA\AiKernel:
         arguments:
             $providers:
-                - '@App\Infrastructure\IA\Provider\OpenAIProvider'
-                - '@App\Infrastructure\IA\Provider\AnthropicProvider'
+                - '@App\AI\Provider\OpenAIProvider'
+                - '@App\AI\Provider\AnthropicProvider'
             $monitoring: '@App\IA\Monitoring\MonitoringManager'
             $cache: '@App\IA\Cache\IaCache'
             $compressor: '@App\IA\Optimization\PromptCompressor'
@@ -47,14 +47,14 @@ services:
             $memory: '@App\IA\Memory\MemoryStore'
 
     # ================================
-    #   PROVIDER ROUTER
+    #   PROVIDER ROUTER (CORRIGÉ)
     # ================================
 
     App\AI\Provider\ProviderRouter:
         arguments:
             $providers:
-                - '@App\Infrastructure\IA\Provider\OpenAIProvider'
-                - '@App\Infrastructure\IA\Provider\AnthropicProvider'
+                - '@App\AI\Provider\OpenAIProvider'
+                - '@App\AI\Provider\AnthropicProvider'
 
     # ================================
     #   AUTOLOAD APP
@@ -79,7 +79,7 @@ services:
     # TokenCounter : interface → implémentation
     App\AI\Provider\TokenCounterInterface: '@App\Infrastructure\IA\Service\TokenCounter'
 
-    # Injection des clés API + modèles dans la commande IA
+    # Injection des clés API dans la commande IA
     App\Command\AiEngineTestCommand:
         arguments:
             $openaiApiKey: '%openai_api_key%'
@@ -199,7 +199,7 @@ services:
     App\IA\Autonomous\AutonomousScheduler: ~
 
     # ================================
-    #   VISION (OCR + ANALYSE)
+    #   VISION
     # ================================
 
     App\IA\Vision\VisionOcr:
