@@ -32,8 +32,6 @@ services:
             $counter: '@App\AI\Provider\TokenCounterInterface'
 
     # ================================
-<<<<<<< HEAD
-=======
     #   AiKernel
     # ================================
 
@@ -42,9 +40,13 @@ services:
             $providers:
                 - '@App\Infrastructure\IA\Provider\OpenAIProvider'
                 - '@App\Infrastructure\IA\Provider\AnthropicProvider'
+            $monitoring: '@App\IA\Monitoring\MonitoringManager'
+            $cache: '@App\IA\Cache\IaCache'
+            $compressor: '@App\IA\Optimization\PromptCompressor'
+            $selector: '@App\AI\Provider\ProviderRouter'
+            $memory: '@App\IA\Memory\MemoryStore'
 
     # ================================
->>>>>>> d9b89cc (Update Dockerfile and services.yaml)
     #   PROVIDER ROUTER
     # ================================
 
@@ -217,18 +219,3 @@ services:
     App\IA\Vision\VisionPipeline:
         arguments:
             $processor: '@App\IA\Vision\VisionProcessor'
-
-    # ================================
-    #   AiKernel
-    # ================================
-
-    App\IA\AiKernel:
-        arguments:
-            $providers:
-                - '@App\Infrastructure\IA\Provider\OpenAIProvider'
-                - '@App\Infrastructure\IA\Provider\AnthropicProvider'
-            $monitoring: '@App\IA\Monitoring\MonitoringManager'
-            $cache: '@App\IA\Cache\IaCache'
-            $compressor: '@App\IA\Optimization\PromptCompressor'
-            $selector: '@App\AI\Provider\ProviderRouter'
-            $memory: '@App\IA\Memory\MemoryStore'
