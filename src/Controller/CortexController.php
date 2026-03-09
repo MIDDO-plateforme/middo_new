@@ -2,37 +2,22 @@
 
 namespace App\Controller;
 
-use App\IA\Exception\IaOrchestratorException;
-use App\IA\Orchestrator\Orchestrator;
+use App\Service\AI\CortexEngine;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CortexController
+class CortexController extends AbstractController
 {
-    public function __construct(
-        private Orchestrator $orchestrator,
-    ) {
-    }
-
-    #[Route('/api/cortex/flux', name: 'api_cortex_flux', methods: ['POST'])]
-    public function flux(Request $request): JsonResponse
+    #[Route('/cortex/test/{intent}', name: 'cortex_test', methods: ['GET'])]
+    public function test(string $intent, CortexEngine $cortex): JsonResponse
     {
-        $data = json_decode($request->getContent(), true) ?? [];
-        $flux = $data['flux'] ?? '';
+        $response = $cortex->process($intent);
 
-        try {
-            $snapshot = $this->orchestrator->ingestFlux($flux);
-
-            return new JsonResponse(['snapshot' => $snapshot]);
-        } catch (IaOrchestratorException $e) {
-            return new JsonResponse([
-                'error' => [
-                    'code' => 'ORCHESTRATOR_INGEST_ERROR',
-                    'message' => $e->getMessage(),
-                    'context' => $e->getContext(),
-                ],
-            ], 500);
-        }
+        return new JsonResponse([
+            'type' => $response->type,
+            'message' => $response->message,
+            'data' => $response->data,
+        ]);
     }
 }
