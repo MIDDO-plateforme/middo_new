@@ -1,0 +1,98 @@
+/* --- WIDGETS CONTAINER --- */
+
+.os-widgets {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 260px;
+}
+
+
+/* --- WIDGET BASE --- */
+
+.widget {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+}
+
+.widget-title {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+/* --- HORLOGE MONDIALE --- */
+
+.clock-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.clock-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+
+/* --- METEO --- */
+
+.widget-weather .weather-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.weather-temp {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.weather-desc {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+
+/* --- IA RAPIDE --- */
+
+.quick-ai-form {
+    display: flex;
+    gap: 8px;
+}
+
+.quick-ai-input {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.quick-ai-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: #4a6cf7;
+    color: white;
+    cursor: pointer;
+}
+
+.quick-ai-btn:hover {
+    background: #3b57c9;
+}
+
+.quick-ai-response {
+    margin-top: 10px;
+    font-size: 14px;
+    white-space: pre-wrap;
+}

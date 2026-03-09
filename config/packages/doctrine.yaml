@@ -1,0 +1,21 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        driver: 'pdo_mysql'
+        charset: utf8mb4
+        server_version: '10.11'
+
+    orm:
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    AppDomainUser:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/src/Domain/User/Entity'
+                        prefix: 'App\Domain\User\Entity'
+                        alias: AppDomainUser

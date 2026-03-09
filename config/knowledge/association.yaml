@@ -1,0 +1,55 @@
+association:
+  statuts_association:
+    organism: "Préfecture"
+    pieces:
+      - "Statuts signés"
+      - "Liste du bureau"
+    steps:
+      - "Identifier le nom de l'association"
+      - "Identifier l'objet"
+      - "Identifier les membres du bureau"
+    notes:
+      - "Les statuts doivent être datés et signés."
+
+  pv_assemblee:
+    organism: "Association"
+    pieces:
+      - "Procès-verbal"
+    steps:
+      - "Identifier la date de l'assemblée"
+      - "Identifier les décisions prises"
+      - "Identifier les signatures"
+    notes:
+      - "Le PV doit être signé par le président et le secrétaire."
+
+  budget_previsionnel:
+    organism: "Association"
+    pieces:
+      - "Budget prévisionnel"
+    steps:
+      - "Vérifier les recettes"
+      - "Vérifier les dépenses"
+      - "Vérifier l'équilibre"
+    notes:
+      - "Le budget doit être validé en AG."
+
+  rapport_moral:
+    organism: "Association"
+    pieces:
+      - "Rapport moral"
+    steps:
+      - "Identifier les actions menées"
+      - "Identifier les objectifs"
+    notes:
+      - "Le rapport moral doit être présenté en AG."
+
+  rapport_financier:
+    organism: "Association"
+    pieces:
+      - "Rapport financier"
+    steps:
+      - "Vérifier les recettes"
+      - "Vérifier les dépenses"
+      - "Vérifier le solde"
+    notes:
+      - "Le rapport financier doit être certifié par le trésorier."

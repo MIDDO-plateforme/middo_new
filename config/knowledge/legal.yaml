@@ -1,0 +1,56 @@
+legal:
+  contrat_simple:
+    organism: "Parties contractantes"
+    pieces:
+      - "Contrat signé"
+    steps:
+      - "Identifier les parties"
+      - "Identifier l'objet du contrat"
+      - "Identifier la durée"
+      - "Identifier les obligations"
+    notes:
+      - "Le contrat doit être signé par toutes les parties."
+
+  attestation:
+    organism: "Auteur de l'attestation"
+    pieces:
+      - "Attestation"
+    steps:
+      - "Identifier l'auteur"
+      - "Identifier le bénéficiaire"
+      - "Identifier l'objet"
+    notes:
+      - "L'attestation doit être datée et signée."
+
+  certificat:
+    organism: "Émetteur"
+    pieces:
+      - "Certificat"
+    steps:
+      - "Identifier l'émetteur"
+      - "Identifier le bénéficiaire"
+      - "Identifier la validité"
+    notes:
+      - "Le certificat doit comporter un numéro."
+
+  convention:
+    organism: "Parties"
+    pieces:
+      - "Convention"
+    steps:
+      - "Identifier les parties"
+      - "Identifier l'objet"
+      - "Identifier les engagements"
+    notes:
+      - "La convention doit être signée."
+
+  declaration_honneur:
+    organism: "Déclarant"
+    pieces:
+      - "Déclaration sur l'honneur"
+    steps:
+      - "Identifier le déclarant"
+      - "Identifier l'objet"
+      - "Vérifier la signature"
+    notes:
+      - "La déclaration doit être datée et signée."
