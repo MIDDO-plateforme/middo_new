@@ -1,0 +1,57 @@
+{% extends 'base_app.html.twig' %}
+
+{% block title %}Coordination IA - {{ project.name }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Coordination IA</h1>
+    <p class="breadcrumb">Projets > {{ project.name }} > Coordination IA</p>
+</div>
+
+<div class="coord-layout">
+
+    <aside class="coord-sidebar">
+
+        <h3>IA</h3>
+        <button class="btn">Analyser l’équipe</button>
+        <button class="btn-outline">Proposer des assignations</button>
+        <button class="btn-outline">Générer une réunion</button>
+        <button class="btn-outline">Créer un compte‑rendu</button>
+
+        <h3>Actions</h3>
+        <button class="btn-outline">Ajouter un membre</button>
+        <button class="btn-outline">Exporter</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="coord-main">
+
+        <h2>Membres du projet</h2>
+
+        <ul class="member-list">
+            {% for m in members %}
+                <li class="member-item">
+                    <strong>{{ m.name }}</strong><br>
+                    <span class="member-role">{{ m.role }}</span><br>
+                    <span class="member-load">Charge : {{ m.load }}%</span>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Suggestions IA</h2>
+
+        <div class="coord-suggestions">
+            <p>{{ suggestions }}</p>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

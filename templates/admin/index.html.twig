@@ -1,0 +1,24 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Administration' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Panneau d’administration',
+        content: '
+            Accès aux paramètres système, logs, monitoring et outils avancés.
+        '
+    } %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Section', 'Description', 'Lien'],
+        rows: [
+            ['Paramètres', 'Configuration générale du système', '<a href="/admin/settings">Ouvrir</a>'],
+            ['Logs', 'Historique des événements système', '<a href="/admin/logs">Ouvrir</a>'],
+            ['Monitoring', 'État des services et performances', '<a href="/admin/monitoring">Ouvrir</a>'],
+            ['Système', 'Informations techniques et environnement', '<a href="/admin/system">Ouvrir</a>']
+        ]
+    } %}
+
+{% endblock %}

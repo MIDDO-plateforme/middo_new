@@ -1,0 +1,1 @@
+USE middo_db; SELECT email, first_name, last_name, LEFT(password, 20) as password_start FROM user WHERE email='test@middo.app';

@@ -1,0 +1,23 @@
+{% set colors = {
+    'success': '#4caf50',
+    'warning': '#ff9800',
+    'danger':  '#f44336',
+    'info':    '#2196f3'
+} %}
+
+<div style="
+    padding:15px 20px;
+    border-radius:10px;
+    background:#141414;
+    border-left:4px solid {{ colors[type|default('info')] }};
+    color:#ddd;
+    margin-bottom:20px;
+    animation: fadeIn 0.4s ease;
+">
+    <strong style="color:{{ colors[type|default('info')] }};">
+        {{ title|default('Information') }}
+    </strong>
+    <div style="margin-top:5px; font-size:14px;">
+        {{ message|raw }}
+    </div>
+</div>

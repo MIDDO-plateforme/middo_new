@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>IA Marketplace — Recommandations avancées</h1>
+
+<div class="mdo-grid">
+
+    <div class="mdo-card">
+        <h3>Produits recommandés</h3>
+
+        {% if products is empty %}
+            <p>Aucun produit recommandé pour le moment.</p>
+        {% else %}
+            <ul>
+                {% for item in products %}
+                    <li>
+                        <strong>{{ item.product.name }}</strong>
+                        — Score : {{ item.score }}
+                        <br>
+                        <a class="mdo-btn" href="{{ path('product_show', {id: item.product.id}) }}">Voir</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="mdo-card">
+        <h3>Fournisseurs recommandés</h3>
+
+        {% if suppliers is empty %}
+            <p>Aucun fournisseur recommandé.</p>
+        {% else %}
+            <ul>
+                {% for s in suppliers %}
+                    <li>{{ s.name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

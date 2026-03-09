@@ -1,0 +1,40 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # IA Achat
+    App\Service\PurchaseAiService: ~
+
+    # IA Opportunités
+    App\Service\PurchaseOpportunityService: ~
+
+    # IA Alertes automatiques
+    App\Service\PurchaseAlertService: ~
+
+    # Commandes IA
+    App\Command\PurchaseAlertCommand: ~
+
+    # OpenAI
+    App\Service\OpenAIService:
+        arguments:
+            $openaiApiKey: '%env(OPENAI_API_KEY)%'
+
+    # Stripe
+    App\Service\StripePaymentService:
+        arguments:
+            $stripeSecretKey: '%stripe_secret_key%'
+            $stripeWebhookSecret: '%stripe_webhook_secret%'
+
+parameters:
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+
+

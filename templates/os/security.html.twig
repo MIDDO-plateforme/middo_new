@@ -1,0 +1,53 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Sécurité du système' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Sécurité interne de MIDDO OS',
+        content: '
+            Cette page présente l&apos;état de la sécurité interne de MIDDO OS : intégrité, clés, signatures et mécanismes de protection.  
+            Elle permet de vérifier rapidement si les éléments critiques sont correctement configurés et opérationnels.
+        '
+    } %}
+
+    <h2 style="margin-bottom:15px;">Intégrité et signatures</h2>
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Élément', 'Statut', 'Détail'],
+        rows: [
+            ['Fichiers critiques', include('components/badge.html.twig', { type: security.files_integrity_ok ? 'success' : 'danger', label: security.files_integrity_ok ? 'Intègres' : 'Altérés' }), security.files_integrity_message],
+            ['Signatures de build', include('components/badge.html.twig', { type: security.build_signatures_ok ? 'success' : 'warning', label: security.build_signatures_ok ? 'Valides' : 'À vérifier' }), security.build_signatures_message],
+            ['Hash de la version', 'SHA-256', security.version_hash]
+        ]
+    } %}
+
+    <h2 style="margin-top:40px; margin-bottom:15px;">Clés et jetons</h2>
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Clé / Jeton', 'Statut', 'Détail'],
+        rows: [
+            ['Clé API principale', include('components/badge.html.twig', { type: security.main_api_key_configured ? 'success' : 'danger', label: security.main_api_key_configured ? 'Configurée' : 'Manquante' }), security.main_api_key_message],
+            ['Clé IA', include('components/badge.html.twig', { type: security.ai_key_configured ? 'success' : 'warning', label: security.ai_key_configured ? 'Configurée' : 'Optionnelle' }), security.ai_key_message],
+            ['Clé JWT', include('components/badge.html.twig', { type: security.jwt_key_configured ? 'success' : 'danger', label: security.jwt_key_configured ? 'Configurée' : 'Manquante' }), security.jwt_key_message]
+        ]
+    } %}
+
+    <h2 style="margin-top:40px; margin-bottom:15px;">Mécanismes de protection</h2>
+
+    {% set protection_rows = [] %}
+    {% for protection in security.protections %}
+        {% set protection_rows = protection_rows|merge([[
+            protection.name,
+            include('components/badge.html.twig', { type: protection.enabled ? 'success' : 'danger', label: protection.enabled ? 'Activé' : 'Désactivé' }),
+            protection.description
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Mécanisme', 'Statut', 'Description'],
+        rows: protection_rows
+    } %}
+
+{% endblock %}

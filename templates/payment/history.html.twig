@@ -1,0 +1,29 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Historique des paiements' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Historique complet',
+        content: '
+            Toutes les transactions enregistrées dans le système.
+        '
+    } %}
+
+    {% set rows = [] %}
+    {% for item in history %}
+        {% set rows = rows|merge([[
+            item.reference,
+            item.amount ~ ' €',
+            item.status|capitalize,
+            item.created_at|date('d/m/Y H:i')
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['Référence', 'Montant', 'Statut', 'Date'],
+        rows: rows
+    } %}
+
+{% endblock %}

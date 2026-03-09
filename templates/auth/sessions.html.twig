@@ -1,0 +1,60 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Sessions actives' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Sessions actives',
+        content: '
+            Voici la liste des sessions actuellement actives pour ton compte.  
+            Tu peux terminer une session à distance si tu suspectes une activité inhabituelle.
+        '
+    } %}
+
+    {% if success is defined and success %}
+        {% include 'components/alert.html.twig' with {
+            type: 'success',
+            title: 'Succès',
+            message: success
+        } %}
+    {% endif %}
+
+    {% if error is defined and error %}
+        {% include 'components/alert.html.twig' with {
+            type: 'danger',
+            title: 'Erreur',
+            message: error
+        } %}
+    {% endif %}
+
+    <h2 style="margin-bottom:15px;">Liste des sessions</h2>
+
+    {% set rows = [] %}
+
+    {% for session in sessions %}
+        {% set rows = rows|merge([[
+            session.ip,
+            session.user_agent,
+            session.last_activity|date('d/m/Y H:i'),
+            include('components/badge.html.twig', { type: session.is_current ? 'success' : 'info', label: session.is_current ? 'Actuelle' : 'Active' }),
+            '<button onclick="middoOpenModal(\'modal-' ~ session.id ~ '\')" style=\"padding:6px 10px; background:#f44336; border:none; border-radius:6px; color:#fff; cursor:pointer;\">Terminer</button>'
+        ]]) %}
+    {% endfor %}
+
+    {% include 'components/table.html.twig' with {
+        headers: ['IP', 'Navigateur', 'Dernière activité', 'Statut', 'Action'],
+        rows: rows
+    } %}
+
+    {% for session in sessions %}
+        {% include 'components/modal.html.twig' with {
+            modal_id: 'modal-' ~ session.id,
+            title: 'Terminer la session',
+            message: 'Es-tu sûr de vouloir terminer cette session ?<br><br><strong>IP :</strong> ' ~ session.ip ~ '<br><strong>Navigateur :</strong> ' ~ session.user_agent,
+            confirm_label: 'Terminer',
+            confirm_action: "window.location='/auth/sessions/terminate/" ~ session.id ~ "';"
+        } %}
+    {% endfor %}
+
+{% endblock %}

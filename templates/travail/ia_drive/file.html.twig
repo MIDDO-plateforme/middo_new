@@ -1,0 +1,49 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    {{ file.name }}
+{% endblock %}
+
+{% block page_subtitle %}
+    Fichier IA — aperçu, résumé, extraction, classification.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">📄 Télécharger</button>
+    <button class="btn btn-outline">🧠 Résumer</button>
+    <button class="btn btn-outline">🌍 Traduire</button>
+    <button class="btn btn-soft">🔍 Extraire données</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="drive-file-layout">
+
+    <section class="file-main">
+        <h3>Aperçu</h3>
+        <div class="file-preview">
+            {{ file.preview|raw }}
+        </div>
+    </section>
+
+    <aside class="file-sidepanel">
+
+        <div class="panel-block">
+            <h4>🧠 Actions IA</h4>
+            <button class="btn-soft">Résumer</button>
+            <button class="btn-outline">Expliquer simplement</button>
+            <button class="btn-outline">Traduire</button>
+            <button class="btn-outline">Extraire les données</button>
+            <button class="btn-outline">Classer automatiquement</button>
+        </div>
+
+        <div class="panel-block">
+            <h4>📁 Dossier actuel</h4>
+            <p>{{ file.folder }}</p>
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}

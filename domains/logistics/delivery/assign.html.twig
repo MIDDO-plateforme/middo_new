@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Affecter un transporteur au segment #{{ segment.id }}</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Transporteur disponible</label>
+        <select name="driver" class="form-control" required>
+            {% for d in drivers %}
+                <option value="{{ d.id }}">{{ d.name }} ({{ d.vehicleType }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button class="btn btn-success">Affecter</button>
+</form>
+
+<a href="{{ path('delivery_segment_index', {id: segment.delivery.id}) }}" class="btn btn-secondary mt-3">Retour</a>
+{% endblock %}

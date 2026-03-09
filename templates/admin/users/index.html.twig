@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs — Administration{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:900px; margin:auto;">
+
+    <h1>Liste des utilisateurs</h1>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <a href="{{ path('admin.users.view', {id: user.id}) }}">Voir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>All Transactions</h1>
+
+<a href="{{ path('transaction_create') }}" class="btn btn-primary">Add Transaction</a>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Contract</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+            <tr>
+                <td>{{ t.date|date('d/m/Y H:i') }}</td>
+                <td>{{ t.type }}</td>
+                <td>{{ t.amount }} €</td>
+                <td>
+                    {% if t.contract %}
+                        <a href="{{ path('contract_show', {id: t.contract.id}) }}">
+                            Contract #{{ t.contract.id }}
+                        </a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ t.description }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

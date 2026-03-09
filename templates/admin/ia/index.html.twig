@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA — Administration{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:900px; margin:auto;">
+
+    <h1>Statistiques IA</h1>
+
+    <ul>
+        <li><strong>Total requêtes :</strong> {{ stats.total_requests }}</li>
+        <li><strong>Taux de succès :</strong> {{ stats.success_rate }}%</li>
+        <li><strong>Temps de réponse moyen :</strong> {{ stats.avg_response_time }}</li>
+        <li><strong>Modèles disponibles :</strong> {{ stats.models_available|join(', ') }}</li>
+    </ul>
+
+    <p>
+        <a href="{{ path('admin.ia.history') }}">Voir l’historique des requêtes</a>
+    </p>
+
+</div>
+{% endblock %}

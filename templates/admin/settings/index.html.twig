@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres du système{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:800px; margin:auto;">
+
+    <h1>Paramètres du système</h1>
+
+    <form action="{{ path('admin.settings.save') }}" method="POST">
+
+        <label>
+            <input type="checkbox" name="maintenance_mode" value="1"
+                {% if settings.maintenance_mode %}checked{% endif %}>
+            Mode maintenance
+        </label>
+        <br><br>
+
+        <label>
+            <input type="checkbox" name="allow_registration" value="1"
+                {% if settings.allow_registration %}checked{% endif %}>
+            Autoriser les inscriptions
+        </label>
+        <br><br>
+
+        <label>
+            <input type="checkbox" name="ia_enabled" value="1"
+                {% if settings.ia_enabled %}checked{% endif %}>
+            Activer l’IA
+        </label>
+        <br><br>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+
+</div>
+{% endblock %}

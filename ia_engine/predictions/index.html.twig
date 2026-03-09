@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>IA Prévision — Ventes futures</h1>
+
+<div class="mdo-grid">
+    <div class="mdo-card">
+        <h3>Historique</h3>
+        <table class="mdo-table">
+            <tr>
+                <th>Mois</th>
+                <th>Total</th>
+            </tr>
+            {% for month, total in byMonth %}
+                <tr>
+                    <td>{{ month }}</td>
+                    <td>{{ total }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="mdo-card">
+        <h3>Prévisions</h3>
+        {% if future is empty %}
+            <p>Prévisions impossibles (données insuffisantes).</p>
+        {% else %}
+            <table class="mdo-table">
+                <tr>
+                    <th>Mois</th>
+                    <th>Prévision</th>
+                </tr>
+                {% for month, total in future %}
+                    <tr>
+                        <td>{{ month }}</td>
+                        <td>{{ total }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

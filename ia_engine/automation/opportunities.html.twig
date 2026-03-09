@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Opportunités IA</h1>
+
+<div class="mdo-card">
+    <h3>Nouvelles catégories à explorer</h3>
+
+    {% if data.new_categories is empty %}
+        <p>Aucune nouvelle catégorie pour le moment.</p>
+    {% else %}
+        <div class="mdo-grid">
+            {% for p in data.new_categories %}
+                <div class="mdo-card">
+                    <h4>{{ p.name }}</h4>
+                    <p>{{ p.description|slice(0, 100) }}…</p>
+                    <strong>{{ p.price }} €</strong><br>
+                    <a class="mdo-btn" href="{{ path('product_show', {id: p.id}) }}">Voir</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<div class="mdo-card" style="margin-top:1rem;">
+    <h3>Produits populaires</h3>
+
+    {% if data.popular_products is empty %}
+        <p>Aucun produit populaire détecté.</p>
+    {% else %}
+        <div class="mdo-grid">
+            {% for p in data.popular_products %}
+                <div class="mdo-card">
+                    <h4>{{ p.name }}</h4>
+                    <p>{{ p.description|slice(0, 100) }}…</p>
+                    <strong>{{ p.price }} €</strong><br>
+                    <a class="mdo-btn" href="{{ path('product_show', {id: p.id}) }}">Voir</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

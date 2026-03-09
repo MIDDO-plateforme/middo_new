@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projets — Administration{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:900px; margin:auto;">
+
+    <h1>Liste des projets</h1>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Propriétaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.id }}</td>
+                    <td>{{ project.name }}</td>
+                    <td>{{ project.owner }}</td>
+                    <td>
+                        <a href="{{ path('admin.projects.view', {id: project.id}) }}">
+                            Voir
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

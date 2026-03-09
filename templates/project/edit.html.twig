@@ -1,0 +1,46 @@
+{% extends 'base/layout.html.twig' %}
+
+{% set page_title = 'Modifier le projet' %}
+
+{% block page_content %}
+
+    {% include 'components/card.html.twig' with {
+        title: 'Édition du projet',
+        content: '
+            Modifiez les informations principales du projet : nom, statut, progression et description.
+        '
+    } %}
+
+    <form method="post" action="/project/{{ project.id }}/update">
+
+        <div class="form-group">
+            <label>Nom du projet</label>
+            <input type="text" name="name" value="{{ project.name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Statut</label>
+            <select name="status">
+                <option value="pending" {% if project.status == 'pending' %}selected{% endif %}>En attente</option>
+                <option value="active" {% if project.status == 'active' %}selected{% endif %}>Actif</option>
+                <option value="completed" {% if project.status == 'completed' %}selected{% endif %}>Terminé</option>
+                <option value="archived" {% if project.status == 'archived' %}selected{% endif %}>Archivé</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Progression (%)</label>
+            <input type="number" name="progress" min="0" max="100" value="{{ project.progress }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="6">{{ project.description }}</textarea>
+        </div>
+
+        <button class="btn-primary" type="submit">Enregistrer</button>
+        <a class="btn-secondary" href="/project/{{ project.id }}" style="margin-left:10px;">Annuler</a>
+
+    </form>
+
+{% endblock %}

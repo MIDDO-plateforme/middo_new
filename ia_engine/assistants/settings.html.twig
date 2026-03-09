@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA Settings — MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">IA Settings</h1>
+                <p class="page-subtitle">
+                    Configurez les paramètres IA de MIDDO : API, modèles, limites et préférences.
+                </p>
+            </div>
+        </header>
+
+        <section class="settings-panel">
+
+            <div class="settings-card">
+                <h3>🔑 API Key</h3>
+                <label>
+                    Clé OpenAI / Azure OpenAI
+                    <input type="password" class="settings-input" placeholder="••••••••••••••••">
+                </label>
+                <button class="btn-primary">Enregistrer</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>🧠 Modèle IA</h3>
+                <label>
+                    Modèle utilisé
+                    <select class="settings-input">
+                        <option>gpt-4.1</option>
+                        <option>gpt-4.1-mini</option>
+                        <option>gpt-4.1-pro</option>
+                        <option>gpt-4o</option>
+                    </select>
+                </label>
+                <button class="btn-primary">Enregistrer</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>⚙️ Paramètres avancés</h3>
+
+                <label>
+                    Température
+                    <input type="number" class="settings-input" min="0" max="2" step="0.1" value="1.0">
+                </label>
+
+                <label>
+                    Max Tokens
+                    <input type="number" class="settings-input" min="100" max="32000" value="4096">
+                </label>
+
+                <button class="btn-primary">Enregistrer</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>🔒 Sécurité & conformité</h3>
+
+                <label>
+                    Niveau de filtrage
+                    <select class="settings-input">
+                        <option>Standard</option>
+                        <option>Strict</option>
+                        <option>Personnalisé</option>
+                    </select>
+                </label>
+
+                <button class="btn-primary">Enregistrer</button>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/ia_settings.js"></script>
+{% endblock %}

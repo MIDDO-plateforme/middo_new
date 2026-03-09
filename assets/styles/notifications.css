@@ -1,0 +1,88 @@
+/* ==========================================
+   MIDDO OS – NOTIFICATIONS CSS
+   Popups, badges, animations
+========================================== */
+
+/* Container global */
+.notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+/* Notification card */
+.notification {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: notif-slide-in 0.25s ease-out;
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Closing animation */
+.notification.closing {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+/* Message */
+.notif-message {
+    font-size: 0.95rem;
+    color: var(--text);
+    flex: 1;
+    padding-right: 10px;
+}
+
+/* Close button */
+.notif-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: 0.2s;
+}
+
+.notif-close:hover {
+    color: var(--text);
+}
+
+/* Types */
+.notification.info {
+    border-left: 4px solid #4a6cf7;
+}
+
+.notification.success {
+    border-left: 4px solid #2ecc71;
+}
+
+.notification.warning {
+    border-left: 4px solid #f1c40f;
+}
+
+.notification.error {
+    border-left: 4px solid #e74c3c;
+}
+
+/* Slide-in animation */
+@keyframes notif-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

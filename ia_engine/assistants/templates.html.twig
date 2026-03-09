@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IA Prompt Templates — MIDDO{% endblock %}
+
+{% block body %}
+<div class="layout-root">
+
+    {% include 'layout/_sidebar.html.twig' %}
+
+    <main class="layout-main">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">IA Prompt Templates</h1>
+                <p class="page-subtitle">
+                    Créez, organisez et réutilisez vos prompts IA.
+                </p>
+            </div>
+
+            <button class="btn-primary" id="openTemplateModal">+ Nouveau template</button>
+        </header>
+
+        <section class="templates-grid">
+
+            {% for template in templates %}
+                <div class="template-card">
+                    <h3>{{ template.name }}</h3>
+
+                    {% if template.description %}
+                        <p class="template-desc">
+                            {{ template.description }}
+                        </p>
+                    {% endif %}
+
+                    <div class="template-actions">
+                        <button class="btn-outline">Utiliser</button>
+                        <button class="btn-outline">Modifier</button>
+                        <button class="btn-danger">Supprimer</button>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucun template IA enregistré pour le moment.</p>
+            {% endfor %}
+
+        </section>
+
+        {# Modal de création #}
+        <div id="templateModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <h2>Nouveau template IA</h2>
+
+                <label>
+                    Nom du template
+                    <input type="text" class="modal-input" id="templateName">
+                </label>
+
+                <label>
+                    Description
+                    <textarea class="modal-input" id="templateDescription"></textarea>
+                </label>
+
+                <label>
+                    Prompt
+                    <textarea class="modal-input" id="templatePrompt"></textarea>
+                </label>
+
+                <div class="modal-actions">
+                    <button class="btn-primary">Enregistrer</button>
+                    <button class="btn-outline" id="closeTemplateModal">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="/js/sidebar.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/ia_templates.js"></script>
+{% endblock %}

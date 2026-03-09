@@ -1,0 +1,31 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}IA Paiement — MIDDO{% endblock %}
+{% block page_title %}IA Paiement{% endblock %}
+
+{% block content %}
+<div class="page">
+    <h2>Analyse de facture</h2>
+    <p>Analyse les montants, taxes, dates, anomalies.</p>
+
+    <form id="ia-payment-form">
+        <textarea id="ia-payment-text" placeholder="Texte ou contenu de la facture…"></textarea>
+        <button type="button" onclick="iaPayment()">Analyser</button>
+    </form>
+
+    <pre id="ia-payment-result"></pre>
+</div>
+
+<script>
+async function iaPayment() {
+    const text = document.getElementById('ia-payment-text').value;
+    const res = await fetch('/api/ia/payment/invoice', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    document.getElementById('ia-payment-result').textContent = data.content ?? JSON.stringify(data, null, 2);
+}
+</script>
+{% endblock %}

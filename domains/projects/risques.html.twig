@@ -1,0 +1,61 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    Risques IA – {{ project.name }}
+{% endblock %}
+
+{% block page_subtitle %}
+    Analyse automatique, détection des risques et recommandations IA
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">Analyser les risques</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="risks-layout">
+
+    <aside class="risks-sidebar" aria-label="Menu risques IA">
+
+        <h3>IA</h3>
+        <button class="btn">Analyser les risques</button>
+        <button class="btn-outline">Proposer des solutions</button>
+        <button class="btn-outline">Analyser les dépendances</button>
+        <button class="btn-outline">Détecter les retards</button>
+
+        <h3>Actions</h3>
+        <button class="btn-outline">Exporter le rapport</button>
+
+        <h3>Accessibilité</h3>
+        <label><input type="checkbox"> Lecture vocale</label><br>
+        <label><input type="checkbox"> Mode simplifié</label><br>
+        <label><input type="checkbox"> Police adaptée</label>
+
+    </aside>
+
+    <section class="risks-main">
+
+        <h2>Risques détectés</h2>
+
+        <ul class="risk-list">
+            {% for r in risks %}
+                <li class="risk-item {{ r.level|lower }}">
+                    <strong>{{ r.title }}</strong><br>
+                    <span class="risk-desc">{{ r.description }}</span><br>
+                    <span class="risk-level">Niveau : {{ r.level }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Recommandations IA</h2>
+
+        <div class="risk-solutions">
+            <p>{{ solutions }}</p>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

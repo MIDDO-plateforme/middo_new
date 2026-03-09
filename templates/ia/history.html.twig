@@ -1,0 +1,42 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}Historique IA — MIDDO{% endblock %}
+{% block page_title %}Historique IA{% endblock %}
+
+{% block content %}
+
+<h2>Historique des requêtes IA</h2>
+
+{% if entries is empty %}
+    <p>Aucune requête IA enregistrée pour le moment.</p>
+{% else %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Pipeline</th>
+                <th>Provider</th>
+                <th>Modèle</th>
+                <th>Tokens</th>
+                <th>Résultat</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for e in entries %}
+                <tr>
+                    <td>{{ e.timestamp }}</td>
+                    <td>{{ e.pipeline }}</td>
+                    <td>{{ e.provider }}</td>
+                    <td>{{ e.model }}</td>
+                    <td>{{ e.tokens }}</td>
+                    <td>
+                        <pre>{{ e.content }}</pre>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}

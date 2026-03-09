@@ -1,0 +1,31 @@
+# 🚀 MIDDO GENIUS PRO - CONTEXTE COMPLET POUR AGENTS IA
+
+## 📊 INFORMATIONS PROJET
+
+**Propriétaire :** Baudouin (MBANE LOKOTA)  
+**Projet :** MIDDO - Plateforme collaborative innovante  
+**Date Session :** 16-17 Novembre 2025  
+**Agent IA Créé :** MIDDO GENIUS PRO (6 expertises)  
+
+---
+
+## 🏗️ ARCHITECTURE COMPLÈTE
+
+### Stack Technique Principal (MIDDO)
+- **Framework :** Symfony 6.3.4
+- **Language :** PHP 8.3.1
+- **Base de données :** SQLite (dev) → PostgreSQL (prod)
+- **Cache :** Redis 7.2
+- **Frontend :** Tailwind CSS 3.4 + Alpine.js
+- **Container :** Docker + Docker Compose
+
+### Stack Agent IA (MIDDO GENIUS PRO)
+- **Backend :** FastAPI (Python 3.14.0)
+- **IA :** OpenAI GPT-3.5-turbo
+- **Port :** localhost:8000
+- **Documentation API :** http://localhost:8000/docs
+
+---
+
+## 📁 STRUCTURE DES FICHIERS
+

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Contrat Logistique — Segment #{{ segment.id }}</h1>
+
+<p><strong>De :</strong> {{ segment.fromLocation }}</p>
+<p><strong>À :</strong> {{ segment.toLocation }}</p>
+<p><strong>Mode :</strong> {{ segment.mode }}</p>
+<p><strong>Prix :</strong> {{ segment.segmentPrice }} €</p>
+
+<hr>
+
+<h3>Conditions du contrat</h3>
+<pre style="white-space: pre-wrap;">{{ contract.terms }}</pre>
+
+<a href="{{ path('delivery_segment_index', {id: segment.delivery.id}) }}" class="btn btn-secondary mt-3">
+    Retour
+</a>
+{% endblock %}

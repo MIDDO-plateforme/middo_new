@@ -1,0 +1,14 @@
+{% extends 'layout/layout.html.twig' %}
+{% block page_title %}MIDDO OS{% endblock %}
+
+{% block content %}
+<div class="os-grid">
+    {% for module in modules %}
+        <a href="{{ path(module.route) }}" class="os-tile">
+            <div class="os-icon">{{ module.icon }}</div>
+            <div class="os-title">{{ module.name }}</div>
+            <div class="os-description">{{ module.description }}</div>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}

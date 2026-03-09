@@ -1,0 +1,57 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    Recherche IA
+{% endblock %}
+
+{% block page_subtitle %}
+    Trouvez n’importe quel fichier, dossier ou contenu grâce à l’IA.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-outline">🧠 Recherche avancée</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="drive-search-layout">
+
+    <div class="drive-toolbar">
+        <input type="search" placeholder="Rechercher un fichier, un texte, un dossier…">
+        <button class="btn-primary">Rechercher</button>
+    </div>
+
+    <h3>Résultats</h3>
+
+    <table class="drive-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Dossier</th>
+                <th>Modifié le</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in results %}
+                <tr>
+                    <td>
+                        <a href="{{ path('travail_ia_drive_file', { id: file.id }) }}">
+                            {{ file.name }}
+                        </a>
+                    </td>
+                    <td>{{ file.type }}</td>
+                    <td>{{ file.folder }}</td>
+                    <td>{{ file.updatedAt|date('d/m/Y H:i') }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Aucun résultat.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

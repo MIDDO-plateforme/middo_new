@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modules OS — Administration{% endblock %}
+
+{% block body %}
+<div style="padding:20px; max-width:900px; margin:auto;">
+
+    <h1>Modules du système MIDDO OS</h1>
+
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Statut</th>
+                <th>Version</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for m in modules %}
+                <tr>
+                    <td>{{ m.name }}</td>
+                    <td>{{ m.status }}</td>
+                    <td>{{ m.version }}</td>
+                    <td>
+                        <a href="{{ path('admin.os.view', {name: m.name}) }}">Voir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

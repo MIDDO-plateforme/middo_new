@@ -1,0 +1,63 @@
+{% extends 'layout/app_layout.html.twig' %}
+
+{% block page_title %}
+    Importer dans IA Drive
+{% endblock %}
+
+{% block page_subtitle %}
+    Fichiers, images, audio, vidéo — tout est analysé et classé automatiquement.
+{% endblock %}
+
+{% block page_actions %}
+    <button class="btn btn-primary">📤 Importer un fichier</button>
+    <button class="btn btn-outline">📷 Scanner</button>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="drive-import-layout">
+
+    <section class="import-actions">
+
+        <h3>📥 Importer un document</h3>
+
+        <div class="import-buttons">
+            <button class="btn-soft">📄 Importer un fichier</button>
+            <button class="btn-outline">📷 Scanner un document</button>
+            <button class="btn-outline">📱 Importer depuis téléphone</button>
+            <button class="btn-outline">🔊 Audio → Texte (IA)</button>
+            <button class="btn-outline">🎥 Vidéo → Résumé (IA)</button>
+        </div>
+
+        <h3>🌐 Sources externes</h3>
+
+        <div class="import-buttons">
+            <button class="btn-outline">Google Drive</button>
+            <button class="btn-outline">OneDrive</button>
+            <button class="btn-outline">Dropbox</button>
+        </div>
+
+    </section>
+
+    <section class="import-preview">
+
+        <h3>Aperçu</h3>
+
+        <div class="preview-box">
+            <p>Aucun fichier importé pour le moment.</p>
+        </div>
+
+        <h3>🧠 Actions IA</h3>
+
+        <div class="ia-actions">
+            <button class="btn">🧠 Résumer</button>
+            <button class="btn-outline">🗂 Classer automatiquement</button>
+            <button class="btn-outline">🌍 Traduire</button>
+            <button class="btn-outline">🔍 Extraire les données</button>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

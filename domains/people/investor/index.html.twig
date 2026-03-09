@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDDO - Investisseurs</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .navbar .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        .navbar .nav-link:hover {
+            color: white !important;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .investor-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .investor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.3);
+        }
+        
+        .investor-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: contain;
+            background-color: white;
+            border: 2px solid #eee;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        .sector-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 3px;
+            margin-bottom: 3px;
+            display: inline-block;
+        }
+        
+        .badge-amount {
+            background-color: #2ecc71;
+        }
+        
+        .badge-projects {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">MIDDO</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clinic"><i class="fas fa-hospital"></i> Cliniques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/entrepreneur"><i class="fas fa-rocket"></i> Entrepreneurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/investor"><i class="fas fa-money-bill-wave"></i> Investisseurs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-money-bill-wave me-3"></i>Investisseurs & Fonds d'Investissement</h1>
+            <p class="lead">Découvrez les investisseurs engagés dans le développement de l'écosystème tech africain</p>
+        </div>
+    </div>
+
+    <!-- Investor List -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Investor 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/2ecc71/ffffff?text=AIF" class="investor-logo me-3" alt="Africa Innovation Fund">
+                            <div>
+                                <h5 class="card-title mb-1">Africa Innovation Fund</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
+                                <div>
+                                    <span class="badge badge-amount">2.5M€ investis</span>
+                                    <span class="badge badge-projects ms-1">15 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Fonds d'investissement spécialisé en technologies de santé et fintech africaine.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">Healthtech</span>
+                            <span class="sector-badge">Fintech</span>
+                            <span class="sector-badge">EdTech</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investor 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/3498db/ffffff?text=SV" class="investor-logo me-3" alt="Sahara Ventures">
+                            <div>
+                                <h5 class="card-title mb-1">Sahara Ventures</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</p>
+                                <div>
+                                    <span class="badge badge-amount">4.2M€ investis</span>
+                                    <span class="badge badge-projects ms-1">23 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Fonds de capital-risque investissant dans les startups africaines à fort potentiel.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">E-commerce</span>
+                            <span class="sector-badge">Logistique</span>
+                            <span class="sector-badge">AgriTech</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investor 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/e74c3c/ffffff?text=IAI" class="investor-logo me-3" alt="Impact Africa Investments">
+                            <div>
+                                <h5 class="card-title mb-1">Impact Africa Investments</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Johannesburg, Afrique du Sud</p>
+                                <div>
+                                    <span class="badge badge-amount">3.8M€ investis</span>
+                                    <span class="badge badge-projects ms-1">19 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Investisseur à impact social axé sur l'innovation durable et l'inclusion financière.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">Impact Social</span>
+                            <span class="sector-badge">Cleantech</span>
+                            <span class="sector-badge">Inclusion</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investor 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/9b59b6/ffffff?text=AC" class="investor-logo me-3" alt="AfriConnect Capital">
+                            <div>
+                                <h5 class="card-title mb-1">AfriConnect Capital</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Accra, Ghana</p>
+                                <div>
+                                    <span class="badge badge-amount">1.9M€ investis</span>
+                                    <span class="badge badge-projects ms-1">12 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Fonds spécialisé dans les télécommunications et l'infrastructure digitale africaine.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">Telecom</span>
+                            <span class="sector-badge">Infrastructure</span>
+                            <span class="sector-badge">IoT</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investor 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/f39c12/ffffff?text=NP" class="investor-logo me-3" alt="Nile Partners">
+                            <div>
+                                <h5 class="card-title mb-1">Nile Partners</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Le Caire, Égypte</p>
+                                <div>
+                                    <span class="badge badge-amount">5.1M€ investis</span>
+                                    <span class="badge badge-projects ms-1">28 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Grand fonds d'investissement en technologies émergentes et transformation digitale.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">AI/ML</span>
+                            <span class="sector-badge">Blockchain</span>
+                            <span class="sector-badge">SaaS</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investor 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card investor-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start mb-3">
+                            <img src="https://via.placeholder.com/80/1abc9c/ffffff?text=BV" class="investor-logo me-3" alt="Baobab Ventures">
+                            <div>
+                                <h5 class="card-title mb-1">Baobab Ventures</h5>
+                                <p class="text-muted mb-1"><i class="fas fa-map-marker-alt"></i> Dakar, Sénégal</p>
+                                <div>
+                                    <span class="badge badge-amount">2.2M€ investis</span>
+                                    <span class="badge badge-projects ms-1">14 startups</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text mb-2">Investisseur early-stage focalisé sur l'entrepreneuriat féminin et l'innovation sociale.</p>
+                        <div class="mb-3">
+                            <span class="sector-badge">Women-led</span>
+                            <span class="sector-badge">Social Impact</span>
+                            <span class="sector-badge">Retail</span>
+                        </div>
+                        <a href="#" class="btn btn-primary w-100"><i class="fas fa-eye me-2"></i>Voir le profil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

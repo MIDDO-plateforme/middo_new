@@ -1,0 +1,16 @@
+doctrine:
+    dbal:
+        driver: 'pdo_sqlite'
+        url: '%env(resolve:DATABASE_URL)%'
+        path: '%kernel.project_dir%/data.db'
+
+    orm:
+        auto_mapping: false
+        mappings:
+            App:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+ 

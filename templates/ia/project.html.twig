@@ -1,0 +1,31 @@
+{% extends 'layout/layout.html.twig' %}
+
+{% block title %}IA Projet — MIDDO{% endblock %}
+{% block page_title %}IA Projet{% endblock %}
+
+{% block content %}
+<div class="page">
+    <h2>Planification de projet</h2>
+    <p>Génère un plan de projet détaillé.</p>
+
+    <form id="ia-project-form">
+        <input id="ia-project-goal" placeholder="Objectif du projet…">
+        <button type="button" onclick="iaProject()">Générer le plan</button>
+    </form>
+
+    <pre id="ia-project-result"></pre>
+</div>
+
+<script>
+async function iaProject() {
+    const goal = document.getElementById('ia-project-goal').value;
+    const res = await fetch('/api/ia/project/plan', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ goal })
+    });
+    const data = await res.json();
+    document.getElementById('ia-project-result').textContent = data.content ?? JSON.stringify(data, null, 2);
+}
+</script>
+{% endblock %}

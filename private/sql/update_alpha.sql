@@ -1,0 +1,1 @@
+﻿USE middo_db; UPDATE user SET password='$2y$10$3mJ3f4NUGvumm7xg3PRV7O5qPyH8xWFWxacdIqsSUuf2k13Ve8mOS' WHERE email='alpha@middo.com'; SELECT email, LEFT(password, 40) as new_password FROM user WHERE email='alpha@middo.com';
