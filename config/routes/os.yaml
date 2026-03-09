@@ -1,4 +1,0 @@
-os_controllers:
-    resource: ../../src/Controller/OS/
-    type: attribute
-    prefix: /os

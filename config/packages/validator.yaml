@@ -1,6 +1,0 @@
-framework:
-    validation:
-        enabled: true
-        mapping:
-            paths:
-                - '%kernel.project_dir%/config/validator/'

@@ -1,9 +1,0 @@
-controllers_api:
-    resource: ../src/Interface/Http/Controller/
-    type: annotation
-
-# (Optionnel) Si tu veux garder les anciens contrôleurs MVC :
-# controllers_legacy:
-#     resource: ../src/Controller/
-#     type: annotation
-
