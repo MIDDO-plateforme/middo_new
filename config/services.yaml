@@ -216,3 +216,12 @@ services:
     App\IA\Vision\VisionPipeline:
         arguments:
             $processor: '@App\IA\Vision\VisionProcessor'
+
+    # ================================
+    #   DUAL IA ENGINE (TON AJOUT)
+    # ================================
+
+    App\Service\AI\CortexEngine:
+        arguments:
+            $externalAI: '@App\Service\AI\OpenAIAssistantService'
+            $internalAI: '@App\Service\AI\AiEngineService'
